@@ -8,3 +8,7 @@ Make sure to [write your document effectively](http://www.treesmapsandtheorems.c
 Write proper introduction.
 More information on snippets like this can be found on the [ScholarMarkdown wiki](https://github.com/rubensworks/ScholarMarkdown/wiki/Snippets).
 {:.todo}
+
+Add some standard RDF introduction stuff. 
+Talk about both the AMF stuff and the extensive Comunica testing.
+{:.todo}

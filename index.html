@@ -58,6 +58,8 @@ More information on snippets like this can be found on the <a href="https://gith
 
     <p class="todo">Add some standard RDF introduction stuff. 
 Talk about both the AMF stuff and the extensive Comunica testing.</p>
+
+    <p class="todo">Clarify delta</p>
   </section>
 
   <section id="related-work">
@@ -91,7 +93,11 @@ There is a trade-off between the size of the function, and its precision.
 Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.
 Due to the &lt;100% precision, clients can only filter out true negatives based on AMFs,
-so for testing true positives, an HTTP request will still need to be sent to the server.</p>
+so for testing true positives, an HTTP request will still need to be sent to the server.
+The results of this work show that there is a significant decrease in the number of HTTP requests when AMFs are used,
+at the cost of only a small increase in server load.
+Even though the <em>number of HTTP requests is lower</em>, the <em>total execution time is higher</em> for most queries,
+because of the long server delays when generating AMFs.</p>
 
     <p class="todo">Briefly compare Bloom and GCS?</p>
 
@@ -102,13 +108,94 @@ so for testing true positives, an HTTP request will still need to be sent to the
   <section id="problem-statement">
     <h2>Problem Statement</h2>
 
-    <h3 id="need-for-approximate-membership-metadata">Need for Approximate Membership Metadata</h3>
+    <p>Certain effects of using AMF metadata to improve query performance in the context of TPF were previously investigated <span class="references">[<a href="#ref-1">1</a>]</span>.
+The authors mainly focused on comparing two different AMF implementations with each other,
+and their effects on query execution time.
+This work has introduced a number of new follow-up questions,
+and offers several points for improvement.
+We list these as research questions for our work, and defined hypotheses for each of them:</p>
 
-    <p class="todo">We can do more than just test triple membership!</p>
+    <ol>
+      <li id="question-precompute"><strong>What query execution speedup do <em>pre-computed AMFs</em> provide?</strong>
+<br />
+As the authors of the earlier work on AMF suggest that pre-computation and caching of AMFs
+can reduce server delays and improve overall query evaluation,
+we will investigate the impact of pre-computing AMFs.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-precompute-1">When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.</li>
+          <li id="hypo-precompute-2">GCS achieves faster client-side query execution than Bloom filters when pre-computed.</li>
+          <li id="hypo-precompute-3">GCS achieves slower client-side query execution than Bloom filters when not pre-computed.</li>
+        </ol>
+      </li>
+      <li id="question-combine"><strong>Can query evaluation be improved by <em>combining AMFs</em> client-side?</strong>
+<br />
+Ealier work focused on using AMF metadata to test the membership of fully materialized triples,
+while there is potential for exploiting this for other types of patterns in the query as well,
+e.g., by combining multiple AMFs.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.</li>
+          <li id="hypo-combine-2">Using AMFs at both BGP <em>and</em> triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.</li>
+        </ol>
+      </li>
+      <li id="question-dynamic-restriction"><strong>To what extent can TPF server load be reduced by <em>dynamically restricting</em> AMF generation?</strong>
+<br />
+Earlier work introduced AMF as a feature that was always enabled.
+However, some specific AMFs may be too expensive for servers to calculate in bursts.
+As such, it may be beneficial to <em>dynamically enable</em> AMFs only under specific circumstances,
+e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-dynamic-restriction-1">AMF size is linearly correlated with the required server effort for AMF calculation.</li>
+          <li id="hypo-dynamic-restriction-2">Server load is significantly reduced by caching AMFs.</li>
+          <li id="hypo-dynamic-restriction-3">Lowering the result count threshold reduces server load.</li>
+          <li id="hypo-dynamic-restriction-4">Lowering the result count threshold increases client-side query execution time.</li>
+        </ol>
+      </li>
+      <li id="question-bandwidth"><strong>What impact does the HTTP bandwidth have on client-side performance with AMFs?</strong>
+<br />
+Experiments in earlier work on AMF were based on limited HTTP bandwidth to a realistic 1Mbps.
+However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-bandwidth-1">The lower the HTTP bandwidth, the higher the positive effect of triple-level AMF usage.</li>
+          <li id="hypo-bandwidth-2">The lower the HTTP bandwidth, the higher the positive effect of BGP-level AMF usage.</li>
+          <li id="hypo-bandwidth-3">Triple-level AMF usage is less sensitive to HTTP bandwith variants than BGP-level AMF usage.</li>
+        </ol>
+      </li>
+      <li id="question-inband"><strong>Can query throughput be improved by adding AMF metadata <em>in-band</em> with the TPF HTTP responses?</strong>
+<br />
+In previous work, AMF metadata was hidden behind a link that should be followed by the client to retrieve it,
+which requires an additional HTTP request.
+This opens the question as to whether including AMF metadata directly <em>in-band</em>
+with the TPF HTTP responses could improve query performance.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-inband-1">Including AMF metadata in-band reduces the total required number of HTTP requests.</li>
+          <li id="hypo-inband-2">Including AMF metadata in-band reduces client-side query execution time.</li>
+          <li id="hypo-inband-3">Bloom filters are more sensitive than GCS to query execution time when including AMF metadata in-band or not.</li>
+        </ol>
+      </li>
+      <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
+<br />
+Based on the results the previous authors have suggested that additional experimentation is needed with regards
+to lower <em>AMF false-positive probabilities</em>, as higher probabilities do not have a significant effect on query performance.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-probabilities-1">The lower the false-positive probability, the faster the client-side query execution.</li>
+        </ol>
+      </li>
+    </ol>
 
-    <h3 id="research-questions-and-hypotheses">Research Questions and Hypotheses</h3>
-
-    <p class="todo">Research question and hypotheses</p>
+    <p>To come up with an answer to these research questions,
+their hypotheses will be tested in <a href="#evaluation">Section 6</a> based on our experimental results.</p>
   </section>
 
   <section id="solution">

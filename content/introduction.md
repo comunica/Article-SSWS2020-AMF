@@ -12,3 +12,6 @@ More information on snippets like this can be found on the [ScholarMarkdown wiki
 Add some standard RDF introduction stuff. 
 Talk about both the AMF stuff and the extensive Comunica testing.
 {:.todo}
+
+Clarify delta
+{:.todo}

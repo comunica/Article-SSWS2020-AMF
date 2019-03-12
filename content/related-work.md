@@ -32,6 +32,10 @@ Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.
 Due to the <100% precision, clients can only filter out true negatives based on AMFs,
 so for testing true positives, an HTTP request will still need to be sent to the server.
+The results of this work show that there is a significant decrease in the number of HTTP requests when AMFs are used,
+at the cost of only a small increase in server load.
+Even though the _number of HTTP requests is lower_, the _total execution time is higher_ for most queries,
+because of the long server delays when generating AMFs.
 
 Briefly compare Bloom and GCS?
 {:.todo}

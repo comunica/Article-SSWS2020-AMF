@@ -49,7 +49,7 @@ Donec quis lectus eget sem tempor tristique pellentesque in dolor.</p>
   <section id="introduction">
     <h2>Introduction</h2>
 
-    <p>This is a great article on the Semantic Web <span class="references">[<a href="#ref-1">1</a>]</span>, written in Markdown.</p>
+    <p>This is a great article on the Semantic Web, written in Markdown.</p>
 
     <p>Make sure to <a href="http://www.treesmapsandtheorems.com/pdfs/TM&amp;Th-2.0-summary.pdf">write your document effectively</a>!</p>
 
@@ -67,12 +67,46 @@ Talk about both the AMF stuff and the extensive Comunica testing.</p>
 
     <h3 id="ldf-stuff--extensions">LDF stuff &amp; extensions</h3>
 
+    <p class="todo">Make sure to explain that HTTP requests are a main bottleneck (important for the next section)</p>
+
+    <h3 id="approximate-membership-metadata">Approximate Membership Metadata</h3>
+
+    <p>It has been shown that the TPF approach produces a large number of so-called <em>membership</em> requests <span class="references">[<a href="#ref-1">1</a>]</span>.
+These are requests for triple patterns <em>without variables</em>, i.e., for checking if a certain triple is present in a dataset.
+This was illustrated with queries from the WatDiv <span class="references">[<a href="#ref-2">2</a>]</span> benchmark,
+consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
+Of the 20 queries, two (L2, L4) required 50% membership requests,
+one (F3) required 73%, and 4 (S5, F5, C1, C2) required more than 95%.
+More than 1 in 3 queries are thus significantly impacted by the number of membership requests,
+which indicates that optimizing membership queries can have a positive effect on query evaluation.</p>
+
+    <p>Following the declarative basis of TPF for including metadata into server requests to help the client improve query evalation,
+an approach was introduced to add approximate membership metadata to reduce the number of membership requests to the server <span class="references">[<a href="#ref-1">1</a>]</span>.
+This metadata describes <em>Approximate Membership Functions</em> (AMF),
+which are functions that enable fast membership tests with a certain chance on false positives.
+The authors compared two AMF implementations,
+namely <em>Bloom filters</em> <span class="references">[<a href="#ref-3">3</a>]</span> and <em>Golomb-coded sets</em> (GCS) <span class="references">[<a href="#ref-4">4</a>]</span>.
+Both approaches guarantee a 100% recall, but not a 100% precision.
+There is a trade-off between the size of the function, and its precision.
+Client-side query engines can detect this AMF metadata,
+and use it test the membership of triples.
+Due to the &lt;100% precision, clients can only filter out true negatives based on AMFs,
+so for testing true positives, an HTTP request will still need to be sent to the server.</p>
+
+    <p class="todo">Briefly compare Bloom and GCS?</p>
+
     <h3 id="comunica">Comunica</h3>
 
   </section>
 
   <section id="problem-statement">
     <h2>Problem Statement</h2>
+
+    <h3 id="need-for-approximate-membership-metadata">Need for Approximate Membership Metadata</h3>
+
+    <p class="todo">We can do more than just test triple membership!</p>
+
+    <h3 id="research-questions-and-hypotheses">Research Questions and Hypotheses</h3>
 
     <p class="todo">Research question and hypotheses</p>
   </section>
@@ -114,7 +148,13 @@ Potentially also add a future work section where we add other AMF stuff we thoug
 <h2>References</h2>
 <dl class="references">
   <dt id="ref-1">[1]</dt>
-  <dd resource="#semanticweb" typeof="schema:Article">Berners-Lee, T., Hendler, J., Lassila, O., others: The semantic web. Scientific American. 284, 28–37 (2001).</dd>
+  <dd resource="#amf2015" typeof="schema:Article">Vander Sande, M., Verborgh, R., Van Herwegen, J., Mannens, E., Van de Walle, R.: Opportunistic Linked Data querying through approximate membership metadata. In: International Semantic Web Conference. pp. 92–110. Springer (2015).</dd>
+  <dt id="ref-2">[2]</dt>
+  <dd resource="#watdiv" typeof="schema:Article">Aluç, G., Hartig, O., Özsu, M.T., Daudjee, K.: Diversified stress testing of RDF data management systems. In: International Semantic Web Conference. pp. 197–212. Springer (2014).</dd>
+  <dt id="ref-3">[3]</dt>
+  <dd resource="#bloomfilter" typeof="schema:Article">Bloom, B.H.: Space/time trade-offs in hash coding with allowable errors. Communications of the ACM. 13, 422–426 (1970).</dd>
+  <dt id="ref-4">[4]</dt>
+  <dd resource="#gcsfilter" typeof="schema:Article">Putze, F., Sanders, P., Singler, J.: Cache-, hash-, and space-efficient bloom filters. Journal of Experimental Algorithmics (JEA). 14, 4 (2009).</dd>
 </dl>
 </section>
 </footer>

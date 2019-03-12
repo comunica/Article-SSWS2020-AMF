@@ -6,4 +6,34 @@ use [AMF paper](http://linkeddatafragments.org/publications/iswc2015-amf.pdf) fo
 
 ### LDF stuff & extensions
 
+Make sure to explain that HTTP requests are a main bottleneck (important for the next section)
+{:.todo}
+
+### Approximate Membership Metadata
+
+It has been shown that [the TPF approach produces a large number of so-called _membership_ requests](cite:cites amf2015).
+These are requests for triple patterns _without variables_, i.e., for checking if a certain triple is present in a dataset.
+This was illustrated with queries from the [WatDiv](cite:cites watdiv) benchmark,
+consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
+Of the 20 queries, two (L2, L4) required 50% membership requests,
+one (F3) required 73%, and 4 (S5, F5, C1, C2) required more than 95%.
+More than 1 in 3 queries are thus significantly impacted by the number of membership requests,
+which indicates that optimizing membership queries can have a positive effect on query evaluation.
+
+Following the declarative basis of TPF for including metadata into server requests to help the client improve query evalation,
+an approach was introduced to [add approximate membership metadata to reduce the number of membership requests to the server](cite:cites amf2015).
+This metadata describes _Approximate Membership Functions_ (AMF),
+which are functions that enable fast membership tests with a certain chance on false positives.
+The authors compared two AMF implementations,
+namely [_Bloom filters_](cite:cites bloomfilter) and [_Golomb-coded sets_ (GCS)](cite:cites gcsfilter).
+Both approaches guarantee a 100% recall, but not a 100% precision.
+There is a trade-off between the size of the function, and its precision.
+Client-side query engines can detect this AMF metadata,
+and use it test the membership of triples.
+Due to the <100% precision, clients can only filter out true negatives based on AMFs,
+so for testing true positives, an HTTP request will still need to be sent to the server.
+
+Briefly compare Bloom and GCS?
+{:.todo}
+
 ### Comunica

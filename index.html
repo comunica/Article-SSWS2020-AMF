@@ -89,7 +89,7 @@ This allows us to be quite flexible and extensive in our evaluations.</p>
 
     <p class="todo">use <a href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">AMF paper</a> for inspiration</p>
 
-    <h3 id="ldf-stuff--extensions">LDF stuff &amp; extensions</h3>
+    <h3 id="related-work-ldf">LDF stuff &amp; extensions</h3>
 
     <p class="todo">Make sure to explain that HTTP requests are a main bottleneck (important for the next section)</p>
 
@@ -238,9 +238,129 @@ Also explain the server side stuff.</p>
   <section id="evaluation">
     <h2>Evaluation</h2>
 
-    <p class="todo">This section should probably be bigger than it usually is.
-First a part to explain the whole test setup and link to the relevant repositories.
-Then we can describe all the dimensions and go over the different test groups one at a time (space permitting).</p>
+    <p>In order to answer the research questions from <a href="#problem-statement">Section 3</a>,
+we evaluate our approach, and report their results.
+We first introduce a reusable benchmarking framework to achieve fully reproducible results.</p>
+
+    <h3 id="reusable-benchmarking-framework">Reusable Benchmarking Framework</h3>
+
+    <p>Different Linked Data Fragments approaches as discussed in <a href="#related-work-ldf">Subsection 2.1</a>
+usually require similar steps when running experiments.
+Such <em>experiments require a significant amount of manual effort</em>
+for setting up experiments, running them, and generating plots.
+In order to avoid re-inventing the wheel again for this work, and for future works in this domain,
+we developed a reusable benchmarking framework for Linked Data Fragments experiments, called <em>Comunica Bencher</em>.
+This tool is based on <a href="https://www.docker.com/">Docker</a>, and allows isolated execution of experiments over different containers.
+Experiment configuration are fully <em>declarative</em>, and they can exist in standalone repositories.
+In order to achieve deterministic reproducibility,
+a summary of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-5">5</a>]</span>
+will be generated after each run together with the evaluation results.
+Comunica Bencher is <em>open-source</em>, and is available on GitHub.</p>
+
+    <p class="todo">Include link to anonymized source code dump.</p>
+
+    <p>Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">evaluation workflow</a>:</p>
+
+    <ol id="evaluation-workflow" property="schema:hasPart" resource="#evaluation-workflow" typeof="opmw:WorkflowTemplate">
+<li id="workflow-data" about="#workflow-data" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>Generate a WatDiv <span class="references">[<a href="#ref-2">2</a>]</span> dataset with a given scale factor.</p>
+      </li>
+<li id="workflow-queries" about="#workflow-queries" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>Generate the corresponding default WatDiv <a href="https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml" class="mandatory" data-link-text="https:/​/​dsg.uwaterloo.ca/​watdiv/​basic-​testing.shtml">queries</a> with a given query count.</p>
+      </li>
+<li id="workflow-tpf-server" about="#workflow-tpf-server" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>Install <a href="https://github.com/LinkedDataFragments/Server.js" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js">the LDF server software</a> with a given configuration, implementing the <a href="https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/" class="mandatory" data-link-text="https:/​/​www.hydra-​cg.com/​spec/​latest/​triple-​pattern-​fragments/​">TPF specification</a>.</p>
+      </li>
+<li id="workflow-cache" about="#workflow-cache" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>Setup an <a href="https://www.nginx.com/" class="mandatory" data-link-text="https:/​/​www.nginx.com/​">NGINX HTTP cache</a> with a given configuration in front of the LDF server.</p>
+      </li>
+<li id="workflow-comunica" about="#workflow-comunica" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>Install <a href="https://github.com/comunica/comunica" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica">the Comunica software</a> under a given configuration, implementing the <a href="https://www.w3.org/TR/sparql11-protocol">SPARQL 1.1 protocol</a>.</p>
+      </li>
+<li id="workflow-comunica-run" about="#workflow-comunica-run" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>Execute the generated WatDiv queries a given number times on the Comunica client, after doing a warmup run, and record the execution times.</p>
+      </li>
+<li id="workflow-collect" about="#workflow-collect" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
+        <p>For each experiment, plot the execution times for all combinations and queries next to each other.</p>
+      </li>
+</ol>
+
+    <h3 id="experimental-setup">Experimental Setup</h3>
+
+    <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Section 5</a>,
+we defined six experiments, corresponding to our six research questions from <a href="#problem-statement">Section 3</a>.
+Each experiment consists of a number of <em>factors</em>, over which all possible combinations are tested.
+The declararive configuration files for running these experiments with Comunica Bencher are present on GitHub,
+and can be started from scratch by executing a single command.</p>
+
+    <p class="todo">Include link to anonymized source code dump.</p>
+
+    <ol>
+      <li><strong>Caching</strong>: Evaluating the effects of caching TPFs and AMF filters.
+ <br />
+ Factors:
+        <ol>
+          <li>General HTTP cache: enabled, disabled</li>
+          <li>Dedicated AMF filter cache: enabled, disabled</li>
+        </ol>
+      </li>
+      <li><strong>AMF variants</strong>: Evaluation of different AMF implementations server-side and client-side.
+ <br />
+ Factors:
+        <ol>
+          <li>AMF type: Bloom filter, GCS</li>
+          <li>Client-side AMF algorithm: None, Triple, BGP, Triple and BGP</li>
+        </ol>
+      </li>
+      <li><strong>Dynamic AMF enablement</strong>: Evaluation of dynamically enabling AMF metadata.
+ <br />
+ <em>General HTTP cache and warmup phase is disabled in this experiment to evaluate cold-start.</em>
+ <br />
+ Factors:
+        <ol>
+          <li>Result count threshold: 0, 1.000, 10.000, 100.000, 1.000.000</li>
+          <li>Dedicated AMF filter cache: enabled, disabled</li>
+        </ol>
+      </li>
+      <li><strong>HTTP Delays</strong>: Evaluation of different network delays.
+ <br />
+ Factors:
+        <ol>
+          <li>Network delay: 256kbps, 512kbps, 2048kbps, 4096kbps</li>
+          <li>Client-side AMF algorithm: None, Triple, BGP</li>
+        </ol>
+      </li>
+      <li><strong>In-band vs. Out-band</strong>: Evaluation of exposing AMF metadata in-band or not.
+ <br />
+ Factors:
+        <ol>
+          <li>Result count threshold: 0, 1.000, 10.000, 100.000, 1.000.000</li>
+        </ol>
+      </li>
+      <li><strong>False-positive Probabilities</strong>: Evaluation of different AMF false-positive Probabilities.
+ <br />
+ Factors:
+        <ol>
+          <li>Probabilities: 1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2</li>
+        </ol>
+      </li>
+    </ol>
+
+    <p>All of these experiments have several things in common.
+First, they are all executed using WatDiv with a dataset scale of 100,
+and a query count of 5 for the default query templates, leading to a total of 100 queries.
+Each experiment —unless indicated otherwise— includes a warmup phase,
+and averages results over 3 separate runs.
+Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
+Finally, each experiment uses an NGINX HTTP cache —unless indicated otherwise—,
+and the client-side query timeout has been set to 5 minutes.</p>
+
+    <p>All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU.
+On average, each experiment combination required 1,5 hours to execute.</p>
+
+    <h3 id="results">Results</h3>
+
+    <h3 id="discussion">Discussion</h3>
 
   </section>
 
@@ -264,6 +384,8 @@ Potentially also add a future work section where we add other AMF stuff we thoug
   <dd resource="#bloomfilter" typeof="schema:Article">Bloom, B.H.: Space/time trade-offs in hash coding with allowable errors. Communications of the ACM. 13, 422–426 (1970).</dd>
   <dt id="ref-4">[4]</dt>
   <dd resource="#gcsfilter" typeof="schema:Article">Putze, F., Sanders, P., Singler, J.: Cache-, hash-, and space-efficient bloom filters. Journal of Experimental Algorithmics (JEA). 14, 4 (2009).</dd>
+  <dt id="ref-5">[5]</dt>
+  <dd resource="https://linkedsoftwaredependencies.org/articles/describing-experiments/" typeof="schema:Article">Van Herwegen, J., Taelman, R., Capadisli, S., Verborgh, R.: Describing configurations of software experiments as Linked Data. In: Proceedings of the First Workshop on Enabling Open Semantic Science (SemSci) (2017).</dd>
 </dl>
 </section>
 </footer>

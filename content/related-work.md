@@ -5,6 +5,7 @@ use [AMF paper](http://linkeddatafragments.org/publications/iswc2015-amf.pdf) fo
 {:.todo}
 
 ### LDF stuff & extensions
+{:#related-work-ldf}
 
 Make sure to explain that HTTP requests are a main bottleneck (important for the next section)
 {:.todo}

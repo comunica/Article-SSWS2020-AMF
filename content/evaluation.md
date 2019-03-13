@@ -55,7 +55,7 @@ Based on our LDF server and Comunica implementations that were discussed in [](#
 we defined six experiments, corresponding to our six research questions from [](#problem-statement).
 Each experiment consists of a number of _factors_, over which all possible combinations are tested.
 The declararive configuration files for running these experiments with Comunica Bencher are present on GitHub,
-and can be started from scratch by executing a single command.
+and can be started from scratch by _executing a single command_.
 
 Include link to anonymized source code dump.
 {:.todo}

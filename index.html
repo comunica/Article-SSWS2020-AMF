@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>Optimizing Approximate Membership Metadata for Linked Data Fragments</title>
+  <title>Optimizing Approximate Membership Metadata for Triple Pattern Fragments</title>
   <link rel="stylesheet" media="screen" href="styles/screen.css" />
   <link rel="stylesheet" media="print"  href="styles/print.css" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -10,7 +10,7 @@
 </head>
 <body prefix="rdf: http://www.w3.org/1999/02/22-rdf-syntax-ns# rdfs: http://www.w3.org/2000/01/rdf-schema# owl: http://www.w3.org/2002/07/owl# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ dctypes: http://purl.org/dc/dcmitype/ foaf: http://xmlns.com/foaf/0.1/ v: http://www.w3.org/2006/vcard/ns# pimspace: http://www.w3.org/ns/pim/space# cc: https://creativecommons.org/ns# skos: http://www.w3.org/2004/02/skos/core# prov: http://www.w3.org/ns/prov# qb: http://purl.org/linked-data/cube# schema: http://schema.org/ void: http://rdfs.org/ns/void# rsa: http://www.w3.org/ns/auth/rsa# cert: http://www.w3.org/ns/auth/cert# cal: http://www.w3.org/2002/12/cal/ical# wgs: http://www.w3.org/2003/01/geo/wgs84_pos# org: http://www.w3.org/ns/org# biblio: http://purl.org/net/biblio# bibo: http://purl.org/ontology/bibo/ book: http://purl.org/NET/book/vocab# ov: http://open.vocab.org/terms/ sioc: http://rdfs.org/sioc/ns# doap: http://usefulinc.com/ns/doap# dbr: http://dbpedia.org/resource/ dbp: http://dbpedia.org/property/ sio: http://semanticscience.org/resource/ opmw: http://www.opmw.org/ontology/ deo: http://purl.org/spar/deo/ doco: http://purl.org/spar/doco/ cito: http://purl.org/spar/cito/ fabio: http://purl.org/spar/fabio/ oa: http://www.w3.org/ns/oa# as: https://www.w3.org/ns/activitystreams# ldp: http://www.w3.org/ns/ldp# solid: http://www.w3.org/ns/solid/terms# acl: http://www.w3.org/ns/auth/acl# dio: https://w3id.org/dio# as: https://www.w3.org/ns/activitystreams# oa: http://www.w3.org/ns/oa# ldp: http://www.w3.org/ns/ldp#" typeof="schema:CreativeWork sioc:Post prov:Entity">
   <header>
-  <h1 id="optimizing-approximate-membership-metadata-for-linked-data-fragments">Optimizing Approximate Membership Metadata for Linked Data Fragments</h1>
+  <h1 id="optimizing-approximate-membership-metadata-for-triple-pattern-fragments">Optimizing Approximate Membership Metadata for Triple Pattern Fragments</h1>
 
   <ul id="authors">
     <li><a href="http://www.example.org/" typeof="http://xmlns.com/foaf/0.1/Person" resource="http://www.example.org/#me">John Doe</a></li>
@@ -100,13 +100,40 @@ We finish with our conclusions in <a href="#conclusions">Section 7</a>.</p>
   <section id="related-work">
     <h2>Related Work</h2>
 
-    <p class="todo">use <a href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">AMF paper</a> for inspiration</p>
+    <p>In this section we cover the relevant existing research relating to our work.
+The three main parts include Linked Data Fragments and specifically Triple Pattern Fragments,
+which this work is an extension of,
+Approximate Membership Metadata,
+which is the core part of our extension,
+and Comunica,
+which is the framework we made our extension in.</p>
 
-    <h3 id="related-work-ldf">LDF stuff &amp; extensions</h3>
+    <h3 id="related-work-ldf">Linked Data Fragments</h3>
 
-    <p class="todo">Make sure to explain that HTTP requests are a main bottleneck (important for the next section)</p>
+    <p>As mentioned before, there exist many possible ways to publish linked data.
+All of these interfaces can be described in terms of <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF)</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>.
+LDF provides a way to differentiate the different interfaces.</p>
 
-    <h3 id="approximate-membership-metadata">Approximate Membership Metadata</h3>
+    <p>The same paper also introduced a new interface, being Triple Pattern Fragments (TPF).
+The idea was to provide an alternative in the middle between data dumps (high client load, not expressive) 
+and SPARQL endpoints (high server load, extremely expressive)
+by allowing users to only query the server with a single triple pattern at a time,
+instead of full SPARQL queries,
+thus forcing clients to perform the pattern joins client-side.</p>
+
+    <p>For this, the default implementation makes use of a greedy algorithm,
+always choosing one pattern based on local optima
+and recursively applying its resulting bindings to the remaining patterns.
+This unfortunately has the side effect of sometimes producing quite inefficient query paths.
+Combined with the fact that TPF returns it results in a paginated fashion,
+this causes the biggest bottleneck for TPF to be the number of HTTP requests required to solve queries.
+Several additions have already been made to the default TPF implementation
+in an attempt to reduce the number of those requests,
+such as new <a href="cite: cites tpfoptimization, acosta_iswc_2015">query algorithms</a>,
+and <a href="cite: brtpf">restricting the request patterns</a>.
+Each of those with their own advantages and disadcantages.</p>
+
+    <h3 id="related-work-amf">Approximate Membership Metadata</h3>
 
     <p>It has been shown that the TPF approach produces a large number of so-called <em>membership</em> requests <span class="references">[<a href="#ref-4">4</a>]</span>.
 These are requests for triple patterns <em>without variables</em>, i.e., for checking if a certain triple is present in a dataset.
@@ -136,7 +163,7 @@ because of the long server delays when generating AMFs.</p>
 
     <p class="todo">Briefly compare Bloom and GCS?</p>
 
-    <h3 id="comunica">Comunica</h3>
+    <h3 id="related-work-comunica">Comunica</h3>
 
     <p><a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-5">5</a>]</span> is a meta query engine, designed to ease the querying of heterogeneous interfaces
 with multiple possible local query solutions.
@@ -144,6 +171,12 @@ Its modular architecture allows developers to easily add or remove features.
 This was quite useful for us in this work when running evaluations
 as it allowed us to test out our additions compared to the original
 without actually needing multiple implementations.</p>
+
+    <p>There already are many existing modules for Comunica.
+The initial components were designed so that it could be a replacement for the previous existing TPF client.
+This has the additional benefit of providing a universal way to add extension to the TPF client,
+instead of having them spread out over multiple branches and incompatible repositories,
+as is currently the case.</p>
 
     <p>Comunica uses semantic configuration files to define which modules are included in a single instance.
 It then uses <a property="schema:citation http://purl.org/spar/cito/cites" href="http://componentsjs.readthedocs.io/en/latest/">Components.js</a> <span class="references">[<a href="#ref-9">9</a>]</span>, a semantic dependency injection framework,

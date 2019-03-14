@@ -138,6 +138,19 @@ because of the long server delays when generating AMFs.</p>
 
     <h3 id="comunica">Comunica</h3>
 
+    <p><a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-5">5</a>]</span> is a meta query engine, designed to ease the querying of heterogeneous interfaces
+with multiple possible local query solutions.
+Its modular architecture allows developers to easily add or remove features.
+This was quite useful for us in this work when running evaluations
+as it allowed us to test out our additions compared to the original
+without actually needing multiple implementations.</p>
+
+    <p>Comunica uses semantic configuration files to define which modules are included in a single instance.
+It then uses <a property="schema:citation http://purl.org/spar/cito/cites" href="http://componentsjs.readthedocs.io/en/latest/">Components.js</a> <span class="references">[<a href="#ref-9">9</a>]</span>, a semantic dependency injection framework,
+to link the different independent modules together.
+These separate configuration files can then later on be reused to reproduce our evaluation results,
+our build further on them.</p>
+
   </section>
 
   <section id="problem-statement">
@@ -266,7 +279,7 @@ we developed a reusable benchmarking framework for Linked Data Fragments experim
 This tool is based on <a href="https://www.docker.com/">Docker</a>, and allows isolated execution of experiments over different containers.
 Experiment configuration are fully <em>declarative</em>, and they can exist in standalone repositories.
 In order to achieve deterministic reproducibility,
-a summary of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-9">9</a>]</span>
+a summary of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-10">10</a>]</span>
 will be generated after each run together with the evaluation results.
 Comunica Bencher is <em>open-source</em>, and is available on GitHub.</p>
 
@@ -406,6 +419,8 @@ Potentially also add a future work section where we add other AMF stuff we thoug
   <dt id="ref-8">[8]</dt>
   <dd resource="#gcsfilter" typeof="schema:Article">Putze, F., Sanders, P., Singler, J.: Cache-, hash-, and space-efficient bloom filters. Journal of Experimental Algorithmics (JEA). 14, 4 (2009).</dd>
   <dt id="ref-9">[9]</dt>
+  <dd resource="http://componentsjs.readthedocs.io/en/latest/" typeof="schema:CreativeWork">Taelman, R.: Components.js. <a href="http://componentsjs.readthedocs.io/en/latest/">http:/​/​componentsjs.readthedocs.io/en/latest/</a></dd>
+  <dt id="ref-10">[10]</dt>
   <dd resource="https://linkedsoftwaredependencies.org/articles/describing-experiments/" typeof="schema:Article">Van Herwegen, J., Taelman, R., Capadisli, S., Verborgh, R.: Describing configurations of software experiments as Linked Data. In: Proceedings of the First Workshop on Enabling Open Semantic Science (SemSci) (2017).</dd>
 </dl>
 </section>

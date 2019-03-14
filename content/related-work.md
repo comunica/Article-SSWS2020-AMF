@@ -42,3 +42,18 @@ Briefly compare Bloom and GCS?
 {:.todo}
 
 ### Comunica
+
+[Comunica](cite:cites comunica) is a meta query engine, designed to ease the querying of heterogeneous interfaces
+with multiple possible local query solutions.
+Its modular architecture allows developers to easily add or remove features.
+This was quite useful for us in this work when running evaluations
+as it allowed us to test out our additions compared to the original
+without actually needing multiple implementations.
+
+Comunica uses semantic configuration files to define which modules are included in a single instance.
+It then uses [Components.js](cite:cites componentsjs), a semantic dependency injection framework,
+to link the different independent modules together.
+These separate configuration files can then later on be reused to reproduce our evaluation results,
+our build further on them.
+
+

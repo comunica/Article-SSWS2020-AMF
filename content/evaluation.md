@@ -57,7 +57,7 @@ Each experiment consists of a number of _factors_, over which all possible combi
 The declararive configuration files for running these experiments with Comunica Bencher are present on GitHub,
 and can be started from scratch by _executing a single command_.
 
-Include link to anonymized source code dump.
+Include link to anonymized source code dump, experiment configs, raw results, and R code.
 {:.todo}
 
 1. **Client-side AMF Algorithms**: Evaluation of different client-side algorithms for using AMF metadata.
@@ -141,3 +141,5 @@ has no statistically significant effect (_p-values: 0.9484, 0.6689_), which conf
 
 ### Discussion
 
+Why are the results what they are?
+{:.todo}

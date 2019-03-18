@@ -197,6 +197,19 @@ and offers several points for improvement.
 We list these as research questions for our work, and defined hypotheses for each of them:</p>
 
     <ol>
+      <li id="question-combine"><strong>Can query evaluation be improved by <em>combining AMFs</em> client-side?</strong>
+<br />
+Ealier work focused on using AMF metadata to test the membership of fully materialized triples,
+while there is potential for exploiting this for other types of patterns in the query as well,
+e.g., by combining multiple AMFs.
+<br />
+<strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution is faster compared to not using AMFs.</li>
+          <li id="hypo-combine-2">By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.</li>
+          <li id="hypo-combine-3">Using AMFs at both BGP <em>and</em> triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.</li>
+        </ol>
+      </li>
       <li id="question-precompute"><strong>What query execution speedup do <em>pre-computed AMFs</em> provide?</strong>
 <br />
 As the authors of the earlier work on AMF suggest that pre-computation and caching of AMFs
@@ -208,18 +221,6 @@ we will investigate the impact of pre-computing AMFs.
           <li id="hypo-precompute-1">When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.</li>
           <li id="hypo-precompute-2">GCS achieves faster client-side query execution than Bloom filters when pre-computed.</li>
           <li id="hypo-precompute-3">GCS achieves slower client-side query execution than Bloom filters when not pre-computed.</li>
-        </ol>
-      </li>
-      <li id="question-combine"><strong>Can query evaluation be improved by <em>combining AMFs</em> client-side?</strong>
-<br />
-Ealier work focused on using AMF metadata to test the membership of fully materialized triples,
-while there is potential for exploiting this for other types of patterns in the query as well,
-e.g., by combining multiple AMFs.
-<br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.</li>
-          <li id="hypo-combine-2">Using AMFs at both BGP <em>and</em> triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.</li>
         </ol>
       </li>
       <li id="question-dynamic-restriction"><strong>To what extent can TPF server load be reduced by <em>dynamically restricting</em> AMF generation?</strong>
@@ -355,20 +356,19 @@ and can be started from scratch by <em>executing a single command</em>.</p>
     <p class="todo">Include link to anonymized source code dump.</p>
 
     <ol>
+      <li><strong>Client-side AMF Algorithms</strong>: Evaluation of different client-side algorithms for using AMF metadata.
+ <br />
+ Factors:
+        <ol>
+          <li>Client-side AMF algorithm: None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined</li>
+        </ol>
+      </li>
       <li><strong>Caching</strong>: Evaluating the effects of caching TPFs and AMF filters.
  <br />
  Factors:
         <ol>
           <li>General HTTP cache: enabled, disabled</li>
           <li>Dedicated AMF filter cache: enabled, disabled</li>
-        </ol>
-      </li>
-      <li><strong>AMF variants</strong>: Evaluation of different AMF implementations server-side and client-side.
- <br />
- Factors:
-        <ol>
-          <li>AMF type: Bloom filter, GCS</li>
-          <li>Client-side AMF algorithm: None, Triple, BGP, Triple and BGP</li>
         </ol>
       </li>
       <li><strong>Dynamic AMF enablement</strong>: Evaluation of dynamically enabling AMF metadata.
@@ -405,11 +405,12 @@ and can be started from scratch by <em>executing a single command</em>.</p>
       </li>
     </ol>
 
-    <p>All of these experiments have several things in common.
+    <p>All of these experiments have several things in common, unless indicated otherwise.
 First, they are all executed using WatDiv with a dataset scale of 100,
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
-Each experiment —unless indicated otherwise— includes a warmup phase,
+Each experiment includes a warmup phase,
 and averages results over 3 separate runs.
+During this warmup phase, the server caches all generated AMFs.
 Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
 Finally, each experiment uses an NGINX HTTP cache —unless indicated otherwise—,
 and the client-side query timeout has been set to 5 minutes.</p>
@@ -418,6 +419,39 @@ and the client-side query timeout has been set to 5 minutes.</p>
 On average, each experiment combination required 1,5 hours to execute.</p>
 
     <h3 id="results">Results</h3>
+
+    <p class="todo">We tested these hypotheses for equality using the Kruskal-Wallis test</p>
+
+    <h4 id="client-side-amf-algorithms">Client-side AMF Algorithms</h4>
+
+    <figure id="client_algos">
+<center>
+<img src="img/experiments/client_algos/plot_no_c.svg" alt="Client-side AMF Algorithms (non-C)" class="plot" />
+<img src="img/experiments/client_algos/plot_c.svg" alt="Client-side AMF Algorithms (C)" class="plot" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 1:</span> Query evaluation times for the different client-side algorithms for using AMF metadata.
+C queries are shown separately because of their higher evaluation times.</p>
+      </figcaption>
+</figure>
+
+    <p><a href="#client_algos">Fig. 1</a> shows the query evaluation times for our first experiment
+on the different client-side algorithms for using AMF metadata.</p>
+
+    <p>In line with what was shown in the first TPF AMF experiments <span class="references">[<a href="#ref-4">4</a>]</span>,
+the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
+Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
+Only for 5 of the 20 queries, evaluation times are worse.
+Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
+By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.</p>
+
+    <p>Based on these results, we can confirm that there is <em>no statistical difference</em> between the evaluation times of the triple-based algorithm, and not using AMF metadata at all (<em>p-value: 0.9318</em>).
+The simple and combined BGP algorithm are significantly faster than not using AMF metadata (<em>p-values: 0.0062, 0.0026</em>),
+which confirms <a href="#hypo-combine-1">Hypothesis 1.1</a>.
+Furthermore, the simple and combined BGP algorithm are significantly faster than the triple-based algorithm (<em>p-values: 0.0090, 0.0041</em>),
+which confirms <a href="#hypo-combine-2">Hypothesis 1.2</a>.
+Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
+has no statistically significant effect (<em>p-values: 0.9484, 0.6689</em>), which confirms <a href="#hypo-combine-3">Hypothesis 1.3</a>.</p>
 
     <h3 id="discussion">Discussion</h3>
 

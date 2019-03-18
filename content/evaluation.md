@@ -60,16 +60,15 @@ and can be started from scratch by _executing a single command_.
 Include link to anonymized source code dump.
 {:.todo}
 
-1. **Caching**: Evaluating the effects of caching TPFs and AMF filters.
+1. **Client-side AMF Algorithms**: Evaluation of different client-side algorithms for using AMF metadata.
+    <br />
+    Factors:
+    1. Client-side AMF algorithm: None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined
+2. **Caching**: Evaluating the effects of caching TPFs and AMF filters.
     <br />
     Factors:
     1. General HTTP cache: enabled, disabled
     2. Dedicated AMF filter cache: enabled, disabled
-2. **AMF variants**: Evaluation of different AMF implementations server-side and client-side.
-    <br />
-    Factors:
-    1. AMF type: Bloom filter, GCS
-    2. Client-side AMF algorithm: None, Triple, BGP, Triple and BGP
 3. **Dynamic AMF enablement**: Evaluation of dynamically enabling AMF metadata.
     <br />
     *General HTTP cache and warmup phase is disabled in this experiment to evaluate cold-start.*
@@ -91,11 +90,12 @@ Include link to anonymized source code dump.
     Factors:
     1. Probabilities: 1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2
 
-All of these experiments have several things in common.
+All of these experiments have several things in common, unless indicated otherwise.
 First, they are all executed using WatDiv with a dataset scale of 100,
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
-Each experiment —unless indicated otherwise— includes a warmup phase,
+Each experiment includes a warmup phase,
 and averages results over 3 separate runs.
+During this warmup phase, the server caches all generated AMFs.
 Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
 Finally, each experiment uses an NGINX HTTP cache —unless indicated otherwise—,
 and the client-side query timeout has been set to 5 minutes.
@@ -105,4 +105,39 @@ On average, each experiment combination required 1,5 hours to execute.
 
 ### Results
 
+We tested these hypotheses for equality using the Kruskal-Wallis test
+{:.todo}
+
+#### Client-side AMF Algorithms
+
+<figure id="client_algos">
+<center>
+<img src="img/experiments/client_algos/plot_no_c.svg" alt="Client-side AMF Algorithms (non-C)" class="plot">
+<img src="img/experiments/client_algos/plot_c.svg" alt="Client-side AMF Algorithms (C)" class="plot">
+</center>
+<figcaption markdown="block">
+Query evaluation times for the different client-side algorithms for using AMF metadata.
+C queries are shown separately because of their higher evaluation times.
+</figcaption>
+</figure>
+
+[](#client_algos) shows the query evaluation times for our first experiment
+on the different client-side algorithms for using AMF metadata.
+
+In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
+the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
+Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
+Only for 5 of the 20 queries, evaluation times are worse.
+Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
+By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.
+
+Based on these results, we can confirm that there is _no statistical difference_ between the evaluation times of the triple-based algorithm, and not using AMF metadata at all (_p-value: 0.9318_).
+The simple and combined BGP algorithm are significantly faster than not using AMF metadata (_p-values: 0.0062, 0.0026_),
+which confirms [Hypothesis 1.1](#hypo-combine-1).
+Furthermore, the simple and combined BGP algorithm are significantly faster than the triple-based algorithm (_p-values: 0.0090, 0.0041_),
+which confirms [Hypothesis 1.2](#hypo-combine-2).
+Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
+has no statistically significant effect (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
+
 ### Discussion
+

@@ -8,7 +8,18 @@ This work has introduced a number of new follow-up questions,
 and offers several points for improvement.
 We list these as research questions for our work, and defined hypotheses for each of them:
 
-1. {:#question-precompute}
+1. {:#question-combine}
+    **Can query evaluation be improved by _combining AMFs_ client-side?**
+    <br />
+    Ealier work focused on using AMF metadata to test the membership of fully materialized triples,
+    while there is potential for exploiting this for other types of patterns in the query as well,
+    e.g., by combining multiple AMFs.
+    <br />
+    **Hypotheses:**
+    1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution is faster compared to not using AMFs.
+    2. {:#hypo-combine-2} By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.
+    2. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.
+2. {:#question-precompute}
     **What query execution speedup do _pre-computed AMFs_ provide?**
     <br />
     As the authors of the earlier work on AMF suggest that pre-computation and caching of AMFs
@@ -19,16 +30,6 @@ We list these as research questions for our work, and defined hypotheses for eac
     1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.
     2. {:#hypo-precompute-2} GCS achieves faster client-side query execution than Bloom filters when pre-computed.
     3. {:#hypo-precompute-3} GCS achieves slower client-side query execution than Bloom filters when not pre-computed.
-2. {:#question-combine}
-    **Can query evaluation be improved by _combining AMFs_ client-side?**
-    <br />
-    Ealier work focused on using AMF metadata to test the membership of fully materialized triples,
-    while there is potential for exploiting this for other types of patterns in the query as well,
-    e.g., by combining multiple AMFs.
-    <br />
-    **Hypotheses:**
-    1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.
-    1. {:#hypo-combine-2} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.
 3. {:#question-dynamic-restriction}
     **To what extent can TPF server load be reduced by _dynamically restricting_ AMF generation?**
     <br />

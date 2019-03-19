@@ -220,7 +220,8 @@ we will investigate the impact of caching AMFs and all HTTP requests in general.
         <ol>
           <li id="hypo-cache-1">Caching all HTTP requests reduces query evaluation times more than caching only AMFs.</li>
           <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
-          <li id="hypo-cache-3">Without caching, AMF-aware query evaluation is slower than non-AMF query evaluation.
+          <li id="hypo-cache-3">Without caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
+          <li id="hypo-cache-4">Query evaluation with a cold cache is significantly slower than query evaluation with a warm cache.
 &lt;!–1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.</li>
           <li id="hypo-precompute-2">GCS achieves faster client-side query execution than Bloom filters when pre-computed.</li>
           <li id="hypo-precompute-3">GCS achieves slower client-side query execution than Bloom filters when not pre-computed.–&gt;</li>
@@ -394,6 +395,8 @@ and can be started from scratch by <em>executing a single command</em>.</p>
 
     <p class="todo">Include link to anonymized source code dump, experiment configs, raw results, and R code.</p>
 
+    <p class="todo">Include skip-bgp-heurtistic and caching-none and warm-cold-cache</p>
+
     <ol>
       <li><strong>Client-side AMF Algorithms</strong>: Evaluation of different client-side algorithms for using AMF metadata.
  <br />
@@ -528,6 +531,8 @@ compared to just caching HTTP requests (<em>p-value: 0.7694</em>), which accepts
 
     <p class="todo"><a href="#hypo-cache-3">Hypothesis 2.3</a></p>
 
+    <p class="todo"><a href="#hypo-cache-4">Hypothesis 2.4</a></p>
+
     <h4 id="http-bandwidths">HTTP Bandwidths</h4>
 
     <p class="todo">Write me</p>
@@ -568,7 +573,7 @@ in which we expected the number of HTTP requests to significantly decrease when 
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).
 This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
-On average, a false-positive probability of 1/64 leads to the lowest query evaluation times.</p>
+On average, a false-positive probability of 1/64 leads to the lowest query evaluation times for this experiment.</p>
 
     <h3 id="discussion">Discussion</h3>
 
@@ -581,6 +586,8 @@ but needs further investigation.</p>
 The main bulk of requests are paged TPFs in any case, AMF is only a small subset.</p>
 
     <p class="todo">Server-side AMF filter caching has no significant effect when a HTTP cache is used.</p>
+
+    <p class="todo">Is pre-computation needed? See <a href="#hypo-cache-4">Hypothesis 2.4</a></p>
 
   </section>
 

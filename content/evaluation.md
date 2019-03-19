@@ -84,7 +84,7 @@ Include link to anonymized source code dump, experiment configs, raw results, an
 5. **In-band vs. Out-band**: Evaluation of exposing AMF metadata in-band or not.
     <br />
     Factors:
-    1. Result count threshold: 0, 1.000, 10.000, 100.000, 1.000.000
+    1. AMF triple count threshold: 0, 1.000, 10.000, 100.000, 1.000.000
 6. **False-positive Probabilities**: Evaluation of different AMF false-positive Probabilities.
     <br />
     Factors:
@@ -110,27 +110,27 @@ We tested these hypotheses for equality using the Kruskal-Wallis test
 
 #### Client-side AMF Algorithms
 
-<figure id="client_algos">
+<figure id="plot_client_algos">
 <center>
-<img src="img/experiments/client_algos/plot_no_c.svg" alt="Client-side AMF Algorithms (non-C)" class="plot">
-<img src="img/experiments/client_algos/plot_c.svg" alt="Client-side AMF Algorithms (C)" class="plot">
+<img src="img/experiments/client_algos/plot_no_c.svg" alt="Client-side AMF Algorithms (non-C)" class="plot_non_c">
+<img src="img/experiments/client_algos/plot_c.svg" alt="Client-side AMF Algorithms (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
 Query evaluation times for the different client-side algorithms for using AMF metadata.
 </figcaption>
 </figure>
 
-<figure id="skip_bgp_heuristic">
+<figure id="plot_skip_bgp_heuristic">
 <center>
-<img src="img/experiments/skip_bgp_heuristic/plot_no_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (non-C)" class="plot">
-<img src="img/experiments/skip_bgp_heuristic/plot_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (C)" class="plot">
+<img src="img/experiments/skip_bgp_heuristic/plot_no_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (non-C)" class="plot_non_c">
+<img src="img/experiments/skip_bgp_heuristic/plot_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
 Query evaluation times when enabling the heuristic in the client-side combined BGP algorithm.
 </figcaption>
 </figure>
 
-[](#client_algos) shows the query evaluation times for our first experiment
+[](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
@@ -148,12 +148,32 @@ which confirms [Hypothesis 1.2](#hypo-combine-2).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
 has no statistically significant effect (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
 
-In [](#skip_bgp_heuristic), we show the results where we apply the heuristic
+In [](#plot_skip_bgp_heuristic), we show the results where we apply the heuristic
 for dynamically disabling the BGP heuristic based on different parameter values.
 On average, setting the request size parameter value to 2000 has the lowest average evaluation time.
 This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
+
+#### In-band vs. Out-band
+
+<figure id="in_vs_out_band">
+<center>
+<img src="img/experiments/in_vs_out_band/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c">
+<img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.
+</figcaption>
+</figure>
+
+[](#in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
+Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
+which rejects [Hypothesis 5.1](#hypo-inband-1).
+
+Furthermore, when analyzing the HTTP logs, we observe only a very small decrease (<1%) in the difference in number of requests.
+As this difference is insignificant (_p-value: 0.406_), we can reject [Hypothesis 5.2](#hypo-inband-2)
+in which we expected the number of HTTP requests to significantly decrease when we moved AMF metadata in-band.
 
 ### Discussion
 
@@ -162,4 +182,8 @@ Why are the results what they are?
 
 This shows that using heuristics to determine when certain client-side algorithms have to be used can be beneficial,
 but needs further investigation.
+{:.todo}
+
+In-band vs out-band has no effect. However, for clients that don't use AMF, this _will_ have an impact. Suggestion: do everything out-band.
+The main bulk of requests are paged TPFs in any case, AMF is only a small subset.
 {:.todo}

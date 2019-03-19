@@ -62,9 +62,9 @@ We list these as research questions for our work, and defined hypotheses for eac
     with the TPF HTTP responses could improve query performance.
     <br />
     **Hypotheses:**
-    1. {:#hypo-inband-1} Including AMF metadata in-band reduces the total required number of HTTP requests.
-    2. {:#hypo-inband-2} Including AMF metadata in-band reduces client-side query execution time.
-    3. {:#hypo-inband-3} Bloom filters are more sensitive than GCS to query execution time when including AMF metadata in-band or not.
+    1. {:#hypo-inband-1} Including AMF metadata in-band reduces client-side query execution time.
+    2. {:#hypo-inband-2} Including AMF metadata in-band reduces the total required number of HTTP requests.
+    <!--3. {:#hypo-inband-3} Bloom filters are more sensitive than GCS to query execution time when including AMF metadata in-band or not.-->
 6. {:#question-probabilities}
     **Which AMF _false-positive probabilities_ achieve the best client-side query performance?**
     <br />

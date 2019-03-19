@@ -18,9 +18,14 @@
   display: none;
 }
 
-img.plot {
-  width: auto;
-  height: 10em;
+img.plot_non_c {
+  width: 30em;
+  height: auto;
+}
+
+img.plot_c {
+  width: 6.5em;
+  height: auto;
 }
 
 body {

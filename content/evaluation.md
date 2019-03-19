@@ -60,6 +60,9 @@ and can be started from scratch by _executing a single command_.
 Include link to anonymized source code dump, experiment configs, raw results, and R code.
 {:.todo}
 
+Include skip-bgp-heurtistic and caching-none and warm-cold-cache
+{:.todo}
+
 1. **Client-side AMF Algorithms**: Evaluation of different client-side algorithms for using AMF metadata.
     <br />
     Factors:
@@ -176,6 +179,9 @@ compared to just caching HTTP requests (_p-value: 0.7694_), which accepts [Hypot
 [Hypothesis 2.3](#hypo-cache-3)
 {:.todo}
 
+[Hypothesis 2.4](#hypo-cache-4)
+{:.todo}
+
 #### HTTP Bandwidths
 
 Write me
@@ -217,7 +223,7 @@ Query evaluation times comparing different false-positive probabilities for AMFs
 This impact has however only has a weak significance (_p-value: 0.184_).
 This means that we reject [Hypothesis 6.1](#hypo-probabilities-1)
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
-On average, a false-positive probability of 1/64 leads to the lowest query evaluation times.
+On average, a false-positive probability of 1/64 leads to the lowest query evaluation times for this experiment.
 
 ### Discussion
 
@@ -233,4 +239,7 @@ The main bulk of requests are paged TPFs in any case, AMF is only a small subset
 {:.todo}
 
 Server-side AMF filter caching has no significant effect when a HTTP cache is used.
+{:.todo}
+
+Is pre-computation needed? See [Hypothesis 2.4](#hypo-cache-4)
 {:.todo}

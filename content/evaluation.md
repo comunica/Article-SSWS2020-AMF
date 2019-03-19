@@ -72,7 +72,7 @@ Include skip-bgp-heurtistic and caching-none and warm-cold-cache
     Factors:
     1. General HTTP cache: enabled, disabled
     2. Dedicated AMF filter cache: enabled, disabled
-3. **Dynamic AMF enablement**: Evaluation of dynamically enabling AMF metadata.
+3. **Dynamically Enabling AMF**: Evaluation of dynamically enabling AMF metadata.
     <br />
     *General HTTP cache and warmup phase is disabled in this experiment to evaluate cold-start.*
     <br />
@@ -180,6 +180,11 @@ compared to just caching HTTP requests (_p-value: 0.7694_), which accepts [Hypot
 {:.todo}
 
 [Hypothesis 2.4](#hypo-cache-4)
+{:.todo}
+
+#### Dynamically Enabling AMF
+
+Write me
 {:.todo}
 
 #### HTTP Bandwidths

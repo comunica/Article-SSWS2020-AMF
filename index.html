@@ -210,17 +210,20 @@ e.g., by combining multiple AMFs.
           <li id="hypo-combine-3">Using AMFs at both BGP <em>and</em> triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.</li>
         </ol>
       </li>
-      <li id="question-precompute"><strong>What query execution speedup do <em>pre-computed AMFs</em> provide?</strong>
+      <li id="question-cache"><strong>What query execution speedup does caching of HTTP requests and AMFs provide?</strong>
 <br />
-As the authors of the earlier work on AMF suggest that pre-computation and caching of AMFs
+As the authors of the earlier work on AMF suggest that caching of AMFs
 can reduce server delays and improve overall query evaluation,
-we will investigate the impact of pre-computing AMFs.
+we will investigate the impact of caching AMFs and all HTTP requests in general.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-precompute-1">When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.</li>
+          <li id="hypo-cache-1">Caching all HTTP requests reduces query evaluation times more than caching only AMFs.</li>
+          <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
+          <li id="hypo-cache-3">Without caching, AMF-aware query evaluation is slower than non-AMF query evaluation.
+&lt;!–1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.</li>
           <li id="hypo-precompute-2">GCS achieves faster client-side query execution than Bloom filters when pre-computed.</li>
-          <li id="hypo-precompute-3">GCS achieves slower client-side query execution than Bloom filters when not pre-computed.</li>
+          <li id="hypo-precompute-3">GCS achieves slower client-side query execution than Bloom filters when not pre-computed.–&gt;</li>
         </ol>
       </li>
       <li id="question-dynamic-restriction"><strong>To what extent can TPF server load be reduced by <em>dynamically restricting</em> AMF generation?</strong>
@@ -500,10 +503,30 @@ has no statistically significant effect (<em>p-values: 0.9484, 0.6689</em>), whi
 
     <p>In <a href="#plot_skip_bgp_heuristic">Fig. 2</a>, we show the results where we apply the heuristic
 for dynamically disabling the BGP heuristic based on different parameter values.
-On average, setting the request size parameter value to 2000 has the lowest average evaluation time.
+On average, setting the request size parameter value to 2000 has the lowest average evaluation time for this experiment.
 This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (<em>p-value: 0.1842</em>).</p>
+
+    <h4 id="caching">Caching</h4>
+
+    <figure id="plot_caching">
+<center>
+<img src="img/experiments/caching/plot_no_c.svg" alt="Caching (non-C)" class="plot_non_c" />
+<img src="img/experiments/caching/plot_c.svg" alt="Caching (C)" class="plot_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 3:</span> Logarithmic query evaluation times comparing server-side HTTP and AMF caching.</p>
+      </figcaption>
+</figure>
+
+    <p><a href="#plot_caching">Fig. 3</a> clearly shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
+We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>),
+which conforms <a href="#hypo-cache-1">Hypothesis 2.1</a>.
+Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
+compared to just caching HTTP requests (<em>p-value: 0.7694</em>), which accepts <a href="#hypo-cache-2">Hypothesis 2.2</a>.</p>
+
+    <p class="todo"><a href="#hypo-cache-3">Hypothesis 2.3</a></p>
 
     <h4 id="http-bandwidths">HTTP Bandwidths</h4>
 
@@ -517,11 +540,11 @@ This improvement is however only small, and not statistically significant (<em>p
 <img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 3:</span> Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.</p>
+        <p><span class="label">Fig. 4:</span> Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_in_vs_out_band">Fig. 3</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
+    <p><a href="#plot_in_vs_out_band">Fig. 4</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
 which rejects <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
 
@@ -537,11 +560,11 @@ in which we expected the number of HTTP requests to significantly decrease when 
 <img src="img/experiments/probabilities/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 4:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
+        <p><span class="label">Fig. 5:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_probabilities">Fig. 4</a> shows that different false-positive probabilities have some impact on query evaluation times.
+    <p><a href="#plot_probabilities">Fig. 5</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).
 This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
@@ -556,6 +579,8 @@ but needs further investigation.</p>
 
     <p class="todo">In-band vs out-band has no effect. However, for clients that don’t use AMF, this <em>will</em> have an impact. Suggestion: do everything out-band.
 The main bulk of requests are paged TPFs in any case, AMF is only a small subset.</p>
+
+    <p class="todo">Server-side AMF filter caching has no significant effect when a HTTP cache is used.</p>
 
   </section>
 

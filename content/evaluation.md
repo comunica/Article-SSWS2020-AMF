@@ -81,7 +81,7 @@ Include link to anonymized source code dump, experiment configs, raw results, an
     Factors:
     1. Network delay: 256kbps, 512kbps, 2048kbps, 4096kbps
     2. Client-side AMF algorithm: None, Triple, BGP
-5. **In-band vs. Out-band**: Evaluation of exposing AMF metadata in-band or not.
+5. **In-band vs. Out-of-band**: Evaluation of exposing AMF metadata in-band or not.
     <br />
     Factors:
     1. AMF triple count threshold: 0, 1.000, 10.000, 100.000, 1.000.000
@@ -155,9 +155,9 @@ This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
 
-#### In-band vs. Out-band
+#### In-band vs. Out-of-band
 
-<figure id="in_vs_out_band">
+<figure id="plot_in_vs_out_band">
 <center>
 <img src="img/experiments/in_vs_out_band/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c">
 <img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c">
@@ -167,13 +167,31 @@ Query evaluation times comparing out-of-band and in-band based on different AMF 
 </figcaption>
 </figure>
 
-[](#in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
+[](#plot_in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
 which rejects [Hypothesis 5.1](#hypo-inband-1).
 
 Furthermore, when analyzing the HTTP logs, we observe only a very small decrease (<1%) in the difference in number of requests.
 As this difference is insignificant (_p-value: 0.406_), we can reject [Hypothesis 5.2](#hypo-inband-2)
 in which we expected the number of HTTP requests to significantly decrease when we moved AMF metadata in-band.
+
+#### False-positive Probabilities
+
+<figure id="plot_probabilities">
+<center>
+<img src="img/experiments/probabilities/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c">
+<img src="img/experiments/probabilities/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
+</figcaption>
+</figure>
+
+[](#plot_probabilities) shows that different false-positive probabilities have some impact on query evaluation times.
+This impact has however only has a weak significance (_p-value: 0.184_).
+This means that we reject [Hypothesis 6.1](#hypo-probabilities-1)
+in which we expected that lower false-positive probabilities lead to lower query evaluation times.
+On average, a false-positive probability of 1/64 leads to the lowest query evaluation times.
 
 ### Discussion
 

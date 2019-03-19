@@ -241,5 +241,6 @@ The main bulk of requests are paged TPFs in any case, AMF is only a small subset
 Server-side AMF filter caching has no significant effect when a HTTP cache is used.
 {:.todo}
 
-Is pre-computation needed? See [Hypothesis 2.4](#hypo-cache-4)
+Pre-computation is needed for AMFs of size 10.000. See [Hypothesis 2.4](#hypo-cache-4) and [RQ 3](#question-dynamic-restriction).
+Say that only a small amount of AMFs exist with size >10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)
 {:.todo}

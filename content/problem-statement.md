@@ -44,9 +44,8 @@ We list these as research questions for our work, and defined hypotheses for eac
     <br />
     **Hypotheses:**
     1. {:#hypo-dynamic-restriction-1} AMF size is linearly correlated with the required server effort for AMF calculation.
-    2. {:#hypo-dynamic-restriction-2} Server load is significantly reduced by caching AMFs.
-    3. {:#hypo-dynamic-restriction-3} Lowering the result count threshold reduces server load.
-    4. {:#hypo-dynamic-restriction-4} Lowering the result count threshold increases client-side query execution time.
+    2. {:#hypo-dynamic-restriction-2} Lowering the result count threshold reduces server load.
+    3. {:#hypo-dynamic-restriction-3} Lowering the result count threshold increases client-side query execution time.
 4. {:#question-bandwidth}
     **What impact does the HTTP bandwidth have on client-side performance with AMFs?**
     <br />

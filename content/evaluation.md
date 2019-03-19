@@ -117,7 +117,16 @@ We tested these hypotheses for equality using the Kruskal-Wallis test
 </center>
 <figcaption markdown="block">
 Query evaluation times for the different client-side algorithms for using AMF metadata.
-C queries are shown separately because of their higher evaluation times.
+</figcaption>
+</figure>
+
+<figure id="skip_bgp_heuristic">
+<center>
+<img src="img/experiments/skip_bgp_heuristic/plot_no_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (non-C)" class="plot">
+<img src="img/experiments/skip_bgp_heuristic/plot_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (C)" class="plot">
+</center>
+<figcaption markdown="block">
+Query evaluation times when enabling the heuristic in the client-side combined BGP algorithm.
 </figcaption>
 </figure>
 
@@ -139,7 +148,18 @@ which confirms [Hypothesis 1.2](#hypo-combine-2).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
 has no statistically significant effect (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
 
+In [](#skip_bgp_heuristic), we show the results where we apply the heuristic
+for dynamically disabling the BGP heuristic based on different parameter values.
+On average, setting the request size parameter value to 2000 has the lowest average evaluation time.
+This case only achieves higher evaluation times for 1 of the 20 queries,
+which is an improvement compared to not using the heuristic.
+This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
+
 ### Discussion
 
 Why are the results what they are?
+{:.todo}
+
+This shows that using heuristics to determine when certain client-side algorithms have to be used can be beneficial,
+but needs further investigation.
 {:.todo}

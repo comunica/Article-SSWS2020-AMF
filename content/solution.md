@@ -11,7 +11,7 @@ the server needs to generate and expose the new metadata,
 and the client needs to incorporate it in the query algorithm.
 
 ### Server-side metadata generation
-The server-side implementation is mostly based on the [implementation by Vander Sande et al.](cite:cutes amf2015)
+The server-side implementation is mostly based on the [implementation by Vander Sande et al.](cite:cites amf2015)
 Some additions were made though, such as when an AMF gets generated and how they get returned.
 
 The first change that was made is for which patterns AMFs get generated.
@@ -40,3 +40,47 @@ meaning the more popular pattern metadata gets stored in memory.
 This greatly cuts down on the time needed to actually generate that metadata.
 
 ### Client-side query algorithm
+The main changes in this paper are how we made us of the AMF metadata to improve the client-side querying.
+For this we developed two new query algorithms that use the metadata on BGP level,
+the results of which are shown in [](#evaluation).
+
+In the [original AMF algorithm](cite:cites amf2015),
+bindings only got filtered when a pattern would be fully bound.
+The main idea behind our new algorithm is to already do this filtering much sooner in the querying process.
+The added advantage is that fewer bindings have to be sent to the server,
+at the cost of generating more filters.
+
+[](#tpf) shows how the original TPF algorithm works.
+For the specific details we refer the reader to the [original paper](cite:cites ldf).
+Our additions to the algorithm can be found in [](#amf-bgp-pseudo).
+The code here is quite simplified,
+more specific details on how we added this to Comunica can be found in [](#solution).
+
+<figure id="tpf" class="listing">
+````/code/tpf.js````
+<figcaption markdown="block">
+Original TPF algorithm. More details can be found in the [original paper](cite:cites ldf).
+</figcaption>
+</figure>
+
+<figure id="amf-bgp-pseudo" class="listing">
+````/code/amf-bgp-pseudo.js````
+<figcaption markdown="block">
+Updated algorithm with AMF code.
+</figcaption>
+</figure>
+
+The main idea is that all new bindings first get filtered through all applicable AMFs.
+Although this is simplified in [](#amf-bgp-pseudo),
+only the AMFs that filter over variables that are contained in the new bindings are applied.
+This also means that should the filters be provided out-of-band,
+only the necessary filters will be downloaded.
+In the end, the result is that many unnecessary server requests will be avoided due to the filtering,
+as will be shown in [](#evaluation).
+
+#### Reducing inefficient AMF usage
+
+talk about the heuristic to not use large AMFs
+{:.todo}
+
+

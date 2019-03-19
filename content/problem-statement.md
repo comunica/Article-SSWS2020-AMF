@@ -50,9 +50,8 @@ We list these as research questions for our work, and defined hypotheses for eac
     However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
     <br />
     **Hypotheses:**
-    1. {:#hypo-bandwidth-1} The lower the HTTP bandwidth, the higher the positive effect of triple-level AMF usage.
-    2. {:#hypo-bandwidth-2} The lower the HTTP bandwidth, the higher the positive effect of BGP-level AMF usage.
-    2. {:#hypo-bandwidth-3} Triple-level AMF usage is less sensitive to HTTP bandwith variants than BGP-level AMF usage.
+    1. {:#hypo-bandwidth-1} HTTP bandwith has a higher impact on non-AMF usage than triple-level AMF usage.
+    2. {:#hypo-bandwidth-2} HTTP bandwith has a higher impact on triple-level AMF usage than BGP-level AMF usage.
 5. {:#question-inband}
     **Can query throughput be improved by adding AMF metadata _in-band_ with the TPF HTTP responses?**
     <br />

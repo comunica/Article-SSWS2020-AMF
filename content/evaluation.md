@@ -76,10 +76,10 @@ Include link to anonymized source code dump, experiment configs, raw results, an
     Factors:
     1. Result count threshold: 0, 1.000, 10.000, 100.000, 1.000.000
     2. Dedicated AMF filter cache: enabled, disabled
-4. **HTTP Delays**: Evaluation of different network delays.
+4. **HTTP Bandwidths**: Evaluation of different network bandwidths.
     <br />
     Factors:
-    1. Network delay: 256kbps, 512kbps, 2048kbps, 4096kbps
+    1. Network bandwidths: 256kbps, 512kbps, 2048kbps, 4096kbps
     2. Client-side AMF algorithm: None, Triple, BGP
 5. **In-band vs. Out-of-band**: Evaluation of exposing AMF metadata in-band or not.
     <br />
@@ -154,6 +154,11 @@ On average, setting the request size parameter value to 2000 has the lowest aver
 This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
+
+#### HTTP Bandwidths
+
+Write me
+{:.todo}
 
 #### In-band vs. Out-of-band
 

@@ -150,10 +150,31 @@ has no statistically significant effect (_p-values: 0.9484, 0.6689_), which conf
 
 In [](#plot_skip_bgp_heuristic), we show the results where we apply the heuristic
 for dynamically disabling the BGP heuristic based on different parameter values.
-On average, setting the request size parameter value to 2000 has the lowest average evaluation time.
+On average, setting the request size parameter value to 2000 has the lowest average evaluation time for this experiment.
 This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
+
+#### Caching
+
+<figure id="plot_caching">
+<center>
+<img src="img/experiments/caching/plot_no_c.svg" alt="Caching (non-C)" class="plot_non_c">
+<img src="img/experiments/caching/plot_c.svg" alt="Caching (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Logarithmic query evaluation times comparing server-side HTTP and AMF caching.
+</figcaption>
+</figure>
+
+[](#plot_caching) clearly shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (_p-value: < 2.2e-16_).
+We observe that caching HTTP requests reduces query evaluation times _more_ than just caching AMF filters (_p-value: 0.0225_),
+which conforms [Hypothesis 2.1](#hypo-cache-1).
+Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
+compared to just caching HTTP requests (_p-value: 0.7694_), which accepts [Hypothesis 2.2](#hypo-cache-2).
+
+[Hypothesis 2.3](#hypo-cache-3)
+{:.todo}
 
 #### HTTP Bandwidths
 
@@ -209,4 +230,7 @@ but needs further investigation.
 
 In-band vs out-band has no effect. However, for clients that don't use AMF, this _will_ have an impact. Suggestion: do everything out-band.
 The main bulk of requests are paged TPFs in any case, AMF is only a small subset.
+{:.todo}
+
+Server-side AMF filter caching has no significant effect when a HTTP cache is used.
 {:.todo}

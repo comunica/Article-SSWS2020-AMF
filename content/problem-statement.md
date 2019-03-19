@@ -19,17 +19,20 @@ We list these as research questions for our work, and defined hypotheses for eac
     1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution is faster compared to not using AMFs.
     2. {:#hypo-combine-2} By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.
     2. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.
-2. {:#question-precompute}
-    **What query execution speedup do _pre-computed AMFs_ provide?**
+2. {:#question-cache}
+    **What query execution speedup does caching of HTTP requests and AMFs provide?**
     <br />
-    As the authors of the earlier work on AMF suggest that pre-computation and caching of AMFs
+    As the authors of the earlier work on AMF suggest that caching of AMFs
     can reduce server delays and improve overall query evaluation,
-    we will investigate the impact of pre-computing AMFs.
+    we will investigate the impact of caching AMFs and all HTTP requests in general.
     <br />
     **Hypotheses:**
-    1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.
+    1. {:#hypo-cache-1} Caching all HTTP requests reduces query evaluation times more than caching only AMFs.
+    2. {:#hypo-cache-2} Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.
+    3. {:#hypo-cache-3} Without caching, AMF-aware query evaluation is slower than non-AMF query evaluation.
+    <!--1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.
     2. {:#hypo-precompute-2} GCS achieves faster client-side query execution than Bloom filters when pre-computed.
-    3. {:#hypo-precompute-3} GCS achieves slower client-side query execution than Bloom filters when not pre-computed.
+    3. {:#hypo-precompute-3} GCS achieves slower client-side query execution than Bloom filters when not pre-computed.-->
 3. {:#question-dynamic-restriction}
     **To what extent can TPF server load be reduced by _dynamically restricting_ AMF generation?**
     <br />

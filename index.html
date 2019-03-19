@@ -323,6 +323,83 @@ meaning the more popular pattern metadata gets stored in memory.
 This greatly cuts down on the time needed to actually generate that metadata.</p>
 
     <h3 id="client-side-query-algorithm">Client-side query algorithm</h3>
+    <p>The main changes in this paper are how we made us of the AMF metadata to improve the client-side querying.
+For this we developed two new query algorithms that use the metadata on BGP level,
+the results of which are shown in <a href="#evaluation">Section 6</a>.</p>
+
+    <p>In the original AMF algorithm <span class="references">[<a href="#ref-4">4</a>]</span>,
+bindings only got filtered when a pattern would be fully bound.
+The main idea behind our new algorithm is to already do this filtering much sooner in the querying process.
+The added advantage is that fewer bindings have to be sent to the server,
+at the cost of generating more filters.</p>
+
+    <p><a href="#tpf">Listing 1</a> shows how the original TPF algorithm works.
+For the specific details we refer the reader to the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">original paper</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>.
+Our additions to the algorithm can be found in <a href="#amf-bgp-pseudo">Listing 2</a>.
+The code here is quite simplified,
+more specific details on how we added this to Comunica can be found in <a href="#solution">Section 4</a>.</p>
+
+    <figure id="tpf" class="listing">
+<pre><code>function solve (patterns) {
+</code><code>  const smallestIdx = /* find i where patterns[i].totalItems is the smallest */
+</code><code>  const bindingsStream = getBindings(patterns[smallestIdx]);
+</code><code>  const remainingPatterns = patterns.remove(smallestIdx);
+</code><code>  if (remainingPatterns.isEmpty())
+</code><code>    return bindingsStream;
+</code><code>
+</code><code>  const resultStream = /* empty stream */
+</code><code>  for (let bindings of bindingsStream) {
+</code><code>    const mappedPatterns = applyBindings(remainingPatterns, bindings);
+</code><code>    solve(mappedPatterns).pipe(resultStream);
+</code><code>  }
+</code><code>  return resultStream;
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 1:</span> Original TPF algorithm. More details can be found in the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">original paper</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>.</p>
+      </figcaption>
+</figure>
+
+    <figure id="amf-bgp-pseudo" class="listing">
+<pre><code>function solve (patterns) {
+</code><code>  const smallestIdx = /* find i where patterns[i].totalItems is the smallest */
+</code><code>  const bindingsStream = getBindings(patterns[smallestIdx]);
+</code><code>  const remainingPatterns = patterns.remove(smallestIdx);
+</code><code>  if (remainingPatterns.isEmpty())
+</code><code>    return bindingsStream;
+</code><code>
+</code><code>  const resultStream = /* empty stream */
+</code><code>  for (let bindings of bindingsStream) {
+</code><code>
+</code><code>    // ----- AMF -----
+</code><code>    let valid = true;
+</code><code>    for (let pattern of mappedPatterns)
+</code><code>      valid = pattern.amf.check(bindings);
+</code><code>    if (!valid)
+</code><code>      continue;
+</code><code>    // ----- AMF -----
+</code><code>
+</code><code>    const mappedPatterns = applyBindings(remainingPatterns, bindings);
+</code><code>    solve(mappedPatterns).pipe(resultStream);
+</code><code>  }
+</code><code>  return resultStream;
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 2:</span> Updated algorithm with AMF code.</p>
+      </figcaption>
+</figure>
+
+    <p>The main idea is that all new bindings first get filtered through all applicable AMFs.
+Although this is simplified in <a href="#amf-bgp-pseudo">Listing 2</a>,
+only the AMFs that filter over variables that are contained in the new bindings are applied.
+This also means that should the filters be provided out-of-band,
+only the necessary filters will be downloaded.
+In the end, the result is that many unnecessary server requests will be avoided due to the filtering,
+as will be shown in <a href="#evaluation">Section 6</a>.</p>
+
+    <h4 id="reducing-inefficient-amf-usage">Reducing inefficient AMF usage</h4>
+
+    <p class="todo">talk about the heuristic to not use large AMFs</p>
+
   </section>
 
   <section id="implementation">

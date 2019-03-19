@@ -245,9 +245,8 @@ However, there is still an open question as to what extent different rates have 
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-bandwidth-1">The lower the HTTP bandwidth, the higher the positive effect of triple-level AMF usage.</li>
-          <li id="hypo-bandwidth-2">The lower the HTTP bandwidth, the higher the positive effect of BGP-level AMF usage.</li>
-          <li id="hypo-bandwidth-3">Triple-level AMF usage is less sensitive to HTTP bandwith variants than BGP-level AMF usage.</li>
+          <li id="hypo-bandwidth-1">HTTP bandwith has a higher impact on non-AMF usage than triple-level AMF usage.</li>
+          <li id="hypo-bandwidth-2">HTTP bandwith has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
         </ol>
       </li>
       <li id="question-inband"><strong>Can query throughput be improved by adding AMF metadata <em>in-band</em> with the TPF HTTP responses?</strong>
@@ -381,11 +380,11 @@ and can be started from scratch by <em>executing a single command</em>.</p>
           <li>Dedicated AMF filter cache: enabled, disabled</li>
         </ol>
       </li>
-      <li><strong>HTTP Delays</strong>: Evaluation of different network delays.
+      <li><strong>HTTP Bandwidths</strong>: Evaluation of different network bandwidths.
  <br />
  Factors:
         <ol>
-          <li>Network delay: 256kbps, 512kbps, 2048kbps, 4096kbps</li>
+          <li>Network bandwidths: 256kbps, 512kbps, 2048kbps, 4096kbps</li>
           <li>Client-side AMF algorithm: None, Triple, BGP</li>
         </ol>
       </li>
@@ -468,6 +467,10 @@ On average, setting the request size parameter value to 2000 has the lowest aver
 This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (<em>p-value: 0.1842</em>).</p>
+
+    <h4 id="http-bandwidths">HTTP Bandwidths</h4>
+
+    <p class="todo">Write me</p>
 
     <h4 id="in-band-vs-out-of-band">In-band vs. Out-of-band</h4>
 

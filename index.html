@@ -237,9 +237,8 @@ e.g., by only allowing AMFs to be requested for queries with result count lower 
 <strong>Hypotheses:</strong>
         <ol>
           <li id="hypo-dynamic-restriction-1">AMF size is linearly correlated with the required server effort for AMF calculation.</li>
-          <li id="hypo-dynamic-restriction-2">Server load is significantly reduced by caching AMFs.</li>
-          <li id="hypo-dynamic-restriction-3">Lowering the result count threshold reduces server load.</li>
-          <li id="hypo-dynamic-restriction-4">Lowering the result count threshold increases client-side query execution time.</li>
+          <li id="hypo-dynamic-restriction-2">Lowering the result count threshold reduces server load.</li>
+          <li id="hypo-dynamic-restriction-3">Lowering the result count threshold increases client-side query execution time.</li>
         </ol>
       </li>
       <li id="question-bandwidth"><strong>What impact does the HTTP bandwidth have on client-side performance with AMFs?</strong>
@@ -587,7 +586,8 @@ The main bulk of requests are paged TPFs in any case, AMF is only a small subset
 
     <p class="todo">Server-side AMF filter caching has no significant effect when a HTTP cache is used.</p>
 
-    <p class="todo">Is pre-computation needed? See <a href="#hypo-cache-4">Hypothesis 2.4</a></p>
+    <p class="todo">Pre-computation is needed for AMFs of size 10.000. See <a href="#hypo-cache-4">Hypothesis 2.4</a> and <a href="#question-dynamic-restriction">RQ 3</a>.
+Say that only a small amount of AMFs exist with size &gt;10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)</p>
 
   </section>
 

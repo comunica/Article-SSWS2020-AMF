@@ -255,6 +255,17 @@ This is because computation of Bloom requires more work than GCS.
 However, decompression of GCS requires more work client-side, which explains the higher query eval times.
 {:.todo}
 
+<figure id="plot_triple_pattern_counts">
+<center>
+<img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts">
+</center>
+<figcaption markdown="block">
+Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
+limited to the 1000 patterns with the most matches.
+</figcaption>
+</figure>
+
 Pre-computation is needed for AMFs of size 10.000. See [Hypothesis 2.4](#hypo-cache-4) and [RQ 3](#question-dynamic-restriction).
 Say that only a small amount of AMFs exist with size >10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)
+Motivate with [](#plot_triple_pattern_counts).
 {:.todo}

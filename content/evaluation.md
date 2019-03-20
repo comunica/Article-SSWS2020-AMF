@@ -60,7 +60,7 @@ and can be started from scratch by _executing a single command_.
 Include link to anonymized source code dump, experiment configs, raw results, and R code.
 {:.todo}
 
-Include skip-bgp-heurtistic and caching-none and warm-cold-cache
+Include skip-bgp-heurtistic and caching-none and warm-cold-cache and filter-types
 {:.todo}
 
 1. **Client-side AMF Algorithms**: Evaluation of different client-side algorithms for using AMF metadata.
@@ -182,6 +182,10 @@ compared to just caching HTTP requests (_p-value: 0.7694_), which accepts [Hypot
 [Hypothesis 2.4](#hypo-cache-4)
 {:.todo}
 
+Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
+While there are a few outliers where GCS is two to three times slower,
+the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-cache-5) with a low significance (_p-value: 0.1786_).
+
 #### Dynamically Enabling AMF
 
 Write me
@@ -244,6 +248,11 @@ The main bulk of requests are paged TPFs in any case, AMF is only a small subset
 {:.todo}
 
 Server-side AMF filter caching has no significant effect when a HTTP cache is used.
+{:.todo}
+
+When AMFs can be pre-computed, Bloom is faster than GCS.
+This is because computation of Bloom requires more work than GCS.
+However, decompression of GCS requires more work client-side, which explains the higher query eval times.
 {:.todo}
 
 Pre-computation is needed for AMFs of size 10.000. See [Hypothesis 2.4](#hypo-cache-4) and [RQ 3](#question-dynamic-restriction).

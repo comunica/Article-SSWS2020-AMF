@@ -18,7 +18,7 @@ We list these as research questions for our work, and defined hypotheses for eac
     **Hypotheses:**
     1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution is faster compared to not using AMFs.
     2. {:#hypo-combine-2} By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.
-    2. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.
+    3. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.
 2. {:#question-cache}
     **What query execution speedup does caching of HTTP requests and AMFs provide?**
     <br />
@@ -31,6 +31,7 @@ We list these as research questions for our work, and defined hypotheses for eac
     2. {:#hypo-cache-2} Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.
     3. {:#hypo-cache-3} Without caching, AMF-aware query evaluation is slower than non-AMF query evaluation.
     4. {:#hypo-cache-4} Query evaluation with a cold cache is significantly slower than query evaluation with a warm cache.
+    5. {:#hypo-cache-5} With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.
     <!--1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.
     2. {:#hypo-precompute-2} GCS achieves faster client-side query execution than Bloom filters when pre-computed.
     3. {:#hypo-precompute-3} GCS achieves slower client-side query execution than Bloom filters when not pre-computed.-->

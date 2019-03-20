@@ -80,7 +80,14 @@ as will be shown in [](#evaluation).
 
 #### Reducing inefficient AMF usage
 
-talk about the heuristic to not use large AMFs
-{:.todo}
+One problem with the above solutions is that certain AMFs can get quite big.
+In cases where there are not many bindings that need to be filtered,
+the time it takes to download the AMF might be greater than simply not using the filter at all.
 
-
+For cases like this we added a heuristic that checks whether it might be a good idea to download the filter.
+To handle cases like this, 
+we created a heuristic that estimates both the time it would take to accept all the bindings,
+and the time it would take to download an AMF for the given amount of triples.
+Based on those estimates a choice gets made on whether to request the metadata or not.
+Our heuristic is quite simple as will be shown later,
+and serves more to indicate that there is still much potential there for future work.

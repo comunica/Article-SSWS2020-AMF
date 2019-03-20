@@ -676,8 +676,19 @@ The main bulk of requests are paged TPFs in any case, AMF is only a small subset
 This is because computation of Bloom requires more work than GCS.
 However, decompression of GCS requires more work client-side, which explains the higher query eval times.</p>
 
+    <figure id="plot_triple_pattern_counts">
+<center>
+<img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 6:</span> Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
+limited to the 1000 patterns with the most matches.</p>
+      </figcaption>
+</figure>
+
     <p class="todo">Pre-computation is needed for AMFs of size 10.000. See <a href="#hypo-cache-4">Hypothesis 2.4</a> and <a href="#question-dynamic-restriction">RQ 3</a>.
-Say that only a small amount of AMFs exist with size &gt;10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)</p>
+Say that only a small amount of AMFs exist with size &gt;10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)
+Motivate with <a href="#plot_triple_pattern_counts">Fig. 6</a>.</p>
 
   </section>
 

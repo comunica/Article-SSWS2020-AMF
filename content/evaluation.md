@@ -112,6 +112,7 @@ We tested these hypotheses for equality using the Kruskal-Wallis test
 {:.todo}
 
 #### Client-side AMF Algorithms
+{:.display-block}
 
 <figure id="plot_client_algos">
 <center>
@@ -178,6 +179,7 @@ This means that results start coming in sooner when AMF is not being used,
 even though the time until the last result is produced is typically higher compared to when AMF _is_ used.
 
 #### Caching
+{:.display-block}
 
 <figure id="plot_caching">
 <center>
@@ -206,16 +208,19 @@ While there are a few outliers where GCS is two to three times slower,
 the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-cache-5) with a low significance (_p-value: 0.1786_).
 
 #### Dynamically Enabling AMF
+{:.display-block}
 
 Write me
 {:.todo}
 
 #### HTTP Bandwidths
+{:.display-block}
 
 Write me
 {:.todo}
 
 #### In-band vs. Out-of-band
+{:.display-block}
 
 <figure id="plot_in_vs_out_band">
 <center>
@@ -236,6 +241,7 @@ As this difference is insignificant (_p-value: 0.406_), we can reject [Hypothesi
 in which we expected the number of HTTP requests to significantly decrease when we moved AMF metadata in-band.
 
 #### False-positive Probabilities
+{:.display-block}
 
 <figure id="plot_probabilities">
 <center>

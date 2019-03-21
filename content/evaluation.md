@@ -217,8 +217,43 @@ Write me
 #### HTTP Bandwidths
 {:.display-block}
 
-Write me
-{:.todo}
+<figure id="plot_delay_none">
+<center>
+<img src="img/experiments/delay/plot_none_no_c.svg" alt="Effect of HTTP bandwidth on non-AMF (non-C)" class="plot_non_c">
+<img src="img/experiments/delay/plot_none_c.svg" alt="Effect of HTTP bandwidth on non-AMF (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times for different HTTP bandwidths when AMF is not used.
+</figcaption>
+</figure>
+
+<figure id="plot_delay_triple">
+<center>
+<img src="img/experiments/delay/plot_triple_no_c.svg" alt="Effect of HTTP bandwidth on triple AMF (non-C)" class="plot_non_c">
+<img src="img/experiments/delay/plot_triple_c.svg" alt="Effect of HTTP bandwidth on triple AMF (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times for different HTTP bandwidths for the triple-based AMF algorithm.
+</figcaption>
+</figure>
+
+<figure id="plot_delay_bgp">
+<center>
+<img src="img/experiments/delay/plot_bgp_no_c.svg" alt="Effect of HTTP bandwidth on BGP AMF (non-C)" class="plot_non_c">
+<img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of HTTP bandwidth on BGP AMF (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times for different HTTP bandwidths for the BGP-based AMF algorithm.
+</figcaption>
+</figure>
+
+[](#plot_delay_none), [](#plot_delay_triple) and [](#plot_delay_bgp) show the effects of different HTTP bandwidths
+on query evaluation times over different algorithms.
+We observe that when not using AMF, or using the triple-level AMF algorithm,
+lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.
+The BGP-level AMF algorithm on the other hand keeps becoming faster with increased HTTP bandwidths.
+Statistically, we don't measure any significant impact of HTTP bandwidth on both non-AMF usage and triple-level AMF usage (_p-values: 0.2905, 0.2306_), which rejects [Hypothesis 4.1](#hypo-bandwidth-1).
+For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which accepts [Hypothesis 4.2](#hypo-bandwidth-2).
 
 #### In-band vs. Out-of-band
 {:.display-block}
@@ -277,12 +312,14 @@ Query result arrival times for query F3 for the different client-side algorithms
 
 Our results have shown that even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 the diefficiency values are typically lower, which means that results come in at a lower rate.
-The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in [](#plot_query_times_F3).
+The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in [](#plot_query_times_F3),
+but is observable for other queries as well.
 This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
-This is because the BGP-based algorithms tend to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
+This is because the BGP-based algorithms tends to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
 Even though we have this overhead, the gains we get from this are typically worth it,
 as results come in much faster once the AMFs have been downloaded.
-This behaviour is observable for most queries.
+Our HTTP bandwidth experiment results confirm this, and show that higher bandwidths
+lead to even more performance gains for the BGP-level algorithms.
 
 Future work: dynamically switching between algos to start producing results asap.
 {:.todo}

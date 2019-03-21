@@ -197,15 +197,16 @@ which conforms [Hypothesis 2.1](#hypo-cache-1).
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
 compared to just caching HTTP requests (_p-value: 0.7694_), which accepts [Hypothesis 2.2](#hypo-cache-2).
 
-[Hypothesis 2.3](#hypo-cache-3)
-{:.todo}
+If we compare these results with the results for non-AMF-aware querying,
+we see that _if HTTP caching is disabled_, query evaluation times for non-AMF-aware querying are _significantly lower_ than AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.3](#hypo-cache-3).
+On the other hand, _if HTTP caching is enabled_, query evaluation times for non-AMF-aware querying are _significantly higher_ than AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.4](#hypo-cache-4).
 
-[Hypothesis 2.4](#hypo-cache-4)
+[Hypothesis 2.5](#hypo-cache-5)
 {:.todo}
 
 Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
-the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-cache-5) with a low significance (_p-value: 0.1786_).
+the difference is only small in most cases, so we accept [Hypothesis 2.6](#hypo-cache-6) with a low significance (_p-value: 0.1786_).
 
 #### Dynamically Enabling AMF
 {:.display-block}
@@ -295,6 +296,10 @@ The main bulk of requests are paged TPFs in any case, AMF is only a small subset
 {:.todo}
 
 Server-side AMF filter caching has no significant effect when a HTTP cache is used.
+{:.todo}
+
+Caching is already important for pure TPF, but it is even more important for AMF-TPF, because of the high calc times for AMFs.
+Without caching AMF performs worse than pure TPF, so in that case AMF has no benefits.
 {:.todo}
 
 When AMFs can be pre-computed, Bloom is faster than GCS.

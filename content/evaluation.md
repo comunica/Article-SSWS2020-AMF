@@ -211,8 +211,46 @@ the difference is only small in most cases, so we accept [Hypothesis 2.6](#hypo-
 #### Dynamically Enabling AMF
 {:.display-block}
 
-Write me
-{:.todo}
+<figure id="plot_server_metadata_enabled_cached">
+<center>
+<img src="img/experiments/server_metadata_enabled/plot_cached_no_c.svg" alt="Effect of AMF result count thresholds with HTTP cache (non-C)" class="plot_non_c">
+<img src="img/experiments/server_metadata_enabled/plot_cached_c.svg" alt="Effect of AMF result count thresholds with HTTP cache (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is enabled.
+</figcaption>
+</figure>
+
+<figure id="plot_server_metadata_enabled_notcached">
+<center>
+<img src="img/experiments/server_metadata_enabled/plot_notcached_no_c.svg" alt="Effect of AMF result count thresholds without HTTP cache (non-C)" class="plot_non_c">
+<img src="img/experiments/server_metadata_enabled/plot_notcached_c.svg" alt="Effect of AMF result count thresholds without HTTP cache (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is disabled.
+</figcaption>
+</figure>
+
+<figure id="plot_threshold_serverload">
+<center>
+<img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_c">
+</center>
+<figcaption markdown="block">
+Average server CPU usage for different AMF result count thresholds when caching is enabled and disabled.
+</figcaption>
+</figure>
+
+[](#plot_server_metadata_enabled_cached) shows lower AMF result count thresholds
+lead to higher query evaluation times when HTTP caching is enabled (_p-value: 2.11e-07_),
+which confirms [Hypothesis 3.1](#hypo-dynamic-restriction-1).
+[](#plot_server_metadata_enabled_notcached) shows that AMF result count thresholds
+also have an impact on query evaluation times when HTTP caching is disabled (_p-value: 0.0005_),
+but it does not necessarily lower it. For this experiment, setting the threshold to 10K leads to the lowest query evaluation times.
+
+[](#plot_threshold_serverload) shows that lower AMF result count thresholds lead to lower server loads
+when HTTP caching is disabled (_p-value: 0.0326_), which confirms [Hypothesis 3.2](#hypo-dynamic-restriction-2)).
+On the other hand, if HTTP caching is enabled,
+there is no correlation between AMF result count threshold and server CPU usage (_p-value: 0.4577_), which confirms [Hypothesis 3.3](#hypo-dynamic-restriction-3)).
 
 #### HTTP Bandwidths
 {:.display-block}

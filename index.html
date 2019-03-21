@@ -238,9 +238,9 @@ e.g., by only allowing AMFs to be requested for queries with result count lower 
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-dynamic-restriction-1">AMF size is linearly correlated with the required server effort for AMF calculation.</li>
-          <li id="hypo-dynamic-restriction-2">Lowering the result count threshold reduces server load.</li>
-          <li id="hypo-dynamic-restriction-3">Lowering the result count threshold increases client-side query execution time.</li>
+          <li id="hypo-dynamic-restriction-1">Lowering the result count threshold increases client-side query execution time when AMFs are cached.</li>
+          <li id="hypo-dynamic-restriction-2">Lowering the result count threshold reduces server load when AMFs are cached.</li>
+          <li id="hypo-dynamic-restriction-3">Lowering the result count threshold does not impact server load when AMFs are not cached.</li>
         </ol>
       </li>
       <li id="question-bandwidth"><strong>What impact does the HTTP bandwidth have on client-side performance with AMFs?</strong>
@@ -648,7 +648,46 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-6"
 
     <h4 class="display-block" id="dynamically-enabling-amf">Dynamically Enabling AMF</h4>
 
-    <p class="todo">Write me</p>
+    <figure id="plot_server_metadata_enabled_cached">
+<center>
+<img src="img/experiments/server_metadata_enabled/plot_cached_no_c.svg" alt="Effect of AMF result count thresholds with HTTP cache (non-C)" class="plot_non_c" />
+<img src="img/experiments/server_metadata_enabled/plot_cached_c.svg" alt="Effect of AMF result count thresholds with HTTP cache (C)" class="plot_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 5:</span> Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is enabled.</p>
+      </figcaption>
+</figure>
+
+    <figure id="plot_server_metadata_enabled_notcached">
+<center>
+<img src="img/experiments/server_metadata_enabled/plot_notcached_no_c.svg" alt="Effect of AMF result count thresholds without HTTP cache (non-C)" class="plot_non_c" />
+<img src="img/experiments/server_metadata_enabled/plot_notcached_c.svg" alt="Effect of AMF result count thresholds without HTTP cache (C)" class="plot_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 6:</span> Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is disabled.</p>
+      </figcaption>
+</figure>
+
+    <figure id="plot_threshold_serverload">
+<center>
+<img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 7:</span> Average server CPU usage for different AMF result count thresholds when caching is enabled and disabled.</p>
+      </figcaption>
+</figure>
+
+    <p><a href="#plot_server_metadata_enabled_cached">Fig. 5</a> shows lower AMF result count thresholds
+lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: 2.11e-07</em>),
+which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
+<a href="#plot_server_metadata_enabled_notcached">Fig. 6</a> shows that AMF result count thresholds
+also have an impact on query evaluation times when HTTP caching is disabled (<em>p-value: 0.0005</em>),
+but it does not necessarily lower it. For this experiment, setting the threshold to 10K leads to the lowest query evaluation times.</p>
+
+    <p><a href="#plot_threshold_serverload">Fig. 7</a> shows that lower AMF result count thresholds lead to lower server loads
+when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>).
+On the other hand, if HTTP caching is enabled,
+there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).</p>
 
     <h4 class="display-block" id="http-bandwidths">HTTP Bandwidths</h4>
 
@@ -658,7 +697,7 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-6"
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of HTTP bandwidth on non-AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 5:</span> Query evaluation times for different HTTP bandwidths when AMF is not used.</p>
+        <p><span class="label">Fig. 8:</span> Query evaluation times for different HTTP bandwidths when AMF is not used.</p>
       </figcaption>
 </figure>
 
@@ -668,7 +707,7 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-6"
 <img src="img/experiments/delay/plot_triple_c.svg" alt="Effect of HTTP bandwidth on triple AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 6:</span> Query evaluation times for different HTTP bandwidths for the triple-based AMF algorithm.</p>
+        <p><span class="label">Fig. 9:</span> Query evaluation times for different HTTP bandwidths for the triple-based AMF algorithm.</p>
       </figcaption>
 </figure>
 
@@ -678,11 +717,11 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-6"
 <img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of HTTP bandwidth on BGP AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 7:</span> Query evaluation times for different HTTP bandwidths for the BGP-based AMF algorithm.</p>
+        <p><span class="label">Fig. 10:</span> Query evaluation times for different HTTP bandwidths for the BGP-based AMF algorithm.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_delay_none">Fig. 5</a>, <a href="#plot_delay_triple">Fig. 6</a> and <a href="#plot_delay_bgp">Fig. 7</a> show the effects of different HTTP bandwidths
+    <p><a href="#plot_delay_none">Fig. 8</a>, <a href="#plot_delay_triple">Fig. 9</a> and <a href="#plot_delay_bgp">Fig. 10</a> show the effects of different HTTP bandwidths
 on query evaluation times over different algorithms.
 We observe that when not using AMF, or using the triple-level AMF algorithm,
 lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.
@@ -698,11 +737,11 @@ For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), w
 <img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 8:</span> Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.</p>
+        <p><span class="label">Fig. 11:</span> Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_in_vs_out_band">Fig. 8</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
+    <p><a href="#plot_in_vs_out_band">Fig. 11</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
 which rejects <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
 
@@ -718,11 +757,11 @@ in which we expected the number of HTTP requests to significantly decrease when 
 <img src="img/experiments/probabilities/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 9:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
+        <p><span class="label">Fig. 12:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_probabilities">Fig. 9</a> shows that different false-positive probabilities have some impact on query evaluation times.
+    <p><a href="#plot_probabilities">Fig. 12</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).
 This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
@@ -737,13 +776,13 @@ On average, a false-positive probability of 1/64 leads to the lowest query evalu
 <img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 10:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
+        <p><span class="label">Fig. 13:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
       </figcaption>
 </figure>
 
     <p>Our results have shown that even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 the diefficiency values are typically lower, which means that results come in at a lower rate.
-The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in <a href="#plot_query_times_F3">Fig. 10</a>,
+The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in <a href="#plot_query_times_F3">Fig. 13</a>,
 but is observable for other queries as well.
 This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
 This is because the BGP-based algorithms tends to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
@@ -774,14 +813,14 @@ However, decompression of GCS requires more work client-side, which explains the
 <img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 11:</span> Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
+        <p><span class="label">Fig. 14:</span> Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
 limited to the 1000 patterns with the most matches.</p>
       </figcaption>
 </figure>
 
     <p class="todo">Pre-computation is needed for AMFs of size 10.000. See <a href="#hypo-cache-4">Hypothesis 2.4</a> and <a href="#question-dynamic-restriction">RQ 3</a>.
 Say that only a small amount of AMFs exist with size &gt;10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)
-Motivate with <a href="#plot_triple_pattern_counts">Fig. 11</a>.</p>
+Motivate with <a href="#plot_triple_pattern_counts">Fig. 14</a>.</p>
 
   </section>
 

@@ -551,7 +551,7 @@ On average, each experiment combination required 1,5 hours to execute.</p>
 
     <p class="todo">We tested these hypotheses for equality using the Kruskal-Wallis test</p>
 
-    <h4 id="client-side-amf-algorithms">Client-side AMF Algorithms</h4>
+    <h4 class="display-block" id="client-side-amf-algorithms">Client-side AMF Algorithms</h4>
 
     <figure id="plot_client_algos">
 <center>
@@ -570,6 +570,16 @@ On average, each experiment combination required 1,5 hours to execute.</p>
 </center>
 <figcaption>
         <p><span class="label">Fig. 2:</span> Query evaluation times when enabling the heuristic in the client-side combined BGP algorithm.</p>
+      </figcaption>
+</figure>
+
+    <figure id="plot_client_algos_dief">
+<center>
+<img src="img/experiments/client_algos/dief_time.svg" alt="Diefficiency values for Client-side AMF Algorithms" class="plot_non_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 3:</span> Time diefficiency metric values for the different client-side algorithms for using AMF metadata.
+C3 and S7 are excluded as they produce no results.</p>
       </figcaption>
 </figure>
 
@@ -598,7 +608,16 @@ This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (<em>p-value: 0.1842</em>).</p>
 
-    <h4 id="caching">Caching</h4>
+    <p><a href="#plot_client_algos_dief">Fig. 3</a> shows the time diefficiency metric <span class="references">[<a href="#ref-11">11</a>]</span>
+values for all queries over all client-side algorithms.
+This metric is used to measure the continuous arrival rate of query results,
+where higher values indicate faster result arrival rates.
+For making comparisons between queries easier, we scaled these values per query from 0 to 1.
+The results show that querying without using the AMF metadata achieves the highest diefficiency values.
+This means that results start coming in sooner when AMF is not being used,
+even though the time until the last result is produced is typically higher compared to when AMF <em>is</em> used.</p>
+
+    <h4 class="display-block" id="caching">Caching</h4>
 
     <figure id="plot_caching">
 <center>
@@ -606,11 +625,11 @@ This improvement is however only small, and not statistically significant (<em>p
 <img src="img/experiments/caching/plot_c.svg" alt="Caching (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 3:</span> Logarithmic query evaluation times comparing server-side HTTP and AMF caching.</p>
+        <p><span class="label">Fig. 4:</span> Logarithmic query evaluation times comparing server-side HTTP and AMF caching.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_caching">Fig. 3</a> clearly shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
+    <p><a href="#plot_caching">Fig. 4</a> clearly shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
 We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>),
 which conforms <a href="#hypo-cache-1">Hypothesis 2.1</a>.
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
@@ -624,15 +643,15 @@ compared to just caching HTTP requests (<em>p-value: 0.7694</em>), which accepts
 While there are a few outliers where GCS is two to three times slower,
 the difference is only small in most cases, so we accept <a href="#hypo-cache-5">Hypothesis 2.5</a> with a low significance (<em>p-value: 0.1786</em>).</p>
 
-    <h4 id="dynamically-enabling-amf">Dynamically Enabling AMF</h4>
+    <h4 class="display-block" id="dynamically-enabling-amf">Dynamically Enabling AMF</h4>
 
     <p class="todo">Write me</p>
 
-    <h4 id="http-bandwidths">HTTP Bandwidths</h4>
+    <h4 class="display-block" id="http-bandwidths">HTTP Bandwidths</h4>
 
     <p class="todo">Write me</p>
 
-    <h4 id="in-band-vs-out-of-band">In-band vs. Out-of-band</h4>
+    <h4 class="display-block" id="in-band-vs-out-of-band">In-band vs. Out-of-band</h4>
 
     <figure id="plot_in_vs_out_band">
 <center>
@@ -640,11 +659,11 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-5"
 <img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 4:</span> Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.</p>
+        <p><span class="label">Fig. 5:</span> Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_in_vs_out_band">Fig. 4</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
+    <p><a href="#plot_in_vs_out_band">Fig. 5</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
 which rejects <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
 
@@ -652,7 +671,7 @@ which rejects <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
 As this difference is insignificant (<em>p-value: 0.406</em>), we can reject <a href="#hypo-inband-2">Hypothesis 5.2</a>
 in which we expected the number of HTTP requests to significantly decrease when we moved AMF metadata in-band.</p>
 
-    <h4 id="false-positive-probabilities">False-positive Probabilities</h4>
+    <h4 class="display-block" id="false-positive-probabilities">False-positive Probabilities</h4>
 
     <figure id="plot_probabilities">
 <center>
@@ -660,11 +679,11 @@ in which we expected the number of HTTP requests to significantly decrease when 
 <img src="img/experiments/probabilities/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 5:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
+        <p><span class="label">Fig. 6:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_probabilities">Fig. 5</a> shows that different false-positive probabilities have some impact on query evaluation times.
+    <p><a href="#plot_probabilities">Fig. 6</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).
 This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
@@ -673,6 +692,26 @@ On average, a false-positive probability of 1/64 leads to the lowest query evalu
     <h3 id="discussion">Discussion</h3>
 
     <p class="todo">Why are the results what they are?</p>
+
+    <figure id="plot_query_times_F3">
+<center>
+<img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 7:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
+      </figcaption>
+</figure>
+
+    <p>Our results have shown that even though total query evaluation times for the AMF-aware algorithms are mostly lower,
+the diefficiency values are typically lower, which means that results come in at a lower rate.
+The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in <a href="#plot_query_times_F3">Fig. 7</a>.
+This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
+This is because the BGP-based algorithms tend to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
+Even though we have this overhead, the gains we get from this are typically worth it,
+as results come in much faster once the AMFs have been downloaded.
+This behaviour is observable for most queries.</p>
+
+    <p class="todo">Future work: dynamically switching between algos to start producing results asap.</p>
 
     <p class="todo">This shows that using heuristics to determine when certain client-side algorithms have to be used can be beneficial,
 but needs further investigation.</p>
@@ -691,14 +730,14 @@ However, decompression of GCS requires more work client-side, which explains the
 <img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 6:</span> Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
+        <p><span class="label">Fig. 8:</span> Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
 limited to the 1000 patterns with the most matches.</p>
       </figcaption>
 </figure>
 
     <p class="todo">Pre-computation is needed for AMFs of size 10.000. See <a href="#hypo-cache-4">Hypothesis 2.4</a> and <a href="#question-dynamic-restriction">RQ 3</a>.
 Say that only a small amount of AMFs exist with size &gt;10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)
-Motivate with <a href="#plot_triple_pattern_counts">Fig. 6</a>.</p>
+Motivate with <a href="#plot_triple_pattern_counts">Fig. 8</a>.</p>
 
   </section>
 
@@ -734,6 +773,8 @@ Potentially also add a future work section where we add other AMF stuff we thoug
   <dd resource="http://componentsjs.readthedocs.io/en/latest/" typeof="schema:CreativeWork">Taelman, R.: Components.js. <a href="http://componentsjs.readthedocs.io/en/latest/">http:/​/​componentsjs.readthedocs.io/en/latest/</a></dd>
   <dt id="ref-10">[10]</dt>
   <dd resource="https://linkedsoftwaredependencies.org/articles/describing-experiments/" typeof="schema:Article">Van Herwegen, J., Taelman, R., Capadisli, S., Verborgh, R.: Describing configurations of software experiments as Linked Data. In: Proceedings of the First Workshop on Enabling Open Semantic Science (SemSci) (2017).</dd>
+  <dt id="ref-11">[11]</dt>
+  <dd resource="#diefficiency" typeof="schema:Article">Acosta, M., Vidal, M.-E., Sure-Vetter, Y.: Diefficiency metrics: measuring the continuous efficiency of query processing approaches. In: International Semantic Web Conference. pp. 3–19. Springer (2017).</dd>
 </dl>
 </section>
 </footer>

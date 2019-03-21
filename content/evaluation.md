@@ -133,6 +133,16 @@ Query evaluation times when enabling the heuristic in the client-side combined B
 </figcaption>
 </figure>
 
+<figure id="plot_client_algos_dief">
+<center>
+<img src="img/experiments/client_algos/dief_time.svg" alt="Diefficiency values for Client-side AMF Algorithms" class="plot_non_c">
+</center>
+<figcaption markdown="block">
+Time diefficiency metric values for the different client-side algorithms for using AMF metadata.
+C3 and S7 are excluded as they produce no results.
+</figcaption>
+</figure>
+
 [](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 
@@ -157,6 +167,15 @@ On average, setting the request size parameter value to 2000 has the lowest aver
 This case only achieves higher evaluation times for 1 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
+
+[](#plot_client_algos_dief) shows the [time diefficiency metric](cite:cites diefficiency)
+values for all queries over all client-side algorithms.
+This metric is used to measure the continuous arrival rate of query results,
+where higher values indicate faster result arrival rates.
+For making comparisons between queries easier, we scaled these values per query from 0 to 1.
+The results show that querying without using the AMF metadata achieves the highest diefficiency values.
+This means that results start coming in sooner when AMF is not being used,
+even though the time until the last result is produced is typically higher compared to when AMF _is_ used.
 
 #### Caching
 
@@ -237,6 +256,28 @@ On average, a false-positive probability of 1/64 leads to the lowest query evalu
 ### Discussion
 
 Why are the results what they are?
+{:.todo}
+
+
+<figure id="plot_query_times_F3">
+<center>
+<img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c">
+</center>
+<figcaption markdown="block">
+Query result arrival times for query F3 for the different client-side algorithms.
+</figcaption>
+</figure>
+
+Our results have shown that even though total query evaluation times for the AMF-aware algorithms are mostly lower,
+the diefficiency values are typically lower, which means that results come in at a lower rate.
+The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in [](#plot_query_times_F3).
+This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
+This is because the BGP-based algorithms tend to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
+Even though we have this overhead, the gains we get from this are typically worth it,
+as results come in much faster once the AMFs have been downloaded.
+This behaviour is observable for most queries.
+
+Future work: dynamically switching between algos to start producing results asap.
 {:.todo}
 
 This shows that using heuristics to determine when certain client-side algorithms have to be used can be beneficial,

@@ -417,9 +417,99 @@ and serves more to indicate that there is still much potential there for future 
   <section id="implementation">
     <h2>Implementation</h2>
 
-    <p class="todo">Describe how this was implemented in Comunica
-(and a light overview of how Comunica works and allows this to be done easily?).
-Also explain the server side stuff.</p>
+    <p class="todo">There is too much overlap with the previous section, should merge or re-think how to handle probably.</p>
+
+    <p>To implement our solution described in <a href="#solution">Section 4</a> we made use of the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica framework</a> <span class="references">[<a href="#ref-5">5</a>]</span>,
+which already fully supports the TPF algorithm.
+Its modular structure makes it ideal for us to add on to the existing implementation,
+without having to change the existing code base.
+Adding our features to the Comunica ecosystem caused us to create <a href="https://github.com/comunica/comunica-feature-amf.git">8 new modules</a>
+to integrate our new features with the framework.</p>
+
+    <p>Since there is no modular infrastructure on the server side,
+we created a <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2">new branch</a> in the repository that supports returning the required metadata.</p>
+
+    <h3 id="integration-with-comunica">Integration with Comunica</h3>
+
+    <p class="todo">Put Comunica description summary completely in related work and reference that?</p>
+
+    <p>For a full overview of how Comunica works,
+we refer to the resource <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">paper</a> <span class="references">[<a href="#ref-5">5</a>]</span>.
+The main idea is that an instance consists of many actors
+that all fulfill a specific task.
+Actors don’t communicate directly with each other:
+if input is required from an actor with a different function
+this gets done by a mediator in-between.
+Such a mediator has a collection of actors implementing the same functionality (a bus),
+and then picks one to execute the given request.</p>
+
+    <p>For our Comunica implementation,
+we added components on several levels:</p>
+
+    <ul>
+      <li>An actor to extract AMF metadata</li>
+      <li>Two actors to apply Bloom and GCS membership filters to RDF data</li>
+      <li>A bus module to group membership filter actors</li>
+      <li>An actor implementing the original AMF algorithm <span class="references">[<a href="#ref-4">4</a>]</span></li>
+      <li>Two new BGP actors, to apply two different implementations of our AMF algorithm</li>
+      <li>A new SPARQL actor with a new default config that also includes these AMF actors</li>
+    </ul>
+
+    <p>All these actors can be independently to an existing Comunica framework,
+depending on the needs of the user.
+For the evaluations in <a href="#evaluation">Section 6</a>,
+we created several config files,
+enabling and disabling some of these features as required for the given test.
+They could also easily be integrated into the framework,
+since there already were actors to extract metadata,
+or actors to handle BGPs,
+these actors were simply added next to the existing ones or replaced them.</p>
+
+    <h4 id="bgp-actor">BGP actor</h4>
+
+    <p class="todo">Pictures could probably help here.</p>
+
+    <p>Since the biggest change compared to the previous work is the new BGP algorithm,
+we will delve deeper into the implementation of that actor.
+<a href="#tpf">Listing 1</a> contains a simplified view at how the current framework handles BGP resolution in Comunica.
+Since we want to make use of the modular nature of Comunica,
+and not edit the existing code,
+we can’t actually add our code in the existing actor.
+To handle this,
+we made a new BGP actor, BGP-AMF, that gets called before the original BGP actor receives the patterns.
+()[#bgp-amf] shows a simplified version of what this actor does.</p>
+
+    <figure id="bgp-amf" class="listing">
+<pre><code>function solve (patterns) {
+</code><code>  for (pattern in patterns) {
+</code><code>    for (boundValue in pattern) {
+</code><code>      if (!pattern.parentAMF.check(boundValue))
+</code><code>        return;
+</code><code>    }
+</code><code>  }
+</code><code>  
+</code><code>  return bgpMediator.call(patterns);
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 3:</span> New BGP-AMF actor.</p>
+      </figcaption>
+</figure>
+
+    <p>The <code>parentAMF</code> variable seen there is the filter metadata of the pattern in the previous iteration.
+This means that if the pattern was bound to a certain value in this iteration,
+it still has the filter for the variable that was in that position.
+In case the metadata is sent out-of-band,
+the actual filter would only be downloaded at this point due to lazy programming.</p>
+
+    <p>For the sake of brevity we will not show a code sample of the second implementation.
+But the idea with that actor is to first group all filters based on the variable they are applicable to.
+In case of out-of-band data, this actor would prefetch the metadata simultaneously,
+helping performance.
+In case the heuristic mentioned before was enabled, both these actors would also be responsible for making use of it.</p>
+
+    <h3 id="server-metadata">Server metadata</h3>
+
+    <p class="todo">Is there added value in describing what the metadata looks like here?</p>
 
   </section>
 
@@ -827,8 +917,37 @@ Motivate with <a href="#plot_triple_pattern_counts">Fig. 14</a>.</p>
   <section id="conclusions">
     <h2>Conclusions</h2>
 
-    <p class="todo">Describe lessons learned.
-Potentially also add a future work section where we add other AMF stuff we thought of but didn’t do.</p>
+    <p>In this paper we showed how there are many ways AMF metadata can be used
+to increase query performances over TPF endpoints.
+Depending on how the metadata is used,
+it can have a definite impact on the results.
+There are still choices that have to be made sometimes,
+depending on factors such as the server capabilities,
+expected load, query diversity, data size, and so on.</p>
+
+    <p>To evaluate all these different options,
+we made use of the Comunica framework.
+In our evaluation section we have clearly shown the added advantage
+of using such a framework for testing purposed.
+Without much effort, we were capable of running a diverse set of tests over many different configurations.
+Whereas this would usually take quite some work to set everything up every time,
+and would require multiple implementations,
+here we could easily swap out different setups.</p>
+
+    <p>We did not cover everything that is possible with the membership filters for SPARQL queries.
+There are still plenty of options that can be researched.
+For one there is the heuristic to determine when it is actually profitable to download the filters.
+In this paper we presented a simple heuristic 
+to determine situations where the extra overhead is actually a disadvantage,
+But much more work can be done in fine-tuning this.</p>
+
+    <p>Another avenue that has not yet been tested is how this would perform in a federated environment
+and how filters of multiple sources could be combined.
+A possibility would be to use the response of one source to filter results on another source,
+similar to how <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">brTPF</a></span> <span class="references">[<a href="#ref-12">12</a>]</span> sends extra data to a server.</p>
+
+    <p class="todo">If we cut stuff out of the evaluation section we can put it here as future work.</p>
+
   </section>
 
 </main>
@@ -858,6 +977,8 @@ Potentially also add a future work section where we add other AMF stuff we thoug
   <dd resource="https://linkedsoftwaredependencies.org/articles/describing-experiments/" typeof="schema:Article">Van Herwegen, J., Taelman, R., Capadisli, S., Verborgh, R.: Describing configurations of software experiments as Linked Data. In: Proceedings of the First Workshop on Enabling Open Semantic Science (SemSci) (2017).</dd>
   <dt id="ref-11">[11]</dt>
   <dd resource="#diefficiency" typeof="schema:Article">Acosta, M., Vidal, M.-E., Sure-Vetter, Y.: Diefficiency metrics: measuring the continuous efficiency of query processing approaches. In: International Semantic Web Conference. pp. 3–19. Springer (2017).</dd>
+  <dt id="ref-12">[12]</dt>
+  <dd resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48" typeof="schema:Article">Hartig, O., Buil-Aranda, C.: Bindings-Restricted Triple Pattern Fragments. In: Proceedings of the 15th International Conference on Ontologies, DataBases, and Applications of Semantics. pp. 762–779 (2016).</dd>
 </dl>
 </section>
 </footer>

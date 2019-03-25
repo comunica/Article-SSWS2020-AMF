@@ -321,9 +321,28 @@ On average, a false-positive probability of 1/64 leads to the lowest overall que
 
 ### Discussion
 
-Why are the results what they are?
-{:.todo}
+#### BGP-based algorithms improve query efficiency
 
+Results show that our new client-side BGP-based algorithms that use AMF metadata
+significantly reduce query evaluation times  (_[Research Question 1](#question-combine)_).
+However, the are a few outliers where our new algorithms perform _worse_ than the triple-based algorithm.
+Our results have shown that a heuristic that can decide whether or not to use the BGP-based algorithm can solve this problem,
+but further research is needed to come up with a more general heuristic that works in a variety of cases
+and is not overfitted to these experiments.
+
+#### BGP-based algorithms postpone time to first results
+
+Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
+the diefficiency values are typically lower, which means that results come in at a lower rate.
+The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in [](#plot_query_times_F3),
+but is observable for other queries as well.
+This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
+This is because the BGP-based algorithms tends to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
+Even though we have this overhead, the gains we get from this are typically worth it,
+as results come in much faster once the AMFs have been downloaded.
+This figure shows that dynamically switching between different algorithms may be interesting to investigate in future work.
+Our HTTP bandwidth experiment results confirm this, and show that higher bandwidths
+lead to even more performance gains for the BGP-level algorithms (_[Research Question 4](#question-bandwidth)_).
 
 <figure id="plot_query_times_F3">
 <center>
@@ -334,51 +353,62 @@ Query result arrival times for query F3 for the different client-side algorithms
 </figcaption>
 </figure>
 
-Our results have shown that even though total query evaluation times for the AMF-aware algorithms are mostly lower,
-the diefficiency values are typically lower, which means that results come in at a lower rate.
-The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen in [](#plot_query_times_F3),
-but is observable for other queries as well.
-This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
-This is because the BGP-based algorithms tends to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
-Even though we have this overhead, the gains we get from this are typically worth it,
-as results come in much faster once the AMFs have been downloaded.
-Our HTTP bandwidth experiment results confirm this, and show that higher bandwidths
-lead to even more performance gains for the BGP-level algorithms.
+#### Pre-computation and caching of AMFs is essential
 
-Future work: dynamically switching between algos to start producing results asap.
-{:.todo}
+Our results show that AMF-aware querying only has a positive impact on query evaluation times
+if the server can deliver AMF filters sufficiently fast (_[Research Question 2](#question-cache)_).
+Furthermore, if no cache is active, AMF-aware querying performs _worse_ than non-AMF-aware querying.
+Ideally, all AMFs should be pre-computed, but due to the large number of possible triple patterns in a dataset,
+this is not feasible.
+On the other hand, our results have shown that server-side on-the-fly creation of AMFs
+only starts to have a significant impact for sizes larger than 10.000 (_[Research Question 3](#question-dynamic-restriction)_).
 
-This shows that using heuristics to determine when certain client-side algorithms have to be used can be beneficial,
-but needs further investigation.
-{:.todo}
+On a low-end machine (2,7 GHz Intel Core i5, 8GB RAM), creation of AMFs takes 0,0125 msec per triple,
+which means that AMF creation of size 10.000 takes only 0,125 seconds.
+As such, AMFs of size 10.000 or less can be created with acceptable durations for Web servers,
+after which they can still be cached.
 
-In-band vs out-band has no effect. However, for clients that don't use AMF, this _will_ have an impact. Suggestion: do everything out-band.
-The main bulk of requests are paged TPFs in any case, AMF is only a small subset.
-{:.todo}
-
-Server-side AMF filter caching has no significant effect when a HTTP cache is used.
-{:.todo}
-
-Caching is already important for pure TPF, but it is even more important for AMF-TPF, because of the high calc times for AMFs.
-Without caching AMF performs worse than pure TPF, so in that case AMF has no benefits.
-{:.todo}
-
-When AMFs can be pre-computed, Bloom is faster than GCS.
-This is because computation of Bloom requires more work than GCS.
-However, decompression of GCS requires more work client-side, which explains the higher query eval times.
-{:.todo}
+[](#plot_triple_pattern_counts) shows that there is only a very small amount of triple patterns with a very large amount of matches.
+When setting the WatDiv dataset to a size of 10M triples, there are only 90 triple patterns with a size larger than 10.000.
+Setting that size to 100M triples, this number increases to 255, so this is not a linear increase.
+Due to this low number of very large patterns, we can easily pre-compute these offline before dataset publication time.
+As the WatDiv dataset achieves a high diversity of [_structuredness_, it is similar to real-world RDF datasets](cite:cites realism),
+as such this behaviour can be generalized to other datasets with a similar structuredness.
 
 <figure id="plot_triple_pattern_counts">
 <center>
-<img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts">
+<img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts" class="plot_non_c">
 </center>
 <figcaption markdown="block">
 Logarithmic plot of the number of matches for triple patterns in five dataset over varying sizes,
 limited to the 1000 patterns with the most matches.
+Triple patterns are sorted by decreasing number of matches.
 </figcaption>
 </figure>
 
-Pre-computation is needed for AMFs of size 10.000. See [Hypothesis 2.4](#hypo-cache-4) and [RQ 3](#question-dynamic-restriction).
-Say that only a small amount of AMFs exist with size >10.000 (realistic dataset) (73 for dataset of size 10M, TODO for 100M)
-Motivate with [](#plot_triple_pattern_counts).
-{:.todo}
+#### Bloom filters are preferred over GCSs with active cache
+
+Results show that when AMFs are pre-computed,
+Bloom filters achieve faster query evaluation times than GCS (_[Research Question 2](#question-cache)_).
+This is because Bloom filter creation requires less effort client-side than GCS due to the simpler decompression,
+at the cost of more server effort.
+However, this higher server effort is negligible if AMFs can be pre-computed.
+As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.
+
+#### Always emit AMF metadata out-of-band
+
+Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
+on query evaluation times and the total number of HTTP requests (_[Research Question 5](#question-inband)_).
+However, as there may be clients that do no understand AMF metadata,
+there will be HTTP data transfer overhead when AMF metadata would be included in-band.
+For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.
+
+#### A good trade-off between false-positive probabilities and AMF size
+
+Lowering the false-positive probability of an AMF increases its size.
+As we have seen that larger AMFs have an impact on query evaluation times,
+we don't want AMFs to become too large.
+On the other hand, we don't want the false-positive probabilities to become too low,
+as that leads to more unneeded HTTP requests.
+Our results have shown that a probability of 1/64 leads to an optimal trade-off for our experiments (_[Research Question 6](#question-probabilities)_).
+However, further research is needed to investigate this trade-off for other types of datasets and queries.

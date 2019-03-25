@@ -33,21 +33,18 @@ We list these as research questions for our work, and defined hypotheses for eac
     4. {:#hypo-cache-4} With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.
     5. {:#hypo-cache-5} Query evaluation with a cold cache is significantly slower than query evaluation with a warm cache.
     6. {:#hypo-cache-6} With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.
-    <!--1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.
-    2. {:#hypo-precompute-2} GCS achieves faster client-side query execution than Bloom filters when pre-computed.
-    3. {:#hypo-precompute-3} GCS achieves slower client-side query execution than Bloom filters when not pre-computed.-->
 3. {:#question-dynamic-restriction}
     **To what extent can TPF server load be reduced by _dynamically restricting_ AMF generation?**
     <br />
     Earlier work introduced AMF as a feature that was always enabled.
-    However, some specific AMFs may be too expensive for servers to calculate in bursts.
-    As such, it may be beneficial to _dynamically enable_ AMFs only under specific circumstances,
+    However, some specific AMFs may be too expensive for servers to calculate on-the-fly.
+    As such, it may be beneficial to only _dynamically enable_ AMFs under specific circumstances,
     e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
     <br />
     **Hypotheses:**
-    1. {:#hypo-dynamic-restriction-1} Lowering the result count threshold increases client-side query execution time when AMFs are cached.
-    2. {:#hypo-dynamic-restriction-2} Lowering the result count threshold reduces server load when AMFs are cached.
-    3. {:#hypo-dynamic-restriction-3} Lowering the result count threshold does not impact server load when AMFs are not cached.
+    1. {:#hypo-dynamic-restriction-1} Lowering the threshold increases client-side query execution time when AMFs are cached.
+    2. {:#hypo-dynamic-restriction-2} Lowering the threshold reduces server load when AMFs are not cached.
+    3. {:#hypo-dynamic-restriction-3} Lowering the threshold does not impact server load when AMFs are cached.
 4. {:#question-bandwidth}
     **What impact does the HTTP bandwidth have on client-side performance with AMFs?**
     <br />
@@ -68,7 +65,6 @@ We list these as research questions for our work, and defined hypotheses for eac
     **Hypotheses:**
     1. {:#hypo-inband-1} Including AMF metadata in-band reduces client-side query execution time.
     2. {:#hypo-inband-2} Including AMF metadata in-band reduces the total required number of HTTP requests.
-    <!--3. {:#hypo-inband-3} Bloom filters are more sensitive than GCS to query execution time when including AMF metadata in-band or not.-->
 6. {:#question-probabilities}
     **Which AMF _false-positive probabilities_ achieve the best client-side query performance?**
     <br />

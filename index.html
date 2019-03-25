@@ -223,24 +223,21 @@ we will investigate the impact of caching AMFs and all HTTP requests in general.
           <li id="hypo-cache-3">Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
           <li id="hypo-cache-4">With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.</li>
           <li id="hypo-cache-5">Query evaluation with a cold cache is significantly slower than query evaluation with a warm cache.</li>
-          <li id="hypo-cache-6">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.
-&lt;!–1. {:#hypo-precompute-1} When all AMFs are pre-computed, AMF-aware client-side query execution is faster than non-AMF-aware execution.</li>
-          <li id="hypo-precompute-2">GCS achieves faster client-side query execution than Bloom filters when pre-computed.</li>
-          <li id="hypo-precompute-3">GCS achieves slower client-side query execution than Bloom filters when not pre-computed.–&gt;</li>
+          <li id="hypo-cache-6">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.</li>
         </ol>
       </li>
       <li id="question-dynamic-restriction"><strong>To what extent can TPF server load be reduced by <em>dynamically restricting</em> AMF generation?</strong>
 <br />
 Earlier work introduced AMF as a feature that was always enabled.
-However, some specific AMFs may be too expensive for servers to calculate in bursts.
-As such, it may be beneficial to <em>dynamically enable</em> AMFs only under specific circumstances,
+However, some specific AMFs may be too expensive for servers to calculate on-the-fly.
+As such, it may be beneficial to only <em>dynamically enable</em> AMFs under specific circumstances,
 e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-dynamic-restriction-1">Lowering the result count threshold increases client-side query execution time when AMFs are cached.</li>
-          <li id="hypo-dynamic-restriction-2">Lowering the result count threshold reduces server load when AMFs are cached.</li>
-          <li id="hypo-dynamic-restriction-3">Lowering the result count threshold does not impact server load when AMFs are not cached.</li>
+          <li id="hypo-dynamic-restriction-1">Lowering the threshold increases client-side query execution time when AMFs are cached.</li>
+          <li id="hypo-dynamic-restriction-2">Lowering the threshold reduces server load when AMFs are not cached.</li>
+          <li id="hypo-dynamic-restriction-3">Lowering the threshold does not impact server load when AMFs are cached.</li>
         </ol>
       </li>
       <li id="question-bandwidth"><strong>What impact does the HTTP bandwidth have on client-side performance with AMFs?</strong>
@@ -264,8 +261,7 @@ with the TPF HTTP responses could improve query performance.
 <strong>Hypotheses:</strong>
         <ol>
           <li id="hypo-inband-1">Including AMF metadata in-band reduces client-side query execution time.</li>
-          <li id="hypo-inband-2">Including AMF metadata in-band reduces the total required number of HTTP requests.
-<!--3. {:#hypo-inband-3} Bloom filters are more sensitive than GCS to query execution time when including AMF metadata in-band or not.--></li>
+          <li id="hypo-inband-2">Including AMF metadata in-band reduces the total required number of HTTP requests.</li>
         </ol>
       </li>
       <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
@@ -423,11 +419,13 @@ and serves more to indicate that there is still much potential there for future 
 which already fully supports the TPF algorithm.
 Its modular structure makes it ideal for us to add on to the existing implementation,
 without having to change the existing code base.
-Adding our features to the Comunica ecosystem caused us to create <a href="https://github.com/comunica/comunica-feature-amf.git">8 new modules</a>
+Adding our features to the Comunica ecosystem caused us to create <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">8 new modules</a>
 to integrate our new features with the framework.</p>
 
     <p>Since there is no modular infrastructure on the server side,
-we created a <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2">new branch</a> in the repository that supports returning the required metadata.</p>
+we created a <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">new branch</a> in the repository that supports returning the required metadata.</p>
+
+    <p class="todo">Anonymize source code links</p>
 
     <h3 id="integration-with-comunica">Integration with Comunica</h3>
 
@@ -477,7 +475,7 @@ and not edit the existing code,
 we can’t actually add our code in the existing actor.
 To handle this,
 we made a new BGP actor, BGP-AMF, that gets called before the original BGP actor receives the patterns.
-()[#bgp-amf] shows a simplified version of what this actor does.</p>
+<a href="#bgp-amf">Listing 3</a> shows a simplified version of what this actor does.</p>
 
     <figure id="bgp-amf" class="listing">
 <pre><code>function solve (patterns) {
@@ -516,9 +514,10 @@ In case the heuristic mentioned before was enabled, both these actors would also
   <section id="evaluation">
     <h2>Evaluation</h2>
 
-    <p>In order to answer the research questions from <a href="#problem-statement">Section 3</a>,
-we evaluate our approach, and report their results.
-We first introduce a reusable benchmarking framework to achieve fully reproducible results.</p>
+    <p>The goal of this section is to answer the research questions from <a href="#problem-statement">Section 3</a>.
+We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
+Next, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.
+Finally, we discuss these results to answer our research questions.</p>
 
     <h3 id="reusable-benchmarking-framework">Reusable Benchmarking Framework</h3>
 
@@ -529,7 +528,7 @@ for setting up experiments, running them, and generating plots.
 In order to avoid re-inventing the wheel again for this work, and for future works in this domain,
 we developed a reusable benchmarking framework for Linked Data Fragments experiments, called <em>Comunica Bencher</em>.
 This tool is based on <a href="https://www.docker.com/">Docker</a>, and allows isolated execution of experiments over different containers.
-Experiment configuration are fully <em>declarative</em>, and they can exist in standalone repositories.
+Experiment configurations are fully <em>declarative</em>, and they can exist in standalone repositories.
 In order to achieve deterministic reproducibility,
 a summary of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-10">10</a>]</span>
 will be generated after each run together with the evaluation results.
@@ -567,80 +566,50 @@ Comunica Bencher is <em>open-source</em>, and is available on GitHub.</p>
 
     <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Section 5</a>,
 we defined six experiments, corresponding to our six research questions from <a href="#problem-statement">Section 3</a>.
-Each experiment consists of a number of <em>factors</em>, over which all possible combinations are tested.
-The declararive configuration files for running these experiments with Comunica Bencher are present on GitHub,
-and can be started from scratch by <em>executing a single command</em>.</p>
+The declararive configuration files for running these experiments with Comunica Bencher are present on <a href="https://github.com/comunica/Experiments-AMF" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​Experiments-​AMF">GitHub</a> under an open license,
+and can be started from scratch by <em>executing a single command</em>.
+Furthermore, all raw results and scripts for analyzing them can be found in this same repository.</p>
 
-    <p class="todo">Include link to anonymized source code dump, experiment configs, raw results, and R code.</p>
+    <p class="todo">Anonimize link to repo</p>
 
-    <p class="todo">Include skip-bgp-heurtistic and caching-none and warm-cold-cache and filter-types</p>
-
-    <ol>
-      <li><strong>Client-side AMF Algorithms</strong>: Evaluation of different client-side algorithms for using AMF metadata.
- <br />
- Factors:
-        <ol>
-          <li>Client-side AMF algorithm: None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined</li>
-        </ol>
-      </li>
-      <li><strong>Caching</strong>: Evaluating the effects of caching TPFs and AMF filters.
- <br />
- Factors:
-        <ol>
-          <li>General HTTP cache: enabled, disabled</li>
-          <li>Dedicated AMF filter cache: enabled, disabled</li>
-        </ol>
-      </li>
-      <li><strong>Dynamically Enabling AMF</strong>: Evaluation of dynamically enabling AMF metadata.
- <br />
- <em>General HTTP cache and warmup phase is disabled in this experiment to evaluate cold-start.</em>
- <br />
- Factors:
-        <ol>
-          <li>Result count threshold: 0, 1.000, 10.000, 100.000, 1.000.000</li>
-          <li>Dedicated AMF filter cache: enabled, disabled</li>
-        </ol>
-      </li>
-      <li><strong>HTTP Bandwidths</strong>: Evaluation of different network bandwidths.
- <br />
- Factors:
-        <ol>
-          <li>Network bandwidths: 256kbps, 512kbps, 2048kbps, 4096kbps</li>
-          <li>Client-side AMF algorithm: None, Triple, BGP</li>
-        </ol>
-      </li>
-      <li><strong>In-band vs. Out-of-band</strong>: Evaluation of exposing AMF metadata in-band or not.
- <br />
- Factors:
-        <ol>
-          <li>AMF triple count threshold: 0, 1.000, 10.000, 100.000, 1.000.000</li>
-        </ol>
-      </li>
-      <li><strong>False-positive Probabilities</strong>: Evaluation of different AMF false-positive Probabilities.
- <br />
- Factors:
-        <ol>
-          <li>Probabilities: 1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2</li>
-        </ol>
-      </li>
-    </ol>
-
-    <p>All of these experiments have several things in common, unless indicated otherwise.
+    <p>All of the following experiments have several things in common, unless indicated otherwise.
 First, they are all executed using WatDiv with a dataset scale of 100,
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
 Each experiment includes a warmup phase,
 and averages results over 3 separate runs.
 During this warmup phase, the server caches all generated AMFs.
 Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
-Finally, each experiment uses an NGINX HTTP cache —unless indicated otherwise—,
-and the client-side query timeout has been set to 5 minutes.</p>
+Finally, each experiment uses an NGINX HTTP cache,
+and the client-side query timeout has been set to 5 minutes.
+All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU.</p>
 
-    <p>All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU.
-On average, each experiment combination required 1,5 hours to execute.</p>
+    <ol>
+      <li><strong>Client-side AMF Algorithms</strong>:
+ First, we compare different client-side algorithms (<em>None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined</em>)
+ for using AMF metadata.
+ Next, we compare different constants for the BGP actor-skipping heurtistic.
+ Finally, we compare the effects of exposing different AMF filter implementations (<em>Bloom, GCS</em>) server-side.</li>
+      <li><strong>Caching</strong>:
+ In this experiment, we evaluate the effects of caching all HTTP requests combined with caching AMF filters server-side.
+ We also compare the effects of using AMF metadata client-side or not.
+ Finally, we test the effects of warm and cold caches.</li>
+      <li><strong>Dynamically Enabling AMF</strong>:
+ In this experiment, we compare different result count thresholds (<em>0, 1.000, 10.000, 100.000, 1.000.000</em>) with each other,
+ with either the server-side AMF filter cache enabled or not.
+ We disable the HTTP cache and warmup phase to evaluate a cold-start.</li>
+      <li><strong>HTTP Bandwidths</strong>:
+ Different network bandwidths (<em>256kbps, 512kbps, 2048kbps, 4096kbps</em>) are evaluated, and their effects or different AMF algorithms (<em>None, Triple, BGP Combined</em>) are tested.</li>
+      <li><strong>In-band vs. Out-of-band</strong>:
+ For this experiment, we test the effects of different triple count thresholds (<em>0, 1.000, 10.000, 100.000, 1.000.000</em>) for exposing AMF metadata in-band or not.</li>
+      <li><strong>False-positive Probabilities</strong>:
+ In this final experiment, we compare different AMF false-positive probabilities (<em>1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2</em>).</li>
+    </ol>
 
     <h3 id="results">Results</h3>
 
-    <p class="todo">We tested these hypotheses for equality using the Kruskal-Wallis test</p>
+    <p>In this section, we present the results for each of our experiments separately.
+We tested our hypotheses statistically by comparing means using the Kruskal-Wallis test,
+and report on their p-values (<em>low values indicate non-equal means</em>).</p>
 
     <h4 class="display-block" id="client-side-amf-algorithms">Client-side AMF Algorithms</h4>
 
@@ -675,9 +644,8 @@ C3 and S7 are excluded as they produce no results.</p>
 </figure>
 
     <p><a href="#plot_client_algos">Fig. 1</a> shows the query evaluation times for our first experiment
-on the different client-side algorithms for using AMF metadata.</p>
-
-    <p>In line with what was shown in the first TPF AMF experiments <span class="references">[<a href="#ref-4">4</a>]</span>,
+on the different client-side algorithms for using AMF metadata.
+In line with what was shown in the first TPF AMF experiments <span class="references">[<a href="#ref-4">4</a>]</span>,
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
 Only for 5 of the 20 queries, evaluation times are worse.
@@ -703,8 +671,8 @@ This improvement is however only small, and not statistically significant (<em>p
 values for all queries over all client-side algorithms.
 This metric is used to measure the continuous arrival rate of query results,
 where higher values indicate faster result arrival rates.
-For making comparisons between queries easier, we scaled these values per query from 0 to 1.
-The results show that querying without using the AMF metadata achieves the highest diefficiency values.
+For making comparisons possible, we scaled these values per query from 0 to 1.
+The results show that querying without using AMF metadata achieves the highest diefficiency values.
 This means that results start coming in sooner when AMF is not being used,
 even though the time until the last result is produced is typically higher compared to when AMF <em>is</em> used.</p>
 
@@ -720,7 +688,7 @@ even though the time until the last result is produced is typically higher compa
       </figcaption>
 </figure>
 
-    <p><a href="#plot_caching">Fig. 4</a> clearly shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
+    <p><a href="#plot_caching">Fig. 4</a> shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
 We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>),
 which conforms <a href="#hypo-cache-1">Hypothesis 2.1</a>.
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
@@ -772,10 +740,10 @@ lead to higher query evaluation times when HTTP caching is enabled (<em>p-value:
 which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
 <a href="#plot_server_metadata_enabled_notcached">Fig. 6</a> shows that AMF result count thresholds
 also have an impact on query evaluation times when HTTP caching is disabled (<em>p-value: 0.0005</em>),
-but it does not necessarily lower it. For this experiment, setting the threshold to 10K leads to the lowest query evaluation times.</p>
+but it does not necessarily lower it. For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.</p>
 
     <p><a href="#plot_threshold_serverload">Fig. 7</a> shows that lower AMF result count thresholds lead to lower server loads
-when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>).
+when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>.
 On the other hand, if HTTP caching is enabled,
 there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).</p>
 
@@ -853,9 +821,9 @@ in which we expected the number of HTTP requests to significantly decrease when 
 
     <p><a href="#plot_probabilities">Fig. 12</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).
-This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
+This means that we can reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
-On average, a false-positive probability of 1/64 leads to the lowest query evaluation times for this experiment.</p>
+On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.</p>
 
     <h3 id="discussion">Discussion</h3>
 

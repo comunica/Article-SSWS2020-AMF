@@ -1,41 +1,44 @@
 ## Introduction
 {:#introduction}
 
-In the past years there has been a rise in popularity for non-SPARQL solutions to publish linked data.
-One of the more prominent new interfaces is the [Triple Pattern Fragments (TPF) interface](cite:cites ldf).
-This data access interface is situated somewhere between data dumps and SPARQL interfaces in complexity.
-Many extensions and variants have been developed already, such as [versioning](cite:cites vtpf)
-or new [query algorithms](cite:cites tpfoptimization).
+Over the recent years, various [Linked Data Fragments (LDFs)](cite:cites ldf) have been introduced
+as ways to publish Linked Data on the Web.
+The [Triple Pattern Fragments (TPF) interface](cite:cites ldf) interface was introduced
+as a trade-off between server load and client-side querying effort.
+It restricts the server interface to triple pattern queries,
+so that full SPARQL queries have to be evaluated client-side.
+TPF is a hypermedia interface that is self-descriptive.
+This allows smart clients to detect metadata and controls,
+which can be used to enhance the query evaluation process if the client understands these descriptions.
+This self-descriptiveness has lead to the introduction of
+[various interface features](cite:cites amf2015, tpfoptimization, vtpf).
 
-Many of these variants work by adding additional metadata to either the server requests or responses.
-These can provide more fine-grained details than can seen by just looking at the data returned.
-Additionally, adding extra metadata doesn't break existing solutions:
-older solutions will just ignore the additional metadata
-and still do their work based on the rest that was provided.
+Vander Sande et al. introduced the [Approximate Membership Filters (AMFs)](cite:cites amf2015) feature,
+which adds AMFs as metadata to TPF.
+Clients can detect and use these AMFs to reduce potentially high the number of membership subqueries
+by pre-filtering potential results client-side, as a way of reducing the number expensive HTTP requests.
+While the authors achieved their goal of reducing the number of HTTP requests,
+their approach did not manage to reduce overall query evaluation times.
 
-One of these variants was designed by Vander Sande et al.
-They tested the effect of generating [Approximate Membership Filters (AMFs)](cite:cites amf2015) 
-for certain triple patterns and returning that as metadata in the TPF response.
-In this paper we are going to research how the ideas presented in that paper
-can be extended and made more applicable to more general cases.
+The goal of our work is to investigate unexplored aspects of AMF.
+We do this by introducing new client-side algorithms for exploiting AMF metadata,
+and by investigating different ways of exposing AMFs server-side.
+Concretely, we introduce client-side algorithms that can use AMFs at more high-level BGPs,
+instead of only for fully materialized triple patterns as was introduced by Vander Sande et al.
+Furthermore, we evaluate the effects and feasibility of server-side pre-computation and caching of AMFs,
+and the effects of different HTTP bandwidths, in-band AMFs, and different false-positive probabilities.
 
-For this we made use of the [Comunica framework](cite:cites comunica),
-which is a modular meta query engine.
-Due to its modular nature it is perfect for easily comparing the effects of adding and removing multiple features:
-those specific modules simply have to be enabled or disabled when running the corresponding tests.
-This makes it much easier for us to do extensive evaluations as can be seen in [](#evaluation).
-Additionally, Comunica already supports full TPF support out of the box,
-meaning our AMF additions could be added as separate modules to the already existing framework.
+Due to the large number of combinations that are compared in our experiments,
+we introduce a reusable benchmarking framework, called _Comunica Bencher_.
+It builds on top of the highly modular [Comunica framework](cite:cites comunica) for Linked Data querying,
+by working with fully declarative experiment descriptions that offer reproducible experimental results.
+It lowers the barrier for reproducing the results of this work,
+and creating new similar experiments in the future.
 
-We also developed several tools helping in the evaluation automation.
-Since a Comunica deployment is fully defined by its configuration file,
-we made a system that generates those files for a required test setup
-and automatically run tests over the corresponding Comunica implementation.
-This allows us to be quite flexible and extensive in our evaluations.
-
-In the next section we cover the related work pertaining to this paper.
-After that, we go over the problem statement in [](#problem-statement)
-followed by our suggested solution in [](#solution).
-Our actual implementation is described in [](#implementation),
-together with all our evaluations in [](#evaluation).
-We finish with our conclusions in [](#conclusions).
+In the next section we cover the related work pertaining to this article.
+After that, we introduce our research questions and hypotheses in [](#problem-statement).
+Next, we introduce our client-side algorithms and server-side enchancements in [](#solution),
+and discuss their implementation in [](#implementation).
+In [](#evaluation), we introduce our experimental setup,
+present our results, and test our hypotheses.
+Finally, we draw conclusions in [](#conclusions).

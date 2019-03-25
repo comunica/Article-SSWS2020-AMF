@@ -1,34 +1,31 @@
 ## Conclusions
 {:#conclusions}
 
-In this paper we showed how there are many ways AMF metadata can be used
-to increase query performances over TPF endpoints.
-Depending on how the metadata is used,
-it can have a definite impact on the results.
-There are still choices that have to be made sometimes,
-depending on factors such as the server capabilities,
-expected load, query diversity, data size, and so on.
+In this article, we introduced client-side and server-side improvements
+to the AMF feature for TPF.
+Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reprodicible.
+As results have shown, our client-side algorithms significantly reduce query execution times
+compared to the algorithm introduced by Vander Sande et al.
+Furthermore, we have shown that AMF metadata requires limited effort from servers.
 
-To evaluate all these different options,
-we made use of the Comunica framework.
-In our evaluation section we have clearly shown the added advantage
-of using such a framework for testing purposed.
-Without much effort, we were capable of running a diverse set of tests over many different configurations.
-Whereas this would usually take quite some work to set everything up every time,
-and would require multiple implementations,
-here we could easily swap out different setups.
+We offer implementations of these algorithms and server enhancements,
+which means that it can be used by any of the 650.000+ data publishers
+that are exposing their data through a TPF interface,
+or any client that aims to query from them.
+Based on our discussion in [](#evaluation),
+we offer the following guidelines for publishers that aim to use the AMF feature:
 
-We did not cover everything that is possible with the membership filters for SPARQL queries.
-There are still plenty of options that can be researched.
-For one there is the heuristic to determine when it is actually profitable to download the filters.
-In this paper we presented a simple heuristic 
-to determine situations where the extra overhead is actually a disadvantage,
-But much more work can be done in fine-tuning this.
+* Enable **HTTP caching** with a tool such as [NGINX](https://www.nginx.com/).
+* **Pre-compute AMFs**, or at least cache, AMFs of size 10.000 or higher.
+* If AMFs can be cached, prefer **Bloom filters** over GCS.
+* Emit AMF metadata **out-of-band**.
+* Use a false-positive **probability of 1/64**.
 
-Another avenue that has not yet been tested is how this would perform in a federated environment
-and how filters of multiple sources could be combined.
-A possibility would be to use the response of one source to filter results on another source,
-similar to how [brTPF](cite:cites brtpf) sends extra data to a server.
-
-If we cut stuff out of the evaluation section we can put it here as future work.
-{:.todo}
+Even though we answered many open questions regarding AMFs,
+there are a couple of new questions.
+First, we need further investigatation on our heuristic for dynamically disabling the BGP-based AMF algorithm.
+Secondly, dynamically switching between algorithms may improve diefficiency,
+as the BGP-based algorithm postpones time until first result.
+Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web,
+investigation of AMFs in the context of federated querying is needed,
+which is not trivial, as filters of multiple sources may need to be combined.

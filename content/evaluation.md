@@ -386,7 +386,7 @@ Triple patterns are sorted by decreasing number of matches.
 </figcaption>
 </figure>
 
-#### Bloom filters are preferred over GCSs with active cache
+#### Bloom filters are preferred over GCS with active cache
 
 Results show that when AMFs are pre-computed,
 Bloom filters achieve faster query evaluation times than GCS (_[Research Question 2](#question-cache)_).

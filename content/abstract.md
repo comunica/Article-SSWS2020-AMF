@@ -20,7 +20,7 @@ Our results show that our alternative client-side algorithms significantly reduc
 the number of HTTP requests and query execution times
 without significantly increasing server load.
 Furthermore, we conclude that server-side caching and (partial) AMF pre-computation is essential,
-and offer guidelines on how AMF metadata should be configured on the server.
+and offer concrete guidelines on how AMF metadata should be configured on the server.
 <!-- Conclusion   -->
 Our work shows that TPF in combination with AMF metadata is feasible for data publishers,
 and has significant benefits for client-side query engines.

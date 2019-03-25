@@ -4,6 +4,9 @@
 There is too much overlap with the previous section, should merge or re-think how to handle probably.
 {:.todo}
 
+Indeed, let's make the impl part of the evaluation section, and just mention link to source code and other relevant details.
+{:.todo}
+
 To implement our solution described in [](#solution) we made use of the [Comunica framework](cite:cites comunica),
 which already fully supports the TPF algorithm.
 Its modular structure makes it ideal for us to add on to the existing implementation,

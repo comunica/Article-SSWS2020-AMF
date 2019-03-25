@@ -1,45 +1,35 @@
 ## Solution
 {:#solution}
 
-Describe how the AMF stuff is used and how the algorithm looks like.
-Focus on the 2 triple algorithms and heuristic.
-{:.todo}
-
-To make use of AMFs for more efficient TPF querying,
-there are two places where changes need to be made:
-the server needs to generate and expose the new metadata,
-and the client needs to incorporate it in the query algorithm.
+The AMF approach requires changes on both server-side as client-side,
+and our contributions adapt parts of both aspect.
+For both aspects, we discuss the pre-existing approaches
+and our contributions hereafter.
 
 ### Server-side metadata generation
-The server-side implementation is mostly based on the [implementation by Vander Sande et al.](cite:cites amf2015)
-Some additions were made though, such as when an AMF gets generated and how they get returned.
 
-The first change that was made is for which patterns AMFs get generated.
-Previously this was only for patterns with a single variable,
-but we made the server more flexible in that regard:
-now we allow the server to generate AMFs for any patterns,
-based on limitations given in the server config file.
-The two available limitations are variable count and triple count:
-AMFs will be generated for each pattern of which the number of variables
-and/or the total number of results is at most the given values.
-This allows the client to use the AMF metadata in more situations than before.
+The original TPF server extension by [Vander Sande et al.](cite:cites amf2015)
+allowed both Bloom filters and GCS to be created on-the-fly for any triple pattern.
+These filters would be added out-of-band as metadata to TPFs.
+We extended this implementation with three new features.
 
-A second addition was the option of allowing AMFs to be sent out-of-band.
-This means that the server only returns a URL to where the actual AMF result can be found.
-The advantage there is that this reduces both the response size and the effort needed to generate an AMF
-in cases where it is not required.
-It is also possible to combine this with the previous change,
-i.e., have two sets of limits: if the pattern exceeds the first limit only out-of-band AMF becomes available,
-and after the second one there is no AMF option at all.
-This allows servers to provide metadata for larger triples,
-but still prevents the more extreme edge cases from slowing everything down.
+First, since we want to evaluate whether or not including AMF metadata in-band
+can reduce the total number of HTTP requests and query execution times,
+we implemented a way to emit this metadata in-band if the triple count of the given pattern is below a certain configurable threshold.
+Originally, all AMF metadata would always be emitted out-of-band,
+which requires an additional HTTP request for clients.
+This threshold should not be set too high, as large AMFs will introduce some overhead for clients
+that do not need or do not understand AMF metadata.
 
-Finally we also added an internal cache:
-all generated AMFs are stored in an LRU cache,
-meaning the more popular pattern metadata gets stored in memory.
-This greatly cuts down on the time needed to actually generate that metadata.
+Secondly, in order to measure the server overhead of large AMFs,
+we added a config option to dynamically enable AMFs for triple patterns
+with number of matching triples below a given threshold.
+
+Finally, we implemented a (disableable) file-based cache to avoid recomputing AMFs
+to make pre-computation of AMFs possible.
 
 ### Client-side query algorithm
+
 The main changes in this paper are how we made us of the AMF metadata to improve the client-side querying.
 For this we developed two new query algorithms that use the metadata on BGP level,
 the results of which are shown in [](#evaluation).

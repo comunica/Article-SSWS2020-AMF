@@ -43,7 +43,7 @@ Our results show that our alternative client-side algorithms significantly reduc
 the number of HTTP requests and query execution times
 without significantly increasing server load.
 Furthermore, we conclude that server-side caching and (partial) AMF pre-computation is essential,
-and offer guidelines on how AMF metadata should be configured on the server.
+and offer concrete guidelines on how AMF metadata should be configured on the server.
 <!-- Conclusion   -->
 Our work shows that TPF in combination with AMF metadata is feasible for data publishers,
 and has significant benefits for client-side query engines.
@@ -211,7 +211,7 @@ we will investigate the impact of caching AMFs and all HTTP requests in general.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-cache-1">Caching all HTTP requests reduces query evaluation times more than caching only AMFs.</li>
+          <li id="hypo-cache-1">Caching HTTP requests reduces query evaluation times more than caching only AMFs.</li>
           <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
           <li id="hypo-cache-3">Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
           <li id="hypo-cache-4">With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.</li>
@@ -228,9 +228,9 @@ e.g., by only allowing AMFs to be requested for queries with result count lower 
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-dynamic-restriction-1">Lowering the threshold increases client-side query execution time when AMFs are cached.</li>
-          <li id="hypo-dynamic-restriction-2">Lowering the threshold reduces server load when AMFs are not cached.</li>
-          <li id="hypo-dynamic-restriction-3">Lowering the threshold does not impact server load when AMFs are cached.</li>
+          <li id="hypo-dynamic-restriction-1">Lower thresholds slow down query execution with cached AMFs.</li>
+          <li id="hypo-dynamic-restriction-2">Lower thresholds reduce server load without cached AMFs.</li>
+          <li id="hypo-dynamic-restriction-3">Lower thresholds do not impact server load with cached AMFs.</li>
         </ol>
       </li>
       <li id="question-bandwidth"><strong>What impact does the HTTP bandwidth have on client-side performance with AMFs?</strong>
@@ -253,8 +253,8 @@ with the TPF HTTP responses could improve query performance.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-inband-1">Including AMF metadata in-band reduces client-side query execution time.</li>
-          <li id="hypo-inband-2">Including AMF metadata in-band reduces the total required number of HTTP requests.</li>
+          <li id="hypo-inband-1">In-band AMF metadata speeds up client-side query evaluation.</li>
+          <li id="hypo-inband-2">In-band AMF metadata reduces the total amount of HTTP requests.</li>
         </ol>
       </li>
       <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
@@ -264,7 +264,7 @@ to lower <em>AMF false-positive probabilities</em>, as higher probabilities do n
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-probabilities-1">The lower the false-positive probability, the faster the client-side query execution.</li>
+          <li id="hypo-probabilities-1">Lower probabilities lead to faster client-side query execution.</li>
         </ol>
       </li>
     </ol>
@@ -885,7 +885,7 @@ Triple patterns are sorted by decreasing number of matches.</p>
       </figcaption>
 </figure>
 
-    <h4 id="bloom-filters-are-preferred-over-gcss-with-active-cache">Bloom filters are preferred over GCSs with active cache</h4>
+    <h4 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom filters are preferred over GCS with active cache</h4>
 
     <p>Results show that when AMFs are pre-computed,
 Bloom filters achieve faster query evaluation times than GCS (<em><a href="#question-cache">Research Question 2</a></em>).
@@ -917,36 +917,36 @@ However, further research is needed to investigate this trade-off for other type
   <section id="conclusions">
     <h2>Conclusions</h2>
 
-    <p>In this paper we showed how there are many ways AMF metadata can be used
-to increase query performances over TPF endpoints.
-Depending on how the metadata is used,
-it can have a definite impact on the results.
-There are still choices that have to be made sometimes,
-depending on factors such as the server capabilities,
-expected load, query diversity, data size, and so on.</p>
+    <p>In this article, we introduced client-side and server-side improvements
+to the AMF feature for TPF.
+Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reprodicible.
+As results have shown, our client-side algorithms significantly reduce query execution times
+compared to the algorithm introduced by Vander Sande et al.
+Furthermore, we have shown that AMF metadata requires limited effort from servers.</p>
 
-    <p>To evaluate all these different options,
-we made use of the Comunica framework.
-In our evaluation section we have clearly shown the added advantage
-of using such a framework for testing purposed.
-Without much effort, we were capable of running a diverse set of tests over many different configurations.
-Whereas this would usually take quite some work to set everything up every time,
-and would require multiple implementations,
-here we could easily swap out different setups.</p>
+    <p>We offer implementations of these algorithms and server enhancements,
+which means that it can be used by any of the 650.000+ data publishers
+that are exposing their data through a TPF interface,
+or any client that aims to query from them.
+Based on our discussion in <a href="#evaluation">Section 6</a>,
+we offer the following guidelines for publishers that aim to use the AMF feature:</p>
 
-    <p>We did not cover everything that is possible with the membership filters for SPARQL queries.
-There are still plenty of options that can be researched.
-For one there is the heuristic to determine when it is actually profitable to download the filters.
-In this paper we presented a simple heuristic 
-to determine situations where the extra overhead is actually a disadvantage,
-But much more work can be done in fine-tuning this.</p>
+    <ul>
+      <li>Enable <strong>HTTP caching</strong> with a tool such as <a href="https://www.nginx.com/">NGINX</a>.</li>
+      <li><strong>Pre-compute AMFs</strong>, or at least cache, AMFs of size 10.000 or higher.</li>
+      <li>If AMFs can be cached, prefer <strong>Bloom filters</strong> over GCS.</li>
+      <li>Emit AMF metadata <strong>out-of-band</strong>.</li>
+      <li>Use a false-positive <strong>probability of 1/64</strong>.</li>
+    </ul>
 
-    <p>Another avenue that has not yet been tested is how this would perform in a federated environment
-and how filters of multiple sources could be combined.
-A possibility would be to use the response of one source to filter results on another source,
-similar to how <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">brTPF</a></span> <span class="references">[<a href="#ref-13">13</a>]</span> sends extra data to a server.</p>
-
-    <p class="todo">If we cut stuff out of the evaluation section we can put it here as future work.</p>
+    <p>Even though we answered many open questions regarding AMFs,
+there are a couple of new questions.
+First, we need further investigatation on our heuristic for dynamically disabling the BGP-based AMF algorithm.
+Secondly, dynamically switching between algorithms may improve diefficiency,
+as the BGP-based algorithm postpones time until first result.
+Finally, as approaches such as Solid <span class="references">[<a href="#ref-13">13</a>]</span> are pushing towards a more <em>decentralized</em> Web,
+investigation of AMFs in the context of federated querying is needed,
+which is not trivial, as filters of multiple sources may need to be combined.</p>
 
   </section>
 
@@ -980,7 +980,7 @@ similar to how <span property="schema:citation http://purl.org/spar/cito/cites" 
   <dt id="ref-12">[12]</dt>
   <dd resource="#realism" typeof="schema:Article">Duan, S., Kementsietsidis, A., Srinivas, K., Udrea, O.: Apples and oranges: a comparison of \rdf benchmarks and real \rdf datasets. In: Proceedings of the 2011 ACM SIGMOD International Conference on Management of data. pp. 145–156. ACM, New York, NY, USA (2011).</dd>
   <dt id="ref-13">[13]</dt>
-  <dd resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48" typeof="schema:Article">Hartig, O., Buil-Aranda, C.: Bindings-Restricted Triple Pattern Fragments. In: Proceedings of the 15th International Conference on Ontologies, DataBases, and Applications of Semantics. pp. 762–779 (2016).</dd>
+  <dd resource="#solid" typeof="schema:Article">Mansour, E., Sambra, A.V., Hawke, S., Zereba, M., Capadisli, S., Ghanem, A., Aboulnaga, A., Berners-Lee, T.: A demonstration of the solid platform for social web applications. In: Proceedings of the 25th International Conference Companion on World Wide Web. pp. 223–226. International World Wide Web Conferences Steering Committee (2016).</dd>
 </dl>
 </section>
 </footer>

@@ -29,10 +29,10 @@
 The Triple Pattern Fragments (TPF) interface is a type of LDF that significantly lowers server-cost
 by moving a large portion of the query effort client-side.
 <!-- Need         -->
-In previous work, Approximate Membership Functions (AMF) were added to TPF as metadata,
+In previous work, Approximate Membership Functions (AMFs) were added to TPF as metadata,
 with the purpose of reducing the number of membership subqueries by pre-filtering potential results client-side.
 Even though this lead to a reduction of HTTP requests,
-the need for lower query execution times has not been met.
+the need for lower query execution times was not met.
 <!-- Task         -->
 In order to effectively reduce query execution times,
 we investigate several unexplored aspects regarding AMF metadata on TPF interfaces.
@@ -60,44 +60,47 @@ and has significant benefits for client-side query engines.
   <section id="introduction">
     <h2>Introduction</h2>
 
-    <p>In the past years there has been a rise in popularity for non-SPARQL solutions to publish linked data.
-One of the more prominent new interfaces is the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>.
-This data access interface is situated somewhere between data dumps and SPARQL interfaces in complexity.
-Many extensions and variants have been developed already, such as <a property="schema:citation http://purl.org/spar/cito/cites" href="http://rubensworks.net/raw/publications/2017/vtpf.pdf">versioning</a> <span class="references">[<a href="#ref-2">2</a>]</span>
-or new <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/eswc2015.pdf">query algorithms</a> <span class="references">[<a href="#ref-3">3</a>]</span>.</p>
+    <p>Over the recent years, various <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDFs)</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> have been introduced
+as ways to publish Linked Data on the Web.
+The <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> interface was introduced
+as a trade-off between server load and client-side querying effort.
+It restricts the server interface to triple pattern queries,
+so that full SPARQL queries have to be evaluated client-side.
+TPF is a hypermedia interface that is self-descriptive.
+This allows smart clients to detect metadata and controls,
+which can be used to enhance the query evaluation process if the client understands these descriptions.
+This self-descriptiveness has lead to the introduction of
+various interface features <span class="references">[<a href="#ref-2">2</a>, <a href="#ref-3">3</a>, <a href="#ref-4">4</a>]</span>.</p>
 
-    <p>Many of these variants work by adding additional metadata to either the server requests or responses.
-These can provide more fine-grained details than can seen by just looking at the data returned.
-Additionally, adding extra metadata doesn’t break existing solutions:
-older solutions will just ignore the additional metadata
-and still do their work based on the rest that was provided.</p>
+    <p>Vander Sande et al. introduced the Approximate Membership Filters (AMFs) <span class="references">[<a href="#ref-2">2</a>]</span> feature,
+which adds AMFs as metadata to TPF.
+Clients can detect and use these AMFs to reduce potentially high the number of membership subqueries
+by pre-filtering potential results client-side, as a way of reducing the number expensive HTTP requests.
+While the authors achieved their goal of reducing the number of HTTP requests,
+their approach did not manage to reduce overall query evaluation times.</p>
 
-    <p>One of these variants was designed by Vander Sande et al.
-They tested the effect of generating Approximate Membership Filters (AMFs) <span class="references">[<a href="#ref-4">4</a>]</span> 
-for certain triple patterns and returning that as metadata in the TPF response.
-In this paper we are going to research how the ideas presented in that paper
-can be extended and made more applicable to more general cases.</p>
+    <p>The goal of our work is to investigate unexplored aspects of AMF.
+We do this by introducing new client-side algorithms for exploiting AMF metadata,
+and by investigating different ways of exposing AMFs server-side.
+Concretely, we introduce client-side algorithms that can use AMFs at more high-level BGPs,
+instead of only for fully materialized triple patterns as was introduced by Vander Sande et al.
+Furthermore, we evaluate the effects and feasibility of server-side pre-computation and caching of AMFs,
+and the effects of different HTTP bandwidths, in-band AMFs, and different false-positive probabilities.</p>
 
-    <p>For this we made use of the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica framework</a> <span class="references">[<a href="#ref-5">5</a>]</span>,
-which is a modular meta query engine.
-Due to its modular nature it is perfect for easily comparing the effects of adding and removing multiple features:
-those specific modules simply have to be enabled or disabled when running the corresponding tests.
-This makes it much easier for us to do extensive evaluations as can be seen in <a href="#evaluation">Section 6</a>.
-Additionally, Comunica already supports full TPF support out of the box,
-meaning our AMF additions could be added as separate modules to the already existing framework.</p>
+    <p>Due to the large number of combinations that are compared in our experiments,
+we introduce a reusable benchmarking framework, called <em>Comunica Bencher</em>.
+It builds on top of the highly modular <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica framework</a> <span class="references">[<a href="#ref-5">5</a>]</span> for Linked Data querying,
+by working with fully declarative experiment descriptions that offer reproducible experimental results.
+It lowers the barrier for reproducing the results of this work,
+and creating new similar experiments in the future.</p>
 
-    <p>We also developed several tools helping in the evaluation automation.
-Since a Comunica deployment is fully defined by its configuration file,
-we made a system that generates those files for a required test setup
-and automatically run tests over the corresponding Comunica implementation.
-This allows us to be quite flexible and extensive in our evaluations.</p>
-
-    <p>In the next section we cover the related work pertaining to this paper.
-After that, we go over the problem statement in <a href="#problem-statement">Section 3</a>
-followed by our suggested solution in <a href="#solution">Section 4</a>.
-Our actual implementation is described in <a href="#implementation">Section 5</a>,
-together with all our evaluations in <a href="#evaluation">Section 6</a>.
-We finish with our conclusions in <a href="#conclusions">Section 7</a>.</p>
+    <p>In the next section we cover the related work pertaining to this article.
+After that, we introduce our research questions and hypotheses in <a href="#problem-statement">Section 3</a>.
+Next, we introduce our client-side algorithms and server-side enchancements in <a href="#solution">Section 4</a>,
+and discuss their implementation in <a href="#implementation">Section 5</a>.
+In <a href="#evaluation">Section 6</a>, we introduce our experimental setup,
+present our results, and test our hypotheses.
+Finally, we draw conclusions in <a href="#conclusions">Section 7</a>.</p>
   </section>
 
   <section id="related-work">
@@ -138,7 +141,7 @@ Each of those with their own advantages and disadcantages.</p>
 
     <h3 id="related-work-amf">Approximate Membership Metadata</h3>
 
-    <p>It has been shown that the TPF approach produces a large number of so-called <em>membership</em> requests <span class="references">[<a href="#ref-4">4</a>]</span>.
+    <p>It has been shown that the TPF approach produces a large number of so-called <em>membership</em> requests <span class="references">[<a href="#ref-2">2</a>]</span>.
 These are requests for triple patterns <em>without variables</em>, i.e., for checking if a certain triple is present in a dataset.
 This was illustrated with queries from the WatDiv <span class="references">[<a href="#ref-6">6</a>]</span> benchmark,
 consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
@@ -148,7 +151,7 @@ More than 1 in 3 queries are thus significantly impacted by the number of member
 which indicates that optimizing membership queries can have a positive effect on query evaluation.</p>
 
     <p>Following the declarative basis of TPF for including metadata into server requests to help the client improve query evalation,
-an approach was introduced to add approximate membership metadata to reduce the number of membership requests to the server <span class="references">[<a href="#ref-4">4</a>]</span>.
+an approach was introduced to add approximate membership metadata to reduce the number of membership requests to the server <span class="references">[<a href="#ref-2">2</a>]</span>.
 This metadata describes <em>Approximate Membership Functions</em> (AMF),
 which are functions that enable fast membership tests with a certain chance on false positives.
 The authors compared two AMF implementations,
@@ -192,7 +195,7 @@ our build further on them.</p>
   <section id="problem-statement">
     <h2>Problem Statement</h2>
 
-    <p>Certain effects of using AMF metadata to improve query performance in the context of TPF were previously investigated <span class="references">[<a href="#ref-4">4</a>]</span>.
+    <p>Certain effects of using AMF metadata to improve query performance in the context of TPF were previously investigated <span class="references">[<a href="#ref-2">2</a>]</span>.
 The authors mainly focused on comparing two different AMF implementations with each other,
 and their effects on query execution time.
 This work has introduced a number of new follow-up questions,
@@ -295,7 +298,7 @@ the server needs to generate and expose the new metadata,
 and the client needs to incorporate it in the query algorithm.</p>
 
     <h3 id="server-side-metadata-generation">Server-side metadata generation</h3>
-    <p>The server-side implementation is mostly based on the implementation by Vander Sande et al. <span class="references">[<a href="#ref-4">4</a>]</span>
+    <p>The server-side implementation is mostly based on the implementation by Vander Sande et al. <span class="references">[<a href="#ref-2">2</a>]</span>
 Some additions were made though, such as when an AMF gets generated and how they get returned.</p>
 
     <p>The first change that was made is for which patterns AMFs get generated.
@@ -328,7 +331,7 @@ This greatly cuts down on the time needed to actually generate that metadata.</p
 For this we developed two new query algorithms that use the metadata on BGP level,
 the results of which are shown in <a href="#evaluation">Section 6</a>.</p>
 
-    <p>In the original AMF algorithm <span class="references">[<a href="#ref-4">4</a>]</span>,
+    <p>In the original AMF algorithm <span class="references">[<a href="#ref-2">2</a>]</span>,
 bindings only got filtered when a pattern would be fully bound.
 The main idea behind our new algorithm is to already do this filtering much sooner in the querying process.
 The added advantage is that fewer bindings have to be sent to the server,
@@ -451,7 +454,7 @@ we added components on several levels:</p>
       <li>An actor to extract AMF metadata</li>
       <li>Two actors to apply Bloom and GCS membership filters to RDF data</li>
       <li>A bus module to group membership filter actors</li>
-      <li>An actor implementing the original AMF algorithm <span class="references">[<a href="#ref-4">4</a>]</span></li>
+      <li>An actor implementing the original AMF algorithm <span class="references">[<a href="#ref-2">2</a>]</span></li>
       <li>Two new BGP actors, to apply two different implementations of our AMF algorithm</li>
       <li>A new SPARQL actor with a new default config that also includes these AMF actors</li>
     </ul>
@@ -648,7 +651,7 @@ C3 and S7 are excluded as they produce no results.</p>
 
     <p><a href="#plot_client_algos">Fig. 1</a> shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
-In line with what was shown in the first TPF AMF experiments <span class="references">[<a href="#ref-4">4</a>]</span>,
+In line with what was shown in the first TPF AMF experiments <span class="references">[<a href="#ref-2">2</a>]</span>,
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
 Only for 5 of the 20 queries, evaluation times are worse.
@@ -968,11 +971,11 @@ similar to how <span property="schema:citation http://purl.org/spar/cito/cites" 
   <dt id="ref-1">[1]</dt>
   <dd resource="https://dx.doi.org/10.1016/j.websem.2016.03.003" typeof="schema:Article">Verborgh, R., Vander Sande, M., Hartig, O., Van Herwegen, J., De Vocht, L., De Meester, B., Haesendonck, G., Colpaert, P.: Triple Pattern Fragments: a Low-cost Knowledge Graph Interface for the Web. Journal of Web Semantics. 37–38, (2016).</dd>
   <dt id="ref-2">[2]</dt>
-  <dd resource="http://rubensworks.net/raw/publications/2017/vtpf.pdf" typeof="schema:Article">Taelman, R., Vander Sande, M., Verborgh, R., Mannens, E.: Versioned Triple Pattern Fragments: A Low-cost Linked Data Interface Feature for Web Archives. In: Proceedings of the 3rd Workshop on Managing the Evolution and Preservation of the Data Web (2017).</dd>
+  <dd resource="#amf2015" typeof="schema:Article">Vander Sande, M., Verborgh, R., Van Herwegen, J., Mannens, E., Van de Walle, R.: Opportunistic Linked Data querying through approximate membership metadata. In: International Semantic Web Conference. pp. 92–110. Springer (2015).</dd>
   <dt id="ref-3">[3]</dt>
   <dd resource="http://linkeddatafragments.org/publications/eswc2015.pdf" typeof="schema:Article">Van Herwegen, J., Verborgh, R., Mannens, E., Van de Walle, R.: Query Execution Optimization for Clients of Triple Pattern Fragments. In: The Semantic Web. Latest Advances and New Domains (2015).</dd>
   <dt id="ref-4">[4]</dt>
-  <dd resource="#amf2015" typeof="schema:Article">Vander Sande, M., Verborgh, R., Van Herwegen, J., Mannens, E., Van de Walle, R.: Opportunistic Linked Data querying through approximate membership metadata. In: International Semantic Web Conference. pp. 92–110. Springer (2015).</dd>
+  <dd resource="http://rubensworks.net/raw/publications/2017/vtpf.pdf" typeof="schema:Article">Taelman, R., Vander Sande, M., Verborgh, R., Mannens, E.: Versioned Triple Pattern Fragments: A Low-cost Linked Data Interface Feature for Web Archives. In: Proceedings of the 3rd Workshop on Managing the Evolution and Preservation of the Data Web (2017).</dd>
   <dt id="ref-5">[5]</dt>
   <dd resource="https://comunica.github.io/Article-ISWC2018-Resource/" typeof="schema:Article">Taelman, R., Van Herwegen, J., Vander Sande, M., Verborgh, R.: Comunica: a Modular SPARQL Query Engine for the Web. In: Proceedings of the 17th International Semantic Web Conference (2018).</dd>
   <dt id="ref-6">[6]</dt>

@@ -62,7 +62,7 @@ and not edit the existing code,
 we can't actually add our code in the existing actor.
 To handle this,
 we made a new BGP actor, BGP-AMF, that gets called before the original BGP actor receives the patterns.
-()[#bgp-amf] shows a simplified version of what this actor does.
+[](#bgp-amf) shows a simplified version of what this actor does.
 
 <figure id="bgp-amf" class="listing">
 ````/code/bgp-amf.js````

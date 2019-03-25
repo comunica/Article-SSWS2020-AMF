@@ -8,11 +8,14 @@ To implement our solution described in [](#solution) we made use of the [Comunic
 which already fully supports the TPF algorithm.
 Its modular structure makes it ideal for us to add on to the existing implementation,
 without having to change the existing code base.
-Adding our features to the Comunica ecosystem caused us to create [8 new modules](https://github.com/comunica/comunica-feature-amf.git)
+Adding our features to the Comunica ecosystem caused us to create [8 new modules](https://github.com/comunica/comunica-feature-amf){:.mandatory}
 to integrate our new features with the framework.
 
 Since there is no modular infrastructure on the server side,
-we created a [new branch](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2) in the repository that supports returning the required metadata.
+we created a [new branch](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2){:.mandatory} in the repository that supports returning the required metadata.
+
+Anonymize source code links
+{:.todo}
 
 ### Integration with Comunica
 

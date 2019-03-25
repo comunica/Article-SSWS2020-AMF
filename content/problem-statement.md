@@ -27,7 +27,7 @@ We list these as research questions for our work, and defined hypotheses for eac
     we will investigate the impact of caching AMFs and all HTTP requests in general.
     <br />
     **Hypotheses:**
-    1. {:#hypo-cache-1} Caching all HTTP requests reduces query evaluation times more than caching only AMFs.
+    1. {:#hypo-cache-1} Caching HTTP requests reduces query evaluation times more than caching only AMFs.
     2. {:#hypo-cache-2} Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.
     3. {:#hypo-cache-3} Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.
     4. {:#hypo-cache-4} With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.
@@ -42,9 +42,9 @@ We list these as research questions for our work, and defined hypotheses for eac
     e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
     <br />
     **Hypotheses:**
-    1. {:#hypo-dynamic-restriction-1} Lowering the threshold increases client-side query execution time when AMFs are cached.
-    2. {:#hypo-dynamic-restriction-2} Lowering the threshold reduces server load when AMFs are not cached.
-    3. {:#hypo-dynamic-restriction-3} Lowering the threshold does not impact server load when AMFs are cached.
+    1. {:#hypo-dynamic-restriction-1} Lower thresholds slow down query execution with cached AMFs.
+    2. {:#hypo-dynamic-restriction-2} Lower thresholds reduce server load without cached AMFs.
+    3. {:#hypo-dynamic-restriction-3} Lower thresholds do not impact server load with cached AMFs.
 4. {:#question-bandwidth}
     **What impact does the HTTP bandwidth have on client-side performance with AMFs?**
     <br />
@@ -63,8 +63,8 @@ We list these as research questions for our work, and defined hypotheses for eac
     with the TPF HTTP responses could improve query performance.
     <br />
     **Hypotheses:**
-    1. {:#hypo-inband-1} Including AMF metadata in-band reduces client-side query execution time.
-    2. {:#hypo-inband-2} Including AMF metadata in-band reduces the total required number of HTTP requests.
+    1. {:#hypo-inband-1} In-band AMF metadata speeds up client-side query evaluation.
+    2. {:#hypo-inband-2} In-band AMF metadata reduces the total amount of HTTP requests.
 6. {:#question-probabilities}
     **Which AMF _false-positive probabilities_ achieve the best client-side query performance?**
     <br />
@@ -72,7 +72,7 @@ We list these as research questions for our work, and defined hypotheses for eac
     to lower _AMF false-positive probabilities_, as higher probabilities do not have a significant effect on query performance.
     <br />
     **Hypotheses:**
-    1. {:#hypo-probabilities-1} The lower the false-positive probability, the faster the client-side query execution.
+    1. {:#hypo-probabilities-1} Lower probabilities lead to faster client-side query execution.
 
 To come up with an answer to these research questions,
 their hypotheses will be tested in [](#evaluation) based on our experimental results.

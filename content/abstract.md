@@ -1,6 +1,6 @@
 ## Abstract
 <!-- Context      -->
-Various Linked Data Fragments (LDF) exist for exposing Linked Data on the Web.
+Various Linked Data Fragments exist for exposing Linked Data on the Web.
 The Triple Pattern Fragments (TPF) interface is a type of LDF that significantly lowers server-cost
 by moving a large portion of the query effort client-side.
 <!-- Need         -->

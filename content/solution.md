@@ -1,18 +1,12 @@
-## New AMF approaches
+## Client-side AMF algorithms
 {:#solution}
 
-The AMF approach requires changes on both client-side as server-side,
-and our contributions adapt parts on both sides.
-For both sides, we discuss the pre-existing approaches
-and our contributions hereafter.
-
-### Client-side query algorithm
-
+In this section, we discuss the existing and new client-side algorithms that use AMF metadata.
 For the sake of completeness, we first discuss the original triple-based AMF algorithm.
 After that, we introduce our new BGP-based AMF algorithm.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.
 
-#### Triple-based AMF algorithm
+### Triple-based AMF algorithm
 
 [Vander Sande et al.](cite:cites amf2015) introduced an algorithm
 that acts as a cheap pre-processing step for testing the membership of triples.
@@ -34,7 +28,7 @@ as a pre-filtering step for testing the membership of triples.
 </figcaption>
 </figure>
 
-#### BGP-based AMF algorithm
+### BGP-based AMF algorithm
 
 Following the idea of the triple-based algorithm,
 we introduce an extension that applies this concept for BGPs.
@@ -59,7 +53,7 @@ BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.
 </figcaption>
 </figure>
 
-#### Heuristic for enabling the BGP algorithm
+### Heuristic for Enabling the BGP Algorithm
 
 The advantage of our BGP-based algorithm is that it may filter out true negative bindings
 much sooner in the query evaluation process compared to the triple-based algorithm.
@@ -95,25 +89,3 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
 Heuristic for checking if the BGP-based AMF algorithm should be executed.
 </figcaption>
 </figure>
-
-### Server-side metadata generation
-
-The original TPF server extension by [Vander Sande et al.](cite:cites amf2015)
-allowed both Bloom filters and GCS to be created on-the-fly for any triple pattern.
-These filters would be added out-of-band as metadata to TPFs.
-We extended this implementation with three new features.
-
-First, since we want to evaluate whether or not including AMF metadata in-band
-can reduce the total number of HTTP requests and query execution times,
-we implemented a way to emit this metadata in-band if the triple count of the given pattern is below a certain configurable threshold.
-Originally, all AMF metadata would always be emitted out-of-band,
-which requires an additional HTTP request for clients.
-This threshold should not be set too high, as large AMFs will introduce some overhead for clients
-that do not need or do not understand AMF metadata.
-
-Secondly, in order to measure the server overhead of large AMFs,
-we added a config option to dynamically enable AMFs for triple patterns
-with number of matching triples below a given threshold.
-
-Finally, we implemented a (disableable) file-based cache to avoid recomputing AMFs
-to make pre-computation of AMFs possible.

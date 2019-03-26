@@ -76,3 +76,10 @@ It then uses [Components.js](cite:cites componentsjs), a semantic dependency inj
 to link the different independent modules together.
 We make use of such configuration files to declaratively define our Comunica engine with AMF support,
 so that experiments can easily be executed based on them.
+
+Comunica uses an _actor-based_ architecture to achieve loose coupling between modules.
+Each actor is responsible for solving a certain task in a certain way.
+Actors can be registered on task-specific _buses_.
+If a certain task needs to be solved, _mediators_ are responsible for picking the _best_ actors in that bus,
+and letting that actor execute the task.
+Comunica offers more than 100 actors that, when combined, are able to solve complex SPARQL queries.

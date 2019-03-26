@@ -80,7 +80,7 @@ their approach did not manage to reduce overall query evaluation times.</p>
     <p>The goal of our work is to investigate unexplored aspects of AMF.
 We do this by introducing new client-side algorithms for exploiting AMF metadata,
 and by investigating different ways of exposing AMFs server-side.
-Concretely, we introduce client-side algorithms that can use AMFs at more high-level BGPs,
+Concretely, we introduce client-side algorithms that can use AMFs at more high-level <em>Basic Graph Patterns</em> (BGPs),
 instead of only for fully materialized triple patterns as was introduced by Vander Sande et al.
 Furthermore, we evaluate the effects and feasibility of server-side pre-computation and caching of AMFs,
 and the effects of different HTTP bandwidths, in-band AMFs, and different false-positive probabilities.</p>
@@ -274,12 +274,127 @@ their hypotheses will be tested in <a href="#evaluation">Section 6</a> based on
   </section>
 
   <section id="solution">
-    <h2>Solution</h2>
+    <h2>New AMF approaches</h2>
 
-    <p>The AMF approach requires changes on both server-side as client-side,
-and our contributions adapt parts of both aspect.
-For both aspects, we discuss the pre-existing approaches
+    <p>The AMF approach requires changes on both client-side as server-side,
+and our contributions adapt parts on both sides.
+For both sides, we discuss the pre-existing approaches
 and our contributions hereafter.</p>
+
+    <h3 id="client-side-query-algorithm">Client-side query algorithm</h3>
+
+    <p>For the sake of completeness, we first discuss the original triple-based AMF algorithm.
+After that, we introduce our new BGP-based AMF algorithm.
+Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.</p>
+
+    <h4 id="triple-based-amf-algorithm">Triple-based AMF algorithm</h4>
+
+    <p>Vander Sande et al. <span class="references">[<a href="#ref-2">2</a>]</span> introduced an algorithm
+that acts as a cheap pre-processing step for testing the membership of triples.
+This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> for evaluating SPARQL queries.</p>
+
+    <p>This algorithm can be seen in pseudo-code in <a href="#amf-triple-pseudo">Listing 1</a>.
+Concretely, every triple pattern that has no variables anymore
+is run through this function just before more expensive HTTP requests will be done,
+as a way of reducing the number of needed HTTP requests.
+This function takes a triple and the AMFs that were detected during the last TPF response for that pattern.
+It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
+Once all checks pass, the original HTTP-based membership logic will be invoked.</p>
+
+    <figure id="amf-triple-pseudo" class="listing">
+<pre><code>function hasTriple(triple, amf) {
+</code><code>  if (!amf.subject.filter(triple.subject)
+</code><code>   || !amf.predicate.filter(triple.predicate)
+</code><code>   || !amf.object.filter(triple.object)) {
+</code><code>    return false;
+</code><code>  }
+</code><code>  return super.hasTriple(triple, amfs);
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 1:</span> Triple-based AMF algorithm by Vander Sande et al. <span class="references">[<a href="#ref-2">2</a>]</span>
+as a pre-filtering step for testing the membership of triples.</p>
+      </figcaption>
+</figure>
+
+    <h4 id="bgp-based-amf-algorithm">BGP-based AMF algorithm</h4>
+
+    <p>Following the idea of the triple-based algorithm,
+we introduce an extension that applies this concept for BGPs.
+This makes it possible to use AMFs not only for testing the membership of triples,
+but also for using AMFs to test partially bound triple patterns that may still have variables.
+In theory, this should filter (true negative) bindings earlier in the query evaluation process.</p>
+
+    <p><a href="#amf-bgp-pseudo">Listing 2</a> shows this algorithm in pseudo-code.
+Just like the triple-based algorithm, it acts as a pre-processing step when BGPs are being processed.
+It takes a list of triple patterns as input, and a list of corresponding AMFs
+that were detected during the last TPF responses for each respective pattern.
+The algorithm iterates over each pattern,
+and for each triple component that is not a variable, it will run it through its AMF.
+Once a true negative is found, it will immediately return an empty stream to indicate that this BGP definitely contains no results.
+If all checks on the other hand pass, the original BGP logic will be invoked,
+which will down the line invoke expensive HTTP requests.</p>
+
+    <figure id="amf-bgp-pseudo" class="listing">
+<pre><code>function getBindings(triplePatterns, amfs) {
+</code><code>  for ((triplePattern, amf) in (triplePatterns, amfs)) {
+</code><code>    if ((!triplePattern.subject.isVariable()
+</code><code>        &amp;&amp; !amf.subject.filter(triplePattern.subject))
+</code><code>     || (!triplePattern.predicate.isVariable()
+</code><code>        &amp;&amp; !amf.predicate.filter(triplePattern.predicate))
+</code><code>     || (!triplePattern.object.isVariable()
+</code><code>        &amp;&amp; !amf.object.filter(triplePattern.object))) {
+</code><code>        return new EmptyStream();
+</code><code>      }
+</code><code>    }
+</code><code>  }
+</code><code>  return super.getBindings(bgpPatterns, amfs);
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 2:</span> BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.</p>
+      </figcaption>
+</figure>
+
+    <h4 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for enabling the BGP algorithm</h4>
+
+    <p>The advantage of our BGP-based algorithm is that it may filter out true negative bindings
+much sooner in the query evaluation process compared to the triple-based algorithm.
+The consequence of this is that AMFs for large patterns will have to be downloaded,
+which may come at the cost of increased HTTP transfer amounts.
+In some cases, this cost may become too high for the number of bindings that need to be tested.
+For example, if only a single binding needs to be tested,
+then downloading the AMF of a pattern with 1M triples will be significantly
+more expensive than doing a single membership HTTP request.</p>
+
+    <p>To cope with these cases, we introduce a heuristic in <a href="#amf-bgp-heuristic-pseudo">Listing 3</a>,
+that will check whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
+compared to just executing the HTTP membership requests directly.
+This heuristic has been designed for fast calculation,
+with exactness as a lower priority.</p>
+
+    <p>The algorithm takes a number of bindings and a list estimated counts for each of the triple patterns as inputs.
+It will first calculate the total size in bytes of all AMFs that would have to be downloaded,
+based on a constant <code>AMF_TRIPLE_SIZE</code>, which represents the size of a triple in an AMF.
+Next, the total size in bytes of all membership requests is calculated based on the constant <code>TPF_BINDING_SIZE</code>,
+which represents the size of a membership request.
+If the total AMF size is smaller than the total membership request size,
+then the BGP-based algorithm is expected to be more effective.</p>
+
+    <p>Based on measurements, we set <code>AMF_TRIPLE_SIZE</code> to <code>2 bytes</code>, and <code>TPF_BINDING_SIZE</code> to <code>1000 bytes</code> by default.
+In <a href="#evaluation">Section 6</a>, we will evaluate the effects for different values for <code>TPF_BINDING_SIZE</code>.
+In future work, more exact heuristics should be investigated
+that take perform live profiling of HTTP requests and delays to avoid the need of these constants.</p>
+
+    <figure id="amf-bgp-heuristic-pseudo" class="listing">
+<pre><code>function isBgpAmfEffective(bindingsCount, triplePatternCounts) {
+</code><code>  totalAmfsSize = triplePatternCounts.sum() * AMF_TRIPLE_SIZE;
+</code><code>  joinRequestData = (bindingsCount * triplePatternCounts.length)
+</code><code>      * TPF_BINDING_SIZE;
+</code><code>  return totalAmfsSize &lt; joinRequestData;
+</code><code>}</code></pre>
+<figcaption>
+        <p><span class="label">Listing 3:</span> Heuristic for checking if the BGP-based AMF algorithm should be executed.</p>
+      </figcaption>
+</figure>
 
     <h3 id="server-side-metadata-generation">Server-side metadata generation</h3>
 
@@ -302,95 +417,6 @@ with number of matching triples below a given threshold.</p>
 
     <p>Finally, we implemented a (disableable) file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.</p>
-
-    <h3 id="client-side-query-algorithm">Client-side query algorithm</h3>
-
-    <p>The main changes in this paper are how we made us of the AMF metadata to improve the client-side querying.
-For this we developed two new query algorithms that use the metadata on BGP level,
-the results of which are shown in <a href="#evaluation">Section 6</a>.</p>
-
-    <p>In the original AMF algorithm <span class="references">[<a href="#ref-2">2</a>]</span>,
-bindings only got filtered when a pattern would be fully bound.
-The main idea behind our new algorithm is to already do this filtering much sooner in the querying process.
-The added advantage is that fewer bindings have to be sent to the server,
-at the cost of generating more filters.</p>
-
-    <p><a href="#tpf">Listing 1</a> shows how the original TPF algorithm works.
-For the specific details we refer the reader to the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">original paper</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>.
-Our additions to the algorithm can be found in <a href="#amf-bgp-pseudo">Listing 2</a>.
-The code here is quite simplified,
-more specific details on how we added this to Comunica can be found in <a href="#solution">Section 4</a>.</p>
-
-    <figure id="tpf" class="listing">
-<pre><code>function solve (patterns) {
-</code><code>  const smallestIdx = /* find i where patterns[i].totalItems is the smallest */
-</code><code>  const bindingsStream = getBindings(patterns[smallestIdx]);
-</code><code>  const remainingPatterns = patterns.remove(smallestIdx);
-</code><code>  if (remainingPatterns.isEmpty())
-</code><code>    return bindingsStream;
-</code><code>
-</code><code>  const resultStream = /* empty stream */
-</code><code>  for (let bindings of bindingsStream) {
-</code><code>    const mappedPatterns = applyBindings(remainingPatterns, bindings);
-</code><code>    solve(mappedPatterns).pipe(resultStream);
-</code><code>  }
-</code><code>  return resultStream;
-</code><code>}</code></pre>
-<figcaption>
-        <p><span class="label">Listing 1:</span> Original TPF algorithm. More details can be found in the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">original paper</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>.</p>
-      </figcaption>
-</figure>
-
-    <figure id="amf-bgp-pseudo" class="listing">
-<pre><code>function solve (patterns) {
-</code><code>  const smallestIdx = /* find i where patterns[i].totalItems is the smallest */
-</code><code>  const bindingsStream = getBindings(patterns[smallestIdx]);
-</code><code>  const remainingPatterns = patterns.remove(smallestIdx);
-</code><code>  if (remainingPatterns.isEmpty())
-</code><code>    return bindingsStream;
-</code><code>
-</code><code>  const resultStream = /* empty stream */
-</code><code>  for (let bindings of bindingsStream) {
-</code><code>
-</code><code>    // ----- AMF -----
-</code><code>    let valid = true;
-</code><code>    for (let pattern of mappedPatterns)
-</code><code>      valid = pattern.amf.check(bindings);
-</code><code>    if (!valid)
-</code><code>      continue;
-</code><code>    // ----- AMF -----
-</code><code>
-</code><code>    const mappedPatterns = applyBindings(remainingPatterns, bindings);
-</code><code>    solve(mappedPatterns).pipe(resultStream);
-</code><code>  }
-</code><code>  return resultStream;
-</code><code>}</code></pre>
-<figcaption>
-        <p><span class="label">Listing 2:</span> Updated algorithm with AMF code.</p>
-      </figcaption>
-</figure>
-
-    <p>The main idea is that all new bindings first get filtered through all applicable AMFs.
-Although this is simplified in <a href="#amf-bgp-pseudo">Listing 2</a>,
-only the AMFs that filter over variables that are contained in the new bindings are applied.
-This also means that should the filters be provided out-of-band,
-only the necessary filters will be downloaded.
-In the end, the result is that many unnecessary server requests will be avoided due to the filtering,
-as will be shown in <a href="#evaluation">Section 6</a>.</p>
-
-    <h4 id="reducing-inefficient-amf-usage">Reducing inefficient AMF usage</h4>
-
-    <p>One problem with the above solutions is that certain AMFs can get quite big.
-In cases where there are not many bindings that need to be filtered,
-the time it takes to download the AMF might be greater than simply not using the filter at all.</p>
-
-    <p>For cases like this we added a heuristic that checks whether it might be a good idea to download the filter.
-To handle cases like this, 
-we created a heuristic that estimates both the time it would take to accept all the bindings,
-and the time it would take to download an AMF for the given amount of triples.
-Based on those estimates a choice gets made on whether to request the metadata or not.
-Our heuristic is quite simple as will be shown later,
-and serves more to indicate that there is still much potential there for future work.</p>
 
   </section>
 
@@ -455,13 +481,13 @@ these actors were simply added next to the existing ones or replaced them.</p>
 
     <p>Since the biggest change compared to the previous work is the new BGP algorithm,
 we will delve deeper into the implementation of that actor.
-<a href="#tpf">Listing 1</a> contains a simplified view at how the current framework handles BGP resolution in Comunica.
+<a href="#tpf"></a> contains a simplified view at how the current framework handles BGP resolution in Comunica.
 Since we want to make use of the modular nature of Comunica,
 and not edit the existing code,
 we can’t actually add our code in the existing actor.
 To handle this,
 we made a new BGP actor, BGP-AMF, that gets called before the original BGP actor receives the patterns.
-<a href="#bgp-amf">Listing 3</a> shows a simplified version of what this actor does.</p>
+<a href="#bgp-amf">Listing 4</a> shows a simplified version of what this actor does.</p>
 
     <figure id="bgp-amf" class="listing">
 <pre><code>function solve (patterns) {
@@ -475,7 +501,7 @@ we made a new BGP actor, BGP-AMF, that gets called before the original BGP actor
 </code><code>  return bgpMediator.call(patterns);
 </code><code>}</code></pre>
 <figcaption>
-        <p><span class="label">Listing 3:</span> New BGP-AMF actor.</p>
+        <p><span class="label">Listing 4:</span> New BGP-AMF actor.</p>
       </figcaption>
 </figure>
 

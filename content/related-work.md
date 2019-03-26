@@ -27,8 +27,8 @@ Combined with the fact that TPF returns it results in a paginated fashion,
 the number of HTTP requests is forms the primary bottleneck during query evaluation.
 Several enchancements have been proposed to the default TPF implementation
 in an attempt to reduce the number of those requests,
-such as new [query algorithms](cite: cites tpfoptimization, acosta_iswc_2015),
-and [restricting the request patterns to intermediary bindings](cite: brtpf).
+such as new [query algorithms](cite:cites tpfoptimization, acosta_iswc_2015),
+and [restricting the request patterns to intermediary bindings](cite:cites brtpf).
 Each of those with their own advantages and disadcantages.
 
 ### Approximate Membership Metadata

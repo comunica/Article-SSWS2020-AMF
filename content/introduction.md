@@ -23,7 +23,7 @@ their approach did not manage to reduce overall query evaluation times.
 The goal of our work is to investigate unexplored aspects of AMF.
 We do this by introducing new client-side algorithms for exploiting AMF metadata,
 and by investigating different ways of exposing AMFs server-side.
-Concretely, we introduce client-side algorithms that can use AMFs at more high-level BGPs,
+Concretely, we introduce client-side algorithms that can use AMFs at more high-level _Basic Graph Patterns_ (BGPs),
 instead of only for fully materialized triple patterns as was introduced by Vander Sande et al.
 Furthermore, we evaluate the effects and feasibility of server-side pre-computation and caching of AMFs,
 and the effects of different HTTP bandwidths, in-band AMFs, and different false-positive probabilities.

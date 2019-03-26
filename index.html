@@ -177,6 +177,13 @@ to link the different independent modules together.
 We make use of such configuration files to declaratively define our Comunica engine with AMF support,
 so that experiments can easily be executed based on them.</p>
 
+    <p>Comunica uses an <em>actor-based</em> architecture to achieve loose coupling between modules.
+Each actor is responsible for solving a certain task in a certain way.
+Actors can be registered on task-specific <em>buses</em>.
+If a certain task needs to be solved, <em>mediators</em> are responsible for picking the <em>best</em> actors in that bus,
+and letting that actor execute the task.
+Comunica offers more than 100 actors that, when combined, are able to solve complex SPARQL queries.</p>
+
   </section>
 
   <section id="problem-statement">
@@ -274,20 +281,14 @@ their hypotheses will be tested in <a href="#evaluation">Section 6</a> based on
   </section>
 
   <section id="solution">
-    <h2>New AMF approaches</h2>
+    <h2>Client-side AMF algorithms</h2>
 
-    <p>The AMF approach requires changes on both client-side as server-side,
-and our contributions adapt parts on both sides.
-For both sides, we discuss the pre-existing approaches
-and our contributions hereafter.</p>
-
-    <h3 id="client-side-query-algorithm">Client-side query algorithm</h3>
-
-    <p>For the sake of completeness, we first discuss the original triple-based AMF algorithm.
+    <p>In this section, we discuss the existing and new client-side algorithms that use AMF metadata.
+For the sake of completeness, we first discuss the original triple-based AMF algorithm.
 After that, we introduce our new BGP-based AMF algorithm.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.</p>
 
-    <h4 id="triple-based-amf-algorithm">Triple-based AMF algorithm</h4>
+    <h3 id="triple-based-amf-algorithm">Triple-based AMF algorithm</h3>
 
     <p>Vander Sande et al. <span class="references">[<a href="#ref-2">2</a>]</span> introduced an algorithm
 that acts as a cheap pre-processing step for testing the membership of triples.
@@ -316,7 +317,7 @@ as a pre-filtering step for testing the membership of triples.</p>
       </figcaption>
 </figure>
 
-    <h4 id="bgp-based-amf-algorithm">BGP-based AMF algorithm</h4>
+    <h3 id="bgp-based-amf-algorithm">BGP-based AMF algorithm</h3>
 
     <p>Following the idea of the triple-based algorithm,
 we introduce an extension that applies this concept for BGPs.
@@ -354,7 +355,7 @@ which will down the line invoke expensive HTTP requests.</p>
       </figcaption>
 </figure>
 
-    <h4 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for enabling the BGP algorithm</h4>
+    <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for Enabling the BGP Algorithm</h3>
 
     <p>The advantage of our BGP-based algorithm is that it may filter out true negative bindings
 much sooner in the query evaluation process compared to the triple-based algorithm.
@@ -396,12 +397,89 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
       </figcaption>
 </figure>
 
-    <h3 id="server-side-metadata-generation">Server-side metadata generation</h3>
+  </section>
 
-    <p>The original TPF server extension by Vander Sande et al. <span class="references">[<a href="#ref-2">2</a>]</span>
+  <section id="implementation">
+    <h2>Implementation</h2>
+
+    <p>In this section, we discuss the implementations of the client-side algorithms
+that were discussed in <a href="#solution">Section 4</a>, and our server-side extensions.</p>
+
+    <p class="todo">Anonymize source code links</p>
+
+    <h3 id="client-side-implementation-in-comunica">Client-side Implementation in Comunica</h3>
+
+    <p>As explained in <a href="#related-work-comunica">Subsection 2.3</a>, Comunica is a SPARQL querying framework in JavaScript.
+Because of its extensibility,
+and the fact that it already fully supports the TPF algorithm,
+we implemented our client-side AMF algorithms in this framework.
+Its modular structure makes it ideal for us to add on to the existing implementation,
+without having to change the existing code base.
+Following the conventions of Comunica,
+we also wrote extensive unit tests to test the correctness of our implementation.</p>
+
+    <p>Concretely, we introduce one new bus, and seven new actors.
+They are implemented in separate Comunica modules,
+and are available open-source on <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">GitHub</a>.</p>
+
+    <ul>
+      <li>AMF Bus: Bus for actors that can construct AMFs.</li>
+      <li>Bloom AMF Actor: Actor for constructing Bloom filters.</li>
+      <li>GCS AMF Actor: Actor for constructing GCS filters.</li>
+      <li>AMF Metadata Extractor Actor: Actor that extracts AMF metadata and instantiates AMFs.</li>
+      <li>AMF Quad Pattern Actor: An AMF-aware quad pattern actor.</li>
+      <li>AMF BGP Actor: An AMF-aware BGP actor.</li>
+      <li>Combined AMF BGP Actor: An AMF-aware BGP actor that pre-fetches AMFs.</li>
+    </ul>
+
+    <p>The first five modules are responsible for interpreting the AMF metadata,
+and the last three modules make use of the detected AMFs during query evaluation.
+As Comunica works with RDF <em>quads</em> instead of RDF <em>triples</em>,
+all algorithms that were introduced in <a href="#solution">Section 4</a> were generalized to this model.
+We will discuss both groups hereafter.</p>
+
+    <h4 id="amf-metadata-detection">AMF Metadata Detection</h4>
+
+    <p>The AMF Bus is responsible for holding actors that can instantiate AMFs of a certain type
+based on a set of properties.
+These properties contain things such as the type of AMF,
+the binary AMF data as was provided by the server,
+and the variable for which the AMF applies.
+For this bus, we implemented two actors, which respectively implement Bloom filters and GCS.</p>
+
+    <p>Next to this, we also implemented and actor to extract AMF metadata,
+which we registered to the already existing metadata extraction bus in Comunica.
+This actor will receive RDF quads as input,
+and it will detect any AMF metadata.
+Based on the detected AMF metadata, it will instantiate all relevant AMFs using the AMF Bus,
+and add these instances to Comunica’s shared query context, so that it can be used later on during query evaluation.</p>
+
+    <h4 id="amf-query-evaluation">AMF Query Evaluation</h4>
+
+    <p>The <em>AMF Quad Pattern Actor</em> implements the triple-based AMF algorithm
+by registering onto the quad pattern bus.
+This actor is only active for quad patterns that are fully materialized quads,
+and when AMFs are present in the shared query context.</p>
+
+    <p>The <em>AMF BGP Actor</em> implements our new BGP-based AMF algorithm,
+which registers onto the BGP bus.
+This also implements our heuristic where the constants are configurable.
+This actor is active for all BGPs, but only if AMFs are present in the shared query context.</p>
+
+    <p>We also implemented a <em>Combined AMF BGP Actor</em>,
+that is an improvement to the <em>AMF BGP Actor</em>
+that actively pre-fetches all AMFs that are out-of-band.
+This can slightly improve performance when multiple patterns exist in the BGP that all have AMFs,
+because HTTP requests are parallelized.</p>
+
+    <h3 id="server-extensions-in-serverjs">Server Extensions in Server.js</h3>
+
+    <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf">Server.js</a>
+by Vander Sande et al. <span class="references">[<a href="#ref-2">2</a>]</span>
 allowed both Bloom filters and GCS to be created on-the-fly for any triple pattern.
 These filters would be added out-of-band as metadata to TPFs.
-We extended this implementation with three new features.</p>
+We extended this implementation with three new features.
+This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.</p>
 
     <p>First, since we want to evaluate whether or not including AMF metadata in-band
 can reduce the total number of HTTP requests and query execution times,
@@ -417,109 +495,6 @@ with number of matching triples below a given threshold.</p>
 
     <p>Finally, we implemented a (disableable) file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.</p>
-
-  </section>
-
-  <section id="implementation">
-    <h2>Implementation</h2>
-
-    <p class="todo">There is too much overlap with the previous section, should merge or re-think how to handle probably.</p>
-
-    <p class="todo">Indeed, let’s make the impl part of the evaluation section, and just mention link to source code and other relevant details.</p>
-
-    <p>To implement our solution described in <a href="#solution">Section 4</a> we made use of the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica framework</a> <span class="references">[<a href="#ref-5">5</a>]</span>,
-which already fully supports the TPF algorithm.
-Its modular structure makes it ideal for us to add on to the existing implementation,
-without having to change the existing code base.
-Adding our features to the Comunica ecosystem caused us to create <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">8 new modules</a>
-to integrate our new features with the framework.</p>
-
-    <p>Since there is no modular infrastructure on the server side,
-we created a <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">new branch</a> in the repository that supports returning the required metadata.</p>
-
-    <p class="todo">Anonymize source code links</p>
-
-    <h3 id="integration-with-comunica">Integration with Comunica</h3>
-
-    <p class="todo">Put Comunica description summary completely in related work and reference that?</p>
-
-    <p>For a full overview of how Comunica works,
-we refer to the resource <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">paper</a> <span class="references">[<a href="#ref-5">5</a>]</span>.
-The main idea is that an instance consists of many actors
-that all fulfill a specific task.
-Actors don’t communicate directly with each other:
-if input is required from an actor with a different function
-this gets done by a mediator in-between.
-Such a mediator has a collection of actors implementing the same functionality (a bus),
-and then picks one to execute the given request.</p>
-
-    <p>For our Comunica implementation,
-we added components on several levels:</p>
-
-    <ul>
-      <li>An actor to extract AMF metadata</li>
-      <li>Two actors to apply Bloom and GCS membership filters to RDF data</li>
-      <li>A bus module to group membership filter actors</li>
-      <li>An actor implementing the original AMF algorithm <span class="references">[<a href="#ref-2">2</a>]</span></li>
-      <li>Two new BGP actors, to apply two different implementations of our AMF algorithm</li>
-      <li>A new SPARQL actor with a new default config that also includes these AMF actors</li>
-    </ul>
-
-    <p>All these actors can be independently to an existing Comunica framework,
-depending on the needs of the user.
-For the evaluations in <a href="#evaluation">Section 6</a>,
-we created several config files,
-enabling and disabling some of these features as required for the given test.
-They could also easily be integrated into the framework,
-since there already were actors to extract metadata,
-or actors to handle BGPs,
-these actors were simply added next to the existing ones or replaced them.</p>
-
-    <h4 id="bgp-actor">BGP actor</h4>
-
-    <p class="todo">Pictures could probably help here.</p>
-
-    <p>Since the biggest change compared to the previous work is the new BGP algorithm,
-we will delve deeper into the implementation of that actor.
-<a href="#tpf"></a> contains a simplified view at how the current framework handles BGP resolution in Comunica.
-Since we want to make use of the modular nature of Comunica,
-and not edit the existing code,
-we can’t actually add our code in the existing actor.
-To handle this,
-we made a new BGP actor, BGP-AMF, that gets called before the original BGP actor receives the patterns.
-<a href="#bgp-amf">Listing 4</a> shows a simplified version of what this actor does.</p>
-
-    <figure id="bgp-amf" class="listing">
-<pre><code>function solve (patterns) {
-</code><code>  for (pattern in patterns) {
-</code><code>    for (boundValue in pattern) {
-</code><code>      if (!pattern.parentAMF.check(boundValue))
-</code><code>        return;
-</code><code>    }
-</code><code>  }
-</code><code>  
-</code><code>  return bgpMediator.call(patterns);
-</code><code>}</code></pre>
-<figcaption>
-        <p><span class="label">Listing 4:</span> New BGP-AMF actor.</p>
-      </figcaption>
-</figure>
-
-    <p>The <code>parentAMF</code> variable seen there is the filter metadata of the pattern in the previous iteration.
-This means that if the pattern was bound to a certain value in this iteration,
-it still has the filter for the variable that was in that position.
-In case the metadata is sent out-of-band,
-the actual filter would only be downloaded at this point due to lazy programming.</p>
-
-    <p>For the sake of brevity we will not show a code sample of the second implementation.
-But the idea with that actor is to first group all filters based on the variable they are applicable to.
-In case of out-of-band data, this actor would prefetch the metadata simultaneously,
-helping performance.
-In case the heuristic mentioned before was enabled, both these actors would also be responsible for making use of it.</p>
-
-    <h3 id="server-metadata">Server metadata</h3>
-
-    <p class="todo">Is there added value in describing what the metadata looks like here?</p>
 
   </section>
 

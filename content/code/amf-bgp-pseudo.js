@@ -1,14 +1,8 @@
 function getBindings(triplePatterns, amfs) {
-  for ((triplePattern, amf) in (triplePatterns, amfs)) {
-    if ((!triplePattern.subject.isVariable()
-        && !amf.subject.filter(triplePattern.subject))
-     || (!triplePattern.predicate.isVariable()
-        && !amf.predicate.filter(triplePattern.predicate))
-     || (!triplePattern.object.isVariable()
-        && !amf.object.filter(triplePattern.object))) {
+  for ((triplePattern, amf) in (triplePatterns, amfs))
+    for position in ['subject', 'predicate', 'object']
+      if ((!triplePattern[position].isVariable()
+          && !amf[position].filter(triplePattern.subject))
         return new EmptyStream();
-      }
-    }
-  }
   return super.getBindings(bgpPatterns, amfs);
 }

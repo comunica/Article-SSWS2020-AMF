@@ -9,10 +9,19 @@ Anonymize source code links
 
 ### Client-side Implementation in Comunica
 
-As explained in [](#related-work-comunica), Comunica is a SPARQL querying framework in JavaScript.
-Because of its extensibility,
-and the fact that it already fully supports the TPF algorithm,
-we implemented our client-side AMF algorithms in this framework.
+For our implementation, we make use of [Comunica](cite:cites comunica),
+which is a highly modular SPARQL querying framework in JavaScript.
+Comunica uses an _actor-based_ architecture to achieve loose coupling between modules.
+Each actor is responsible for solving a certain task in a certain way.
+Actors can be registered on task-specific _buses_.
+If a certain task needs to be solved, _mediators_ are responsible for picking the _best_ actors in that bus,
+and letting that actor execute the task.
+Comunica offers more than 100 actors that, when combined, are able to solve complex SPARQL queries.
+This combination is achieved using [Components.js](cite:cites componentsjs),
+a dependency injection framework that works with semantic configuration files.
+
+As Comunica already fully supports the TPF algorithm out-of-the-box,
+it significantly lowered the barrier for implementing our client-side AMF algorithms in this framework.
 Its modular structure makes it ideal for us to add on to the existing implementation,
 without having to change the existing code base.
 Following the conventions of Comunica,

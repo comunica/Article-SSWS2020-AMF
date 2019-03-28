@@ -3,8 +3,7 @@
 
 In this section we cover the relevant existing research relating to our work.
 Concretely, we discuss the Triple Pattern Fragments interface,
-the Approximate Membership Metadata feature for TPF,
-and Comunica, the meta-query engine in which we implement and evaluate our approach.
+and the Approximate Membership Metadata feature for TPF.
 
 ### Triple Pattern Fragments
 {:#related-work-ldf}
@@ -61,25 +60,3 @@ at the cost of only a small increase in server load.
 Even though the _number of HTTP requests is lower_, the _total execution time is higher_ for most queries,
 because of the long server delays when generating AMFs.
 In this work, we aim to solve this problem of higher execution times.
-
-### Comunica
-{:#related-work-comunica}
-
-[Comunica](cite:cites comunica) is a highly modular _meta query engine_
-that was introduced to make it easier to compare different
-techniques and algorithms for querying Linked Data.
-Comunica already supports querying over TPF interfaces out-of-the-box,
-which is why we make use of this framework for implementing our client-side AMF-based algorithms.
-
-Comunica uses semantic configuration files to define which modules are included in a single instance.
-It then uses [Components.js](cite:cites componentsjs), a semantic dependency injection framework,
-to link the different independent modules together.
-We make use of such configuration files to declaratively define our Comunica engine with AMF support,
-so that experiments can easily be executed based on them.
-
-Comunica uses an _actor-based_ architecture to achieve loose coupling between modules.
-Each actor is responsible for solving a certain task in a certain way.
-Actors can be registered on task-specific _buses_.
-If a certain task needs to be solved, _mediators_ are responsible for picking the _best_ actors in that bus,
-and letting that actor execute the task.
-Comunica offers more than 100 actors that, when combined, are able to solve complex SPARQL queries.

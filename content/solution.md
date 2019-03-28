@@ -55,29 +55,15 @@ BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.
 
 ### Heuristic for Enabling the BGP Algorithm
 
-The advantage of our BGP-based algorithm is that it may filter out true negative bindings
-much sooner in the query evaluation process compared to the triple-based algorithm.
-The consequence of this is that AMFs for large patterns will have to be downloaded,
-which may come at the cost of increased HTTP transfer amounts.
-In some cases, this cost may become too high for the number of bindings that need to be tested.
-For example, if only a single binding needs to be tested,
-then downloading the AMF of a pattern with 1M triples will be significantly
-more expensive than doing a single membership HTTP request.
+While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
+it may lead to larger AMFs to be downloaded, possibly incurring a larger HTTP overhead.
+In some cases, this cost may become too high if the number of bindings that needs to be tested becomes too low.
 
 To cope with these cases, we introduce a heuristic in [](#amf-bgp-heuristic-pseudo),
 that will check whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
 compared to just executing the HTTP membership requests directly.
 This heuristic has been designed for fast calculation,
 with exactness as a lower priority.
-
-The algorithm takes a number of bindings and a list estimated counts for each of the triple patterns as inputs.
-It will first calculate the total size in bytes of all AMFs that would have to be downloaded,
-based on a constant `AMF_TRIPLE_SIZE`, which represents the size of a triple in an AMF.
-Next, the total size in bytes of all membership requests is calculated based on the constant `TPF_BINDING_SIZE`,
-which represents the size of a membership request.
-If the total AMF size is smaller than the total membership request size,
-then the BGP-based algorithm is expected to be more effective.
-
 Based on measurements, we set `AMF_TRIPLE_SIZE` to `2 bytes`, and `TPF_BINDING_SIZE` to `1000 bytes` by default.
 In [](#evaluation), we will evaluate the effects for different values for `TPF_BINDING_SIZE`.
 In future work, more exact heuristics should be investigated

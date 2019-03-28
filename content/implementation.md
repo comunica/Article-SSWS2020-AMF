@@ -39,7 +39,7 @@ and are available open-source on [GitHub](https://github.com/comunica/comunica-f
 * AMF BGP Actor: An AMF-aware BGP actor.
 * Combined AMF BGP Actor: An AMF-aware BGP actor that pre-fetches AMFs.
 
-The first five modules are responsible for interpreting the AMF metadata,
+The first four modules are responsible for interpreting the AMF metadata,
 and the last three modules make use of the detected AMFs during query evaluation.
 As Comunica works with RDF _quads_ instead of RDF _triples_,
 all algorithms that were introduced in [](#solution) were generalized to this model.

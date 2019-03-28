@@ -37,7 +37,7 @@ We list these as research questions for our work, and defined hypotheses for eac
     **To what extent can TPF server load be reduced by _dynamically restricting_ AMF generation?**
     <br />
     Earlier work introduced AMF as a feature that was always enabled.
-    However, some specific AMFs may be too expensive for servers to calculate on-the-fly.
+    However, some specific AMFs may be too expensive for servers to calculate on the fly.
     As such, it may be beneficial to only _dynamically enable_ AMFs under specific circumstances,
     e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
     <br />

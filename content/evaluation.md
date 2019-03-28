@@ -360,7 +360,7 @@ if the server can deliver AMF filters sufficiently fast (_[Research Question 2](
 Furthermore, if no cache is active, AMF-aware querying performs _worse_ than non-AMF-aware querying.
 Ideally, all AMFs should be pre-computed, but due to the large number of possible triple patterns in a dataset,
 this is not feasible.
-On the other hand, our results have shown that server-side on-the-fly creation of AMFs
+On the other hand, our results have shown that server-side on the fly creation of AMFs
 only starts to have a significant impact for sizes larger than 10.000 (_[Research Question 3](#question-dynamic-restriction)_).
 
 On a low-end machine (2,7 GHz Intel Core i5, 8GB RAM), creation of AMFs takes 0,0125 msec per triple,

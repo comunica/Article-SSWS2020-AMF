@@ -83,7 +83,7 @@ because HTTP requests are parallelized.
 
 The original TPF server extension in [Server.js](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf){:.mandatory}
 by [Vander Sande et al.](cite:cites amf2015)
-allowed both Bloom filters and GCS to be created on-the-fly for any triple pattern.
+allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 These filters would be added out-of-band as metadata to TPFs.
 We extended this implementation with three new features.
 This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2){:.mandatory}.

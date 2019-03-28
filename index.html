@@ -255,7 +255,7 @@ we will investigate the impact of caching AMFs and all HTTP requests in general.
       <li id="question-dynamic-restriction"><strong>To what extent can TPF server load be reduced by <em>dynamically restricting</em> AMF generation?</strong>
 <br />
 Earlier work introduced AMF as a feature that was always enabled.
-However, some specific AMFs may be too expensive for servers to calculate on-the-fly.
+However, some specific AMFs may be too expensive for servers to calculate on the fly.
 As such, it may be beneficial to only <em>dynamically enable</em> AMFs under specific circumstances,
 e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
 <br />
@@ -330,12 +330,10 @@ Once all checks pass, the original HTTP-based membership logic will be invoked.<
 
     <figure id="amf-triple-pseudo" class="listing">
 <pre><code>function hasTriple(triple, amf) {
-</code><code>  if (!amf.subject.filter(triple.subject)
-</code><code>   || !amf.predicate.filter(triple.predicate)
-</code><code>   || !amf.object.filter(triple.object)) {
-</code><code>    return false;
-</code><code>  }
-</code><code>  return super.hasTriple(triple, amfs);
+</code><code>  for position in [&#39;subject&#39;, &#39;predicate&#39;, &#39;object&#39;]
+</code><code>    if amf[position].filter(triple[position])
+</code><code>      return false;
+</code><code>  return super.hasTriple(triple, amf);
 </code><code>}</code></pre>
 <figcaption>
         <p><span class="label">Listing 1:</span> Triple-based AMF algorithm by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span>
@@ -363,17 +361,11 @@ which will down the line invoke expensive HTTP requests.</p>
 
     <figure id="amf-bgp-pseudo" class="listing">
 <pre><code>function getBindings(triplePatterns, amfs) {
-</code><code>  for ((triplePattern, amf) in (triplePatterns, amfs)) {
-</code><code>    if ((!triplePattern.subject.isVariable()
-</code><code>        &amp;&amp; !amf.subject.filter(triplePattern.subject))
-</code><code>     || (!triplePattern.predicate.isVariable()
-</code><code>        &amp;&amp; !amf.predicate.filter(triplePattern.predicate))
-</code><code>     || (!triplePattern.object.isVariable()
-</code><code>        &amp;&amp; !amf.object.filter(triplePattern.object))) {
+</code><code>  for ((triplePattern, amf) in (triplePatterns, amfs))
+</code><code>    for position in [&#39;subject&#39;, &#39;predicate&#39;, &#39;object&#39;]
+</code><code>      if ((!triplePattern[position].isVariable()
+</code><code>          &amp;&amp; !amf[position].filter(triplePattern.subject))
 </code><code>        return new EmptyStream();
-</code><code>      }
-</code><code>    }
-</code><code>  }
 </code><code>  return super.getBindings(bgpPatterns, amfs);
 </code><code>}</code></pre>
 <figcaption>
@@ -383,30 +375,16 @@ which will down the line invoke expensive HTTP requests.</p>
 
     <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for Enabling the BGP Algorithm</h3>
 
-    <p>The advantage of our BGP-based algorithm is that it may filter out true negative bindings
-much sooner in the query evaluation process compared to the triple-based algorithm.
-The consequence of this is that AMFs for large patterns will have to be downloaded,
-which may come at the cost of increased HTTP transfer amounts.
-In some cases, this cost may become too high for the number of bindings that need to be tested.
-For example, if only a single binding needs to be tested,
-then downloading the AMF of a pattern with 1M triples will be significantly
-more expensive than doing a single membership HTTP request.</p>
+    <p>While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
+it may lead to larger AMFs to be downloaded, possibly incurring a larger HTTP overhead.
+In some cases, this cost may become too high if the number of bindings that needs to be tested becomes too low.</p>
 
     <p>To cope with these cases, we introduce a heuristic in <a href="#amf-bgp-heuristic-pseudo">Listing 3</a>,
 that will check whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
 compared to just executing the HTTP membership requests directly.
 This heuristic has been designed for fast calculation,
-with exactness as a lower priority.</p>
-
-    <p>The algorithm takes a number of bindings and a list estimated counts for each of the triple patterns as inputs.
-It will first calculate the total size in bytes of all AMFs that would have to be downloaded,
-based on a constant <code>AMF_TRIPLE_SIZE</code>, which represents the size of a triple in an AMF.
-Next, the total size in bytes of all membership requests is calculated based on the constant <code>TPF_BINDING_SIZE</code>,
-which represents the size of a membership request.
-If the total AMF size is smaller than the total membership request size,
-then the BGP-based algorithm is expected to be more effective.</p>
-
-    <p>Based on measurements, we set <code>AMF_TRIPLE_SIZE</code> to <code>2 bytes</code>, and <code>TPF_BINDING_SIZE</code> to <code>1000 bytes</code> by default.
+with exactness as a lower priority.
+Based on measurements, we set <code>AMF_TRIPLE_SIZE</code> to <code>2 bytes</code>, and <code>TPF_BINDING_SIZE</code> to <code>1000 bytes</code> by default.
 In <a href="#evaluation">Section 6</a>, we will evaluate the effects for different values for <code>TPF_BINDING_SIZE</code>.
 In future work, more exact heuristics should be investigated
 that take perform live profiling of HTTP requests and delays to avoid the need of these constants.</p>
@@ -467,7 +445,7 @@ and are available open-source on <a href="https://github.com/comunica/comunica-f
       <li>Combined AMF BGP Actor: An AMF-aware BGP actor that pre-fetches AMFs.</li>
     </ul>
 
-    <p>The first five modules are responsible for interpreting the AMF metadata,
+    <p>The first four modules are responsible for interpreting the AMF metadata,
 and the last three modules make use of the detected AMFs during query evaluation.
 As Comunica works with RDF <em>quads</em> instead of RDF <em>triples</em>,
 all algorithms that were introduced in <a href="#solution">Section 4</a> were generalized to this model.
@@ -511,7 +489,7 @@ because HTTP requests are parallelized.</p>
 
     <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf">Server.js</a>
 by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span>
-allowed both Bloom filters and GCS to be created on-the-fly for any triple pattern.
+allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 These filters would be added out-of-band as metadata to TPFs.
 We extended this implementation with three new features.
 This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.</p>
@@ -888,7 +866,7 @@ if the server can deliver AMF filters sufficiently fast (<em><a href="#question-
 Furthermore, if no cache is active, AMF-aware querying performs <em>worse</em> than non-AMF-aware querying.
 Ideally, all AMFs should be pre-computed, but due to the large number of possible triple patterns in a dataset,
 this is not feasible.
-On the other hand, our results have shown that server-side on-the-fly creation of AMFs
+On the other hand, our results have shown that server-side on the fly creation of AMFs
 only starts to have a significant impact for sizes larger than 10.000 (<em><a href="#question-dynamic-restriction">Research Question 3</a></em>).</p>
 
     <p>On a low-end machine (2,7 GHz Intel Core i5, 8GB RAM), creation of AMFs takes 0,0125 msec per triple,

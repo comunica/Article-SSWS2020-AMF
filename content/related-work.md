@@ -2,8 +2,10 @@
 {:#related-work}
 
 In this section we cover the relevant existing research relating to our work.
-Concretely, we discuss the Triple Pattern Fragments interface,
-and the Approximate Membership Metadata feature for TPF.
+We start by discussing the TPF interface.
+After that, we discuss different AMFs,
+followed by their use in query evaluation.
+Finally, we discuss the related work on using AMFs for the TPF interface.
 
 ### Triple Pattern Fragments
 {:#related-work-ldf}
@@ -30,7 +32,59 @@ such as new [query algorithms](cite:cites tpfoptimization, acosta_iswc_2015),
 and [restricting the request patterns to intermediary bindings](cite:cites brtpf).
 Each of those with their own advantages and disadcantages.
 
-### Approximate Membership Metadata
+### Approximate Membership Functions
+
+Approximate Membership Functions (AMFs) are functions that enable
+fast membership tests with a certain chance on false positives.
+These functions are typically much smaller than the full dataset,
+which makes it a useful pre-filtering method.
+
+Different AMF techniques lead to different false-positive probabilities and filter sizes.
+Typically, larger filters will lead to lower false-positive probabilities.
+As such, picking an AMF technique for a use case involves a trade-off between both.
+[_Bloom filters_](cite:cites bloomfilter) and [_Golomb-coded sets_ (GCS)](cite:cites gcsfilter)
+are two examples of AMF techniques.
+Both approaches guarantee a 100% recall, but not a 100% precision.
+
+A Bloom filter is essentially a bitmap that is filled with the range of a predefined number of hash functions.
+Elements are added to the filter by applying all hash functions,
+and `OR`-ing the results into the bitmap.
+Afterwards, membership tests can be done by applying all hash functions again,
+and performing a bit-wise `AND` to see if all results are _possibly_ present.
+
+GCS were introduced as an improvement to Bloom filters
+by using only a single hash function.
+Furthermore, the range of the hash function is always a uniformly distributed list instead of a bitmap,
+which allows for more [efficiency compression using geometric distributions](cite:cites geometriccoding).
+Compared to Bloom filters, GCS achieve a higher compression rate, at the cost of slower decompression.
+
+### Approximate Membership for Query Evaluation
+
+AMFs find their use in many areas related to RDF querying,
+such as storage, join optimization, source selection.
+
+In the area of databases for _RDF storage_,
+Bloom filters can be used to [reduce the number of expensive I/O operations](cite:cites bloomIO)
+as a pre-filtering step during triple pattern query evaluation.
+There is also an approach that uses Bloom filters internally
+as a way to [efficiently encode reachability information between triple pattern](cite:cites bloomreachability).
+More recently, a combination of multiple Bloom filters were also being used
+as a way to [compactly store a vector-based filtering index](cite:cites bloomsfilterindex).
+
+Next to that, AMFs are also a useful tool for improving the performance of _graph pattern joins_.
+Bloom filters can therefore be used to
+[efficiently group connected triple patterns by frequency](cite:cites bloomjoinsfrequency),
+to improve the efficiency of merge joins [as a way of representing equivalent classes](cite:cites bloomjoinslarge),
+and even for [joining distributed and stored streams](cite:cites bloomdistributed).
+
+Furthermore, Bloom filters are also used in the domain of federated querying to
+optimize the process of _source selection_.
+Concretely, [SPARQL's boolean ASK response can be enhanced with Bloom filters as a way of sharing a concise summary of the matching results](cite:cites bloomsparqlask).
+This allows source selection algorithms to identify overlap between different sources,
+and can either minimize the required number of requests,
+or it can be used to retrieve as many results as possible.
+
+### Approximate Membership Metadata for TPF
 {:#related-work-amf}
 
 It has been shown that [the TPF approach produces a large number of so-called _membership_ requests](cite:cites amf2015).
@@ -44,13 +98,7 @@ which indicates that optimizing membership queries can have a positive effect on
 
 Following the declarative basis of TPF for including metadata into server requests to help the client improve query evalation,
 an approach was introduced to [add approximate membership metadata to reduce the number of membership requests to the server](cite:cites amf2015).
-This metadata describes _Approximate Membership Functions_ (AMFs),
-which are functions that enable fast membership tests with a certain chance on false positives.
-The authors compared two AMF implementations,
-namely [_Bloom filters_](cite:cites bloomfilter) and [_Golomb-coded sets_ (GCS)](cite:cites gcsfilter).
-Both approaches guarantee a 100% recall, but not a 100% precision.
-There is a trade-off between the size of the function, and its precision.
-GCS were introduced as an improvement to Bloom filters and achieves a higher compression rate, at the cost of slower decompression.
+The authors compared Bloom filters and GCS as AMF implementations behind this metadata.
 Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.
 Due to the <100% precision, clients can only filter out true negatives based on AMFs,

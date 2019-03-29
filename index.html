@@ -222,12 +222,36 @@ In this work, we aim to solve this problem of higher execution times.</p>
   <section id="problem-statement">
     <h2>Problem Statement</h2>
 
+    <p class="todo">MVS: first sentence we already know, merge with second sentence.</p>
+
     <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Certain effects of using AMF metadata to improve query performance in the context of TPF were previously investigated</a> <span class="references">[<a href="#ref-2">2</a>]</span>.
 The authors mainly focused on comparing two different AMF implementations with each other,
-and their effects on query execution time.
-This work has introduced a number of new follow-up questions,
-and offers several points for improvement.
-We list these as research questions for our work, and defined hypotheses for each of them:</p>
+and their effects on query execution time.</p>
+
+    <p class="todo">MVS: I’d open the section with the next sentence</p>
+
+    <p>This work introduces a number of new follow-up questions,
+and offers several points for improvement.</p>
+
+    <p class="todo">MVS: next sentence also has redundancy. I’m sure you can write this whole paragraph in 2 concise sentences that matter.</p>
+
+    <p>We list these as research questions for our work, and defined hypotheses for each of them:</p>
+
+    <p class="todo">MVS: RQ1: from the hypotheses, I can tell you actually mean execution time, say so.
+MVS: can you be more specific on “not using AMFs”, you mean plain TPF?
+MVS: I think you can merge H1.1 &amp; H1.2, you think you can outperform prior approaches, period.
+MVS: H1.3 is lacks credibility, I’d like to know why you think that (of all hypotheses in fact).</p>
+
+    <p class="todo">MVS: RQ2 can be rephrased active. “Does caching…”
+And we need to seriously cut in the hypotheses. H2.1 for instance is caused by something that has nothing to do with this paper (and we already know that from the original TPF paper). H2.3 &amp; H2.4 are the same? H2.5 is an aggregate of H1 - 4?</p>
+
+    <p class="todo">MVS: RQ3: make active, and “dynamically restricting” is not clear. We also have to say call thing like they are. The threshold is introduced as an example, but it is the only thing we hypothesise about. The difference between H3.2 and H3.3 is unclear.</p>
+
+    <p class="todo">MVS: around now I begin to realize that your RQs are granularity-wise the actual hypotheses, something to consider</p>
+
+    <p class="todo">MVS: RQ5 is false, all AMFs were inband</p>
+
+    <p class="todo">MVS: RQ6 how low can you go?</p>
 
     <ol>
       <li id="question-combine"><strong>Can query evaluation be improved by <em>combining AMFs</em> client-side?</strong>

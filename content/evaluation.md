@@ -219,7 +219,7 @@ Query evaluation times for different AMF result count thresholds for different A
 
 <figure id="plot_threshold_serverload">
 <center>
-<img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_c">
+<img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c">
 </center>
 <figcaption markdown="block">
 Average server CPU usage for different AMF result count thresholds when caching is enabled and disabled.

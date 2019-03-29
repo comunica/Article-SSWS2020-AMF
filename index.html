@@ -62,35 +62,42 @@ and has significant benefits for client-side query engines.
 as ways to publish Linked Data on the Web.
 The <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> interface was introduced
 as a trade-off between server load and client-side querying effort.
-It restricts the server interface to triple pattern queries,
+The server interface is restricted to triple pattern queries,
 so that full SPARQL queries have to be evaluated client-side.
-TPF is a hypermedia interface that is self-descriptive.
-This allows smart clients to detect metadata and controls,
-which can be used to enhance the query evaluation process if the client understands these descriptions.
-This self-descriptiveness has lead to the introduction of
+TPF is a hypermedia interface that is self-descriptive.</p>
+
+    <p class="todo">MVS: briefly explain what self-descriptive means</p>
+
+    <p>This enables smart clients that understand these descriptions, to detect metadata and controls,
+which can be used to enhance the query evaluation process.</p>
+
+    <p class="todo">MVS: I think the next sentence could be put differently. allowed the introduction?</p>
+
+    <p>This self-descriptiveness has lead to the introduction of
 <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">various interface features</a> <span class="references">[<a href="#ref-2">2</a>, <a href="#ref-3">3</a>, <a href="#ref-4">4</a>]</span>.</p>
 
-    <p>Vander Sande et al. introduced the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filters (AMFs)</a> <span class="references">[<a href="#ref-2">2</a>]</span> feature,
-which adds AMFs as metadata to TPF.
-Clients can detect and use these AMFs to reduce potentially high the number of membership subqueries
-by pre-filtering potential results client-side, as a way of reducing the number expensive HTTP requests.
-While the authors achieved their goal of reducing the number of HTTP requests,
-their approach did not manage to reduce overall query evaluation times.</p>
+    <p>One of these added features
+was <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filters (AMFs)</a> <span class="references">[<a href="#ref-2">2</a>]</span> metadata.
+Once detected, clients can use these AMFs to reduce a potentially high 
+number of expensive HTTP requests by pre-filtering intermediate results client-side that lead to membership subqueries.</p>
 
-    <p>The goal of our work is to investigate unexplored aspects of AMF.
-We do this by introducing new client-side algorithms for exploiting AMF metadata,
-and by investigating different ways of exposing AMFs server-side.
-Concretely, we introduce client-side algorithms that can use AMFs at more high-level <em>Basic Graph Patterns</em> (BGPs),
-instead of only for fully materialized triple patterns as was introduced by Vander Sande et al.
+    <p class="todo">MVS: briefly explain what membership subqueries are</p>
+
+    <p>While the authors achieved a reduction in HTTP requests,
+their approach did not reduce overall query evaluation times.</p>
+
+    <p>The goal of this work is to investigate unexplored aspects of AMF.
+Therefore, we extend the client-side algorithm from <span class="references">[<a href="#ref-2">2</a>]</span> to also exploit AMF metadata at the more high-level <em>Basic Graph Patterns</em> (BGPs)
+in addition to only fully materialized triple patterns.
 Furthermore, we evaluate the effects and feasibility of server-side pre-computation and caching of AMFs,
-and the effects of different HTTP bandwidths, in-band AMFs, and different false-positive probabilities.</p>
+the effects of different HTTP bandwidths, out-of-band delivery of AMFs, and different false-positive probabilities.</p>
 
     <p>Due to the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called <em>Comunica Bencher</em>.
-It builds on top of the highly modular <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica framework</a> <span class="references">[<a href="#ref-5">5</a>]</span> for Linked Data querying,
-by working with fully declarative experiment descriptions that offer reproducible experimental results.
-It lowers the barrier for reproducing the results of this work,
-and creating new similar experiments in the future.</p>
+It ensures complete reproducible experimental results by
+having declarative experiment descriptions build on top of the highly modular <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica Linked Data querying framework</a> <span class="references">[<a href="#ref-5">5</a>]</span>.
+This lowers the barrier for reproducing the experiments of this work,
+and creating similar ones in the future.</p>
 
     <p>In the next section we cover the related work pertaining to this article.
 After that, we introduce our research questions and hypotheses in <a href="#problem-statement">Section 3</a>.

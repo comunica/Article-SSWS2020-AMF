@@ -1,27 +1,29 @@
 ## Abstract
 <!-- Context      -->
-Various Linked Data Fragments exist for exposing Linked Data on the Web.
-The Triple Pattern Fragments (TPF) interface is a type of LDF that significantly lowers server-cost
-by moving a large portion of the query effort client-side.
+By publishing Linked Data through HTTP interfaces with different expressivity,
+the effort of SPARQL query evaluation can be redistributed between clients and servers.
+This can result in, for instance,
+lower server-side CPU usage at the expense of higher bandwidth consumption.
+Previous work has shown that complementing light-weight interfaces
+such as Triple Pattern Fragments (TPF) with additional metadata
+can positively impact the client and/or server.
 <!-- Need         -->
-In previous work, Approximate Membership Functions (AMFs) were added to TPF as metadata,
-with the purpose of reducing the number of membership subqueries by pre-filtering potential results client-side.
-Even though this lead to a reduction of HTTP requests,
-the need for lower query execution times was not met.
+Specifically, Approximate Membership Functions (AMFs)
+were shown to reduce the number of HTTP requests,
+at the expense of increasing query execution times.
 <!-- Task         -->
-In order to effectively reduce query execution times,
-we investigate several unexplored aspects regarding AMF metadata on TPF interfaces.
+In order to mitigate this drawback,
+we investigated unexplored aspects of AMF metadata on TPF interfaces.
 <!-- Object       -->
 In this article, we introduce and extensively evaluate alternative approaches
 for exposing (server-side) and consuming (client-side) AMF metadata
-to reach lower query execution times while keeping server cost sufficiently low.
+to reach lower query execution times, while keeping the server cost sufficiently low.
 <!-- Findings     -->
 Our results show that our alternative client-side algorithms significantly reduce
-the number of HTTP requests and query execution times
+both the number of HTTP requests and the query execution times
 without significantly increasing server load.
-Furthermore, we conclude that server-side caching and (partial) AMF pre-computation is essential,
-and offer concrete guidelines on how AMF metadata should be configured on the server.
 <!-- Conclusion   -->
-Our work shows that TPF in combination with AMF metadata is feasible for data publishers,
-and has significant benefits for client-side query engines.
+We conclude that server-side caching and (partial) AMF pre-computation is essential,
+and translate these findings into concrete guidelines for data publishers
+to configure AMF metadata on their servers.
 <!-- Perspectives -->

@@ -8,17 +8,16 @@ and mitigate their drawback of increased query execution times.
 
 We list these as research questions, and defined hypotheses for each of them:
 
-MVS: RQ1: from the hypotheses, I can tell you actually mean execution time, say so.
-MVS: can you be more specific on "not using AMFs", you mean plain TPF?
 MVS: I think you can merge H1.1 & H1.2, you think you can outperform prior approaches, period.
 MVS: H1.3 is lacks credibility, I'd like to know why you think that (of all hypotheses in fact).
 {:.todo}
 
-MVS: RQ2 can be rephrased active. "Does caching..."
+MVS:
 And we need to seriously cut in the hypotheses. H2.1 for instance is caused by something that has nothing to do with this paper (and we already know that from the original TPF paper). H2.3 & H2.4 are the same? H2.5 is an aggregate of H1 - 4?
 {:.todo}
 
-MVS: RQ3: make active, and "dynamically restricting" is not clear. We also have to say call thing like they are. The threshold is introduced as an example, but it is the only thing we hypothesise about. The difference between H3.2 and H3.3 is unclear.
+MVS:
+The difference between H3.2 and H3.3 is unclear.
 {:.todo}
 
 MVS: around now I begin to realize that your RQs are granularity-wise the actual hypotheses, something to consider
@@ -35,11 +34,11 @@ MVS: RQ6 how low can you go?
     e.g., by combining multiple AMFs.
     <br />
     **Hypotheses:**
-    1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution is faster compared to not using AMFs.
-    2. {:#hypo-combine-2} By combining AMFs client-side at BGP-level, query execution is faster compared to using AMFs at triple-level.
-    3. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution compared to only using AMFs at BGP-level.
+    1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.
+    2. {:#hypo-combine-2} By combining AMFs client-side at BGP-level, query execution time is lower compared to using AMFs at triple-level.
+    3. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level is not faster w.r.t. query execution time compared to only using AMFs at BGP-level.
 2. {:#question-cache}
-    **What query execution speedup does caching of HTTP requests and AMFs provide?**
+    **Does caching of HTTP requests and AMFs speed up query execution?**
     <br />
     As the authors of the earlier work on AMF suggest that caching of AMFs
     can reduce server delays and improve overall query evaluation,
@@ -53,12 +52,12 @@ MVS: RQ6 how low can you go?
     5. {:#hypo-cache-5} Query evaluation with a cold cache is significantly slower than query evaluation with a warm cache.
     6. {:#hypo-cache-6} With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.
 3. {:#question-dynamic-restriction}
-    **To what extent can TPF server load be reduced by _dynamically restricting_ AMF generation?**
+    **What impact do _different AMF generation thresholds_ have on server load and query evaluation?**
     <br />
     Earlier work introduced AMF as a feature that was always enabled.
     However, some specific AMFs may be too expensive for servers to calculate on the fly.
-    As such, it may be beneficial to only _dynamically enable_ AMFs under specific circumstances,
-    e.g., by only allowing AMFs to be requested for queries with result count lower than a certain threshold.
+    As such, it may be beneficial to only enable AMF for queries
+    that have a result count lower than a certain threshold.
     <br />
     **Hypotheses:**
     1. {:#hypo-dynamic-restriction-1} Lower thresholds slow down query execution with cached AMFs.

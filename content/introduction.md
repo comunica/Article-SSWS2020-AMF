@@ -7,34 +7,21 @@ The [Triple Pattern Fragments (TPF) interface](cite:cites ldf) interface was int
 as a trade-off between server load and client-side querying effort.
 The server interface is restricted to triple-pattern queries,
 so that all remaining elements of SPARQL queries have to be evaluated client-side.
-TPF is a hypermedia interface that is self-descriptive.
-<span class="comment" data-author="MVS">briefly explain what self-descriptive means</span>
-This enables smart clients that understand these descriptions to detect metadata and controls,
-which can be used to enhance the query evaluation process.
-<span class="comment" data-author="RV">More important is that you explain that TPF is a composable building block. So this article is not introducing yet another interface, but rather an independent block that can be combined with TPF. Cite [this](cite:cites verborgh_ic_2018) if meaningful and space.</span>
-<span class="comment" data-author="MVS">I think the next sentence could be put differently. allowed the introduction?</span>
-This self-descriptiveness has lead to the introduction of
-[various independent interface features](cite:cites amf2015, tpfoptimization, vtpf)
-that can be combined with TPF.
-<span class="comment" data-author="RV">Rather, the composability. Self-description is what makes it work seamlessly.</span>
-
+TPF is a hypermedia interface that is _self-descriptive_,
+which enables smart clients that _understand_ these descriptions to detect metadata and controls,
+and can be used to enhance the query evaluation process.
+This self-descriptiveness allows TPF to be [_composed_ with various _independent building blocks_](cite:cites verborgh_ic_2018)
+by adding new metadata to the interface,
+and allowed the introduction of a variety of [TPF features](cite:cites amf2015, tpfoptimization, vtpf).
 One such feature is [Approximate Membership Filters (AMFs)](cite:cites amf2015) metadata.
-When clients detect AMFs in the response,
-<span class="comment" data-author="RV">the aforementioned is enough for me as far as self-descriptiveness goes</span>
-they can use them to reduce a potentially high 
-number of expensive HTTP requests by pre-filtering intermediate results client-side that lead to membership subqueries.
-<span class="comment" data-author="MVS">briefly explain what membership subqueries are</span>
-<span class="comment" data-author="RV">alternatively, do not explain but stay on an even higher level (and possibly point forward to next section <q>as detailed in …</q>)</span>
-While the authors achieved a reduction in HTTP requests,
-their approach did not reduce overall query evaluation times.
+Clients can detect AMFs in the response, and use it to reduce the required number
+of HTTP requests at the cost of increased query execution times.
 
-The goal of this work is to investigate unexplored aspects of AMF.
-<span class="comment" data-author="RV">no, the goal is to improve on the above? or, more widely, to gain a better understanding of how AMF and TPF interact?</span>
-Therefore, we extend the client-side algorithm from [](cite:cites amf2015) to also exploit AMF metadata at the more high-level _Basic Graph Patterns_ (BGPs)
-in addition to only fully materialized triple patterns.
-Furthermore, we evaluate the effects and feasibility of server-side pre-computation and caching of AMFs,
-the effects of different HTTP bandwidths, out-of-band delivery of AMFs, and different false-positive probabilities.
-<span class="comment" data-author="RV">All correct, yet no one but us will understand. It's exact, but not useful if the reader cannot get this until the next section.</span>
+The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
+and how this increase in query execution times can be mitigated.
+Therefore, we extend the client-side algorithm from [](cite:cites amf2015) to exploit AMF metadata
+earlier during query evaluation for speeding up query execution.
+Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.
 
 Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called _Comunica Bencher_.

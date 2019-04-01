@@ -1,23 +1,12 @@
 ## Problem Statement
 {:#problem-statement}
 
-MVS: first sentence we already know, merge with second sentence.
-{:.todo}
+With the introduction of the AMF feature for TPF,
+[Vander Sande et al.](cite:cites amf2015) introduced a number of follow-up questions.
+In our work, we aim to answer some of these questions,
+and mitigate their drawback of increased query execution times.
 
-[Certain effects of using AMF metadata to improve query performance in the context of TPF were previously investigated](cite:cites amf2015).
-The authors mainly focused on comparing two different AMF implementations with each other,
-and their effects on query execution time.
-
-MVS: I'd open the section with the next sentence
-{:.todo}
-
-This work introduces a number of new follow-up questions,
-and offers several points for improvement.
-
-MVS: next sentence also has redundancy. I'm sure you can write this whole paragraph in 2 concise sentences that matter.
-{:.todo}
-
-We list these as research questions for our work, and defined hypotheses for each of them:
+We list these as research questions, and defined hypotheses for each of them:
 
 MVS: RQ1: from the hypotheses, I can tell you actually mean execution time, say so.
 MVS: can you be more specific on "not using AMFs", you mean plain TPF?

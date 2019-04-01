@@ -240,8 +240,6 @@ And we need to seriously cut in the hypotheses. H2.1 for instance is caused by s
 
     <p class="todo">MVS: around now I begin to realize that your RQs are granularity-wise the actual hypotheses, something to consider</p>
 
-    <p class="todo">MVS: RQ5 is false, all AMFs were inband</p>
-
     <p class="todo">MVS: RQ6 how low can you go?</p>
 
     <ol>
@@ -299,17 +297,17 @@ However, there is still an open question as to what extent different rates have 
           <li id="hypo-bandwidth-2">HTTP bandwith has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
         </ol>
       </li>
-      <li id="question-inband"><strong>Can query throughput be improved by adding AMF metadata <em>in-band</em> with the TPF HTTP responses?</strong>
+      <li id="question-inband"><strong>Can query throughput be improved by adding AMF metadata <em>out-of-band</em> with the TPF HTTP responses?</strong>
 <br />
-In previous work, AMF metadata was hidden behind a link that should be followed by the client to retrieve it,
-which requires an additional HTTP request.
-This opens the question as to whether including AMF metadata directly <em>in-band</em>
-with the TPF HTTP responses could improve query performance.
+In previous work, AMF metadata was always included in-band with the TPF response,
+which increased the size of these responses.
+This opens the question as to whether moving AMF metadata <em>out-of-band</em>
+behind a link that clients should follow would improve query performance.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-inband-1">In-band AMF metadata speeds up client-side query evaluation.</li>
-          <li id="hypo-inband-2">In-band AMF metadata reduces the total amount of HTTP requests.</li>
+          <li id="hypo-inband-1">Out-of-band AMF metadata speeds up client-side query evaluation.</li>
+          <li id="hypo-inband-2">Out-of-band AMF metadata increases the total amount of HTTP requests.</li>
         </ol>
       </li>
       <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
@@ -825,9 +823,9 @@ For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), w
 Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
 which rejects <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
 
-    <p>Furthermore, when analyzing the HTTP logs, we observe only a very small decrease (&lt;1%) in the difference in number of requests.
+    <p>Furthermore, when analyzing the HTTP logs, we observe only a very increase decrease (&lt;1%) in the difference in number of requests.
 As this difference is insignificant (<em>p-value: 0.406</em>), we can reject <a href="#hypo-inband-2">Hypothesis 5.2</a>
-in which we expected the number of HTTP requests to significantly decrease when we moved AMF metadata in-band.</p>
+in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.</p>
 
     <h4 class="display-block" id="false-positive-probabilities">False-positive Probabilities</h4>
 

@@ -35,9 +35,6 @@ MVS: RQ3: make active, and "dynamically restricting" is not clear. We also have 
 MVS: around now I begin to realize that your RQs are granularity-wise the actual hypotheses, something to consider
 {:.todo}
 
-MVS: RQ5 is false, all AMFs were inband
-{:.todo}
-
 MVS: RQ6 how low can you go?
 {:.todo}
 
@@ -88,16 +85,16 @@ MVS: RQ6 how low can you go?
     1. {:#hypo-bandwidth-1} HTTP bandwith has a higher impact on non-AMF usage than triple-level AMF usage.
     2. {:#hypo-bandwidth-2} HTTP bandwith has a higher impact on triple-level AMF usage than BGP-level AMF usage.
 5. {:#question-inband}
-    **Can query throughput be improved by adding AMF metadata _in-band_ with the TPF HTTP responses?**
+    **Can query throughput be improved by adding AMF metadata _out-of-band_ with the TPF HTTP responses?**
     <br />
-    In previous work, AMF metadata was hidden behind a link that should be followed by the client to retrieve it,
-    which requires an additional HTTP request.
-    This opens the question as to whether including AMF metadata directly _in-band_
-    with the TPF HTTP responses could improve query performance.
+    In previous work, AMF metadata was always included in-band with the TPF response,
+    which increased the size of these responses.
+    This opens the question as to whether moving AMF metadata _out-of-band_
+    behind a link that clients should follow would improve query performance.
     <br />
     **Hypotheses:**
-    1. {:#hypo-inband-1} In-band AMF metadata speeds up client-side query evaluation.
-    2. {:#hypo-inband-2} In-band AMF metadata reduces the total amount of HTTP requests.
+    1. {:#hypo-inband-1} Out-of-band AMF metadata speeds up client-side query evaluation.
+    2. {:#hypo-inband-2} Out-of-band AMF metadata increases the total amount of HTTP requests.
 6. {:#question-probabilities}
     **Which AMF _false-positive probabilities_ achieve the best client-side query performance?**
     <br />

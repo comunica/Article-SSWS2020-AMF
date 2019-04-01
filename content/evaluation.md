@@ -296,9 +296,9 @@ Query evaluation times comparing out-of-band and in-band based on different AMF 
 Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
 which rejects [Hypothesis 5.1](#hypo-inband-1).
 
-Furthermore, when analyzing the HTTP logs, we observe only a very small decrease (<1%) in the difference in number of requests.
+Furthermore, when analyzing the HTTP logs, we observe only a very increase decrease (<1%) in the difference in number of requests.
 As this difference is insignificant (_p-value: 0.406_), we can reject [Hypothesis 5.2](#hypo-inband-2)
-in which we expected the number of HTTP requests to significantly decrease when we moved AMF metadata in-band.
+in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.
 
 #### False-positive Probabilities
 {:.display-block}

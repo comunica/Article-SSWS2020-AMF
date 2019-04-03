@@ -12,10 +12,11 @@ Finally, we introduce a heuristic that determines whether or not the BGP-based a
 that acts as a cheap pre-processing step for testing the membership of triples.
 This algorithm was used in combination with the streaming [client-side TPF algorithm](cite:cites ldf) for evaluating SPARQL queries.
 
+<span class="comment" data-author="RV">Up until now, I had the impression that there would be one AMF that took a triple pattern. But it's three (independent) position-based filters.</span>
+
 This algorithm can be seen in pseudo-code in [](#amf-triple-pseudo).
-Concretely, every triple pattern that has no variables anymore
-is run through this function just before more expensive HTTP requests will be done,
-as a way of reducing the number of needed HTTP requests.
+Concretely, every triple pattern that has all of its variables resolved to constants
+is run through this function right before more a expensive HTTP request would be performed.
 This function takes a triple and the AMFs that were detected during the last TPF response for that pattern.
 It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
 Once all checks pass, the original HTTP-based membership logic will be invoked.
@@ -27,6 +28,10 @@ Triple-based AMF algorithm by [Vander Sande et al.](cite:cites amf2015)
 as a pre-filtering step for testing the membership of triples.
 </figcaption>
 </figure>
+
+<span class="comment" data-author="RV">suggestion: replace <code>filter</code> by <code>contains</code> and negate the condition (which seems to be missing)?</span>
+
+<span class="comment" data-author="RV"><code>super</code> probably doesn't take an AMF, does it?</span>
 
 ### BGP-based AMF algorithm
 
@@ -53,21 +58,28 @@ BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.
 </figcaption>
 </figure>
 
-### Heuristic for Enabling the BGP Algorithm
+<span class="comment" data-author="RV">why suddenly multiple AMFs here?</span>
+
+<span class="comment" data-author="RV"><code>super</code> probably doesn't take an AMF, does it?</span>
+
+### Heuristic for enabling the BGP Algorithm
 
 While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
-it may lead to larger AMFs to be downloaded, possibly incurring a larger HTTP overhead.
-In some cases, this cost may become too high if the number of bindings that needs to be tested becomes too low.
+it may lead to larger AMFs being downloaded, possibly incurring a larger HTTP overhead.
+In some cases, this cost may become too high if the number of bindings that needs to be tested is low.
 
 To cope with these cases, we introduce a heuristic in [](#amf-bgp-heuristic-pseudo),
-that will check whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
+that will estimate whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
 compared to just executing the HTTP membership requests directly.
 This heuristic has been designed for fast calculation,
 with exactness as a lower priority.
-Based on measurements, we set `AMF_TRIPLE_SIZE` to `2 bytes`, and `TPF_BINDING_SIZE` to `1000 bytes` by default.
-In [](#evaluation), we will evaluate the effects for different values for `TPF_BINDING_SIZE`.
+Based on measurements, we set `AMF_TRIPLE_SIZE` to 2 bytes,
+and `TPF_BINDING_SIZE` to 1000 bytes by default.
+In [](#evaluation), we will evaluate the effects for different `TPF_BINDING_SIZE` values.
 In future work, more exact heuristics should be investigated
 that take perform live profiling of HTTP requests and delays to avoid the need of these constants.
+
+<span class="comment" data-author="RV">more important is an intuitive idea of why/how the heuristic works</span>
 
 <figure id="amf-bgp-heuristic-pseudo" class="listing">
 ````/code/amf-bgp-heuristic-pseudo.js````
@@ -75,3 +87,8 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
 Heuristic for checking if the BGP-based AMF algorithm should be executed.
 </figcaption>
 </figure>
+
+<span class="comment" data-author="RV">how about <code>preferAmfForBgp</code>?</span>
+
+<span class="comment" data-author="RV">I don't understand the inputs by their name</span>
+<span class="comment" data-author="RV">how about <code>triplePatternMatchCountss</code>?</span>

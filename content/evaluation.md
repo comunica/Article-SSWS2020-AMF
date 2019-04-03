@@ -226,6 +226,8 @@ Average server CPU usage for different AMF result count thresholds when caching 
 </figcaption>
 </figure>
 
+<span class="comment" data-author="RT">Pending deletion</span>
+
 [](#plot_server_metadata_enabled_cached) shows lower AMF result count thresholds
 lead to higher query evaluation times when HTTP caching is enabled (_p-value: 2.11e-07_),
 which confirms [Hypothesis 3.1](#hypo-dynamic-restriction-1).
@@ -292,6 +294,8 @@ Query evaluation times comparing out-of-band and in-band based on different AMF 
 </figcaption>
 </figure>
 
+<span class="comment" data-author="RT">Pending deletion</span>
+
 [](#plot_in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
 which rejects [Hypothesis 5.1](#hypo-inband-1).
@@ -312,6 +316,8 @@ in which we expected the number of HTTP requests to significantly increase when 
 Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
 </figcaption>
 </figure>
+
+<span class="comment" data-author="RT">Pending deletion</span>
 
 [](#plot_probabilities) shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (_p-value: 0.184_).

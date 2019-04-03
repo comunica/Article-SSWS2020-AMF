@@ -8,22 +8,7 @@ and mitigate their drawback of increased query execution times.
 
 We list these as research questions, and defined hypotheses for each of them:
 
-MVS: I think you can merge H1.1 & H1.2, you think you can outperform prior approaches, period.
-MVS: H1.3 is lacks credibility, I'd like to know why you think that (of all hypotheses in fact).
-{:.todo}
-
-MVS:
-And we need to seriously cut in the hypotheses. H2.1 for instance is caused by something that has nothing to do with this paper (and we already know that from the original TPF paper). H2.3 & H2.4 are the same? H2.5 is an aggregate of H1 - 4?
-{:.todo}
-
-MVS:
-The difference between H3.2 and H3.3 is unclear.
-{:.todo}
-
-MVS: around now I begin to realize that your RQs are granularity-wise the actual hypotheses, something to consider
-{:.todo}
-
-MVS: RQ6 how low can you go?
+Move granular hypotheses to evaluation section, and just keep the RQs here.
 {:.todo}
 
 1. {:#question-combine}
@@ -54,6 +39,7 @@ MVS: RQ6 how low can you go?
 3. {:#question-dynamic-restriction}
     **What impact do _different AMF generation thresholds_ have on server load and query evaluation?**
     <br />
+    <span class="comment" data-author="RT">Pending deletion</span>
     Earlier work introduced AMF as a feature that was always enabled.
     However, some specific AMFs may be too expensive for servers to calculate on the fly.
     As such, it may be beneficial to only enable AMF for queries
@@ -75,6 +61,7 @@ MVS: RQ6 how low can you go?
 5. {:#question-inband}
     **Can query throughput be improved by adding AMF metadata _out-of-band_ with the TPF HTTP responses?**
     <br />
+    <span class="comment" data-author="RT">Pending deletion</span>
     In previous work, AMF metadata was always included in-band with the TPF response,
     which increased the size of these responses.
     This opens the question as to whether moving AMF metadata _out-of-band_
@@ -86,6 +73,7 @@ MVS: RQ6 how low can you go?
 6. {:#question-probabilities}
     **Which AMF _false-positive probabilities_ achieve the best client-side query performance?**
     <br />
+    <span class="comment" data-author="RT">Pending deletion</span>
     Based on the results the previous authors have suggested that additional experimentation is needed with regards
     to lower _AMF false-positive probabilities_, as higher probabilities do not have a significant effect on query performance.
     <br />

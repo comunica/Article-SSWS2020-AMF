@@ -220,18 +220,7 @@ and mitigate their drawback of increased query execution times.</p>
 
     <p>We list these as research questions, and defined hypotheses for each of them:</p>
 
-    <p class="todo">MVS: I think you can merge H1.1 &amp; H1.2, you think you can outperform prior approaches, period.
-MVS: H1.3 is lacks credibility, I’d like to know why you think that (of all hypotheses in fact).</p>
-
-    <p class="todo">MVS:
-And we need to seriously cut in the hypotheses. H2.1 for instance is caused by something that has nothing to do with this paper (and we already know that from the original TPF paper). H2.3 &amp; H2.4 are the same? H2.5 is an aggregate of H1 - 4?</p>
-
-    <p class="todo">MVS:
-The difference between H3.2 and H3.3 is unclear.</p>
-
-    <p class="todo">MVS: around now I begin to realize that your RQs are granularity-wise the actual hypotheses, something to consider</p>
-
-    <p class="todo">MVS: RQ6 how low can you go?</p>
+    <p class="todo">Move granular hypotheses to evaluation section, and just keep the RQs here.</p>
 
     <ol>
       <li id="question-combine"><strong>Can query evaluation be improved by <em>combining AMFs</em> client-side?</strong>
@@ -265,6 +254,7 @@ we will investigate the impact of caching AMFs and all HTTP requests in general.
       </li>
       <li id="question-dynamic-restriction"><strong>What impact do <em>different AMF generation thresholds</em> have on server load and query evaluation?</strong>
 <br />
+<span class="comment" data-author="RT">Pending deletion</span>
 Earlier work introduced AMF as a feature that was always enabled.
 However, some specific AMFs may be too expensive for servers to calculate on the fly.
 As such, it may be beneficial to only enable AMF for queries
@@ -290,6 +280,7 @@ However, there is still an open question as to what extent different rates have 
       </li>
       <li id="question-inband"><strong>Can query throughput be improved by adding AMF metadata <em>out-of-band</em> with the TPF HTTP responses?</strong>
 <br />
+<span class="comment" data-author="RT">Pending deletion</span>
 In previous work, AMF metadata was always included in-band with the TPF response,
 which increased the size of these responses.
 This opens the question as to whether moving AMF metadata <em>out-of-band</em>
@@ -303,6 +294,7 @@ behind a link that clients should follow would improve query performance.
       </li>
       <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
 <br />
+<span class="comment" data-author="RT">Pending deletion</span>
 Based on the results the previous authors have suggested that additional experimentation is needed with regards
 to lower <em>AMF false-positive probabilities</em>, as higher probabilities do not have a significant effect on query performance.
 <br />
@@ -746,6 +738,8 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-6"
       </figcaption>
 </figure>
 
+    <p><span class="comment" data-author="RT">Pending deletion</span></p>
+
     <p><a href="#plot_server_metadata_enabled_cached">Fig. 5</a> shows lower AMF result count thresholds
 lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: 2.11e-07</em>),
 which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
@@ -810,6 +804,8 @@ For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), w
       </figcaption>
 </figure>
 
+    <p><span class="comment" data-author="RT">Pending deletion</span></p>
+
     <p><a href="#plot_in_vs_out_band">Fig. 11</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
 which rejects <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
@@ -829,6 +825,8 @@ in which we expected the number of HTTP requests to significantly increase when 
         <p><span class="label">Fig. 12:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.</p>
       </figcaption>
 </figure>
+
+    <p><span class="comment" data-author="RT">Pending deletion</span></p>
 
     <p><a href="#plot_probabilities">Fig. 12</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).

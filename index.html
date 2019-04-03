@@ -538,6 +538,7 @@ because HTTP requests are parallelized.</p>
 by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 These filters would be added out-of-band as metadata to TPFs.
+<span class="comment" data-author="RV">in-band??</span>
 We extended this implementation with three new features.
 This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.</p>
 
@@ -553,7 +554,7 @@ that do not need or do not understand AMF metadata.</p>
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given threshold.</p>
 
-    <p>Finally, we implemented a (disableable) file-based cache to avoid recomputing AMFs
+    <p>Finally, we implemented an optional file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.</p>
 
   </section>

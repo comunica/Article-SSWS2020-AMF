@@ -85,6 +85,7 @@ The original TPF server extension in [Server.js](https://github.com/LinkedDataFr
 by [Vander Sande et al.](cite:cites amf2015)
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 These filters would be added out-of-band as metadata to TPFs.
+<span class="comment" data-author="RV">in-band??</span>
 We extended this implementation with three new features.
 This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2){:.mandatory}.
 
@@ -100,5 +101,5 @@ Secondly, in order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given threshold.
 
-Finally, we implemented a (disableable) file-based cache to avoid recomputing AMFs
+Finally, we implemented an optional file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.

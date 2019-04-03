@@ -350,10 +350,11 @@ Finally, we introduce a heuristic that determines whether or not the BGP-based a
 that acts as a cheap pre-processing step for testing the membership of triples.
 This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> for evaluating SPARQL queries.</p>
 
+    <p><span class="comment" data-author="RV">Up until now, I had the impression that there would be one AMF that took a triple pattern. But it’s three (independent) position-based filters.</span></p>
+
     <p>This algorithm can be seen in pseudo-code in <a href="#amf-triple-pseudo">Listing 1</a>.
-Concretely, every triple pattern that has no variables anymore
-is run through this function just before more expensive HTTP requests will be done,
-as a way of reducing the number of needed HTTP requests.
+Concretely, every triple pattern that has all of its variables resolved to constants
+is run through this function right before more a expensive HTTP request would be performed.
 This function takes a triple and the AMFs that were detected during the last TPF response for that pattern.
 It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
 Once all checks pass, the original HTTP-based membership logic will be invoked.</p>
@@ -370,6 +371,10 @@ Once all checks pass, the original HTTP-based membership logic will be invoked.<
 as a pre-filtering step for testing the membership of triples.</p>
       </figcaption>
 </figure>
+
+    <p><span class="comment" data-author="RV">suggestion: replace <code>filter</code> by <code>contains</code> and negate the condition (which seems to be missing)?</span></p>
+
+    <p><span class="comment" data-author="RV"><code>super</code> probably doesn’t take an AMF, does it?</span></p>
 
     <h3 id="bgp-based-amf-algorithm">BGP-based AMF algorithm</h3>
 
@@ -403,21 +408,28 @@ which will down the line invoke expensive HTTP requests.</p>
       </figcaption>
 </figure>
 
-    <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for Enabling the BGP Algorithm</h3>
+    <p><span class="comment" data-author="RV">why suddenly multiple AMFs here?</span></p>
+
+    <p><span class="comment" data-author="RV"><code>super</code> probably doesn’t take an AMF, does it?</span></p>
+
+    <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for enabling the BGP Algorithm</h3>
 
     <p>While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
-it may lead to larger AMFs to be downloaded, possibly incurring a larger HTTP overhead.
-In some cases, this cost may become too high if the number of bindings that needs to be tested becomes too low.</p>
+it may lead to larger AMFs being downloaded, possibly incurring a larger HTTP overhead.
+In some cases, this cost may become too high if the number of bindings that needs to be tested is low.</p>
 
     <p>To cope with these cases, we introduce a heuristic in <a href="#amf-bgp-heuristic-pseudo">Listing 3</a>,
-that will check whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
+that will estimate whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
 compared to just executing the HTTP membership requests directly.
 This heuristic has been designed for fast calculation,
 with exactness as a lower priority.
-Based on measurements, we set <code>AMF_TRIPLE_SIZE</code> to <code>2 bytes</code>, and <code>TPF_BINDING_SIZE</code> to <code>1000 bytes</code> by default.
-In <a href="#evaluation">Section 6</a>, we will evaluate the effects for different values for <code>TPF_BINDING_SIZE</code>.
+Based on measurements, we set <code>AMF_TRIPLE_SIZE</code> to 2 bytes,
+and <code>TPF_BINDING_SIZE</code> to 1000 bytes by default.
+In <a href="#evaluation">Section 6</a>, we will evaluate the effects for different <code>TPF_BINDING_SIZE</code> values.
 In future work, more exact heuristics should be investigated
 that take perform live profiling of HTTP requests and delays to avoid the need of these constants.</p>
+
+    <p><span class="comment" data-author="RV">more important is an intuitive idea of why/how the heuristic works</span></p>
 
     <figure id="amf-bgp-heuristic-pseudo" class="listing">
 <pre><code>function isBgpAmfEffective(bindingsCount, triplePatternCounts) {
@@ -430,6 +442,11 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
         <p><span class="label">Listing 3:</span> Heuristic for checking if the BGP-based AMF algorithm should be executed.</p>
       </figcaption>
 </figure>
+
+    <p><span class="comment" data-author="RV">how about <code>preferAmfForBgp</code>?</span></p>
+
+    <p><span class="comment" data-author="RV">I don’t understand the inputs by their name</span>
+<span class="comment" data-author="RV">how about <code>triplePatternMatchCountss</code>?</span></p>
 
   </section>
 

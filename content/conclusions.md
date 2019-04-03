@@ -3,7 +3,7 @@
 
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
-Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reprodicible.
+Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
 As results have shown, our client-side algorithms significantly reduce query execution times
 compared to the algorithm introduced by Vander Sande et al.
 Furthermore, we have shown that AMF metadata requires limited effort from servers.
@@ -24,7 +24,7 @@ we offer the following guidelines for publishers that aim to use the AMF feature
 
 Even though we answered many open questions regarding AMFs,
 there are a couple of new questions.
-First, we need further investigatation on our heuristic for dynamically disabling the BGP-based AMF algorithm.
+First, we need further investigation on our heuristic for dynamically disabling the BGP-based AMF algorithm.
 Second, dynamically switching between algorithms may improve diefficiency,
 as the BGP-based algorithm postpones time until first result.
 Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web,

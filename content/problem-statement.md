@@ -16,20 +16,19 @@ We list these as research questions:
     For instance, combining multiple AMFs at BGP-level
     by applying AMFs on triple patterns with shared variables.
 2. {:#question-cache}
-    **To what extend does caching of HTTP requests and AMFs speed up query execution?**
+    **To what extent does HTTP caching and AMFs speed up query execution?**
     <br />
-    As the authors of the earlier work on AMF suggest that caching of AMFs
-    can reduce server delays and improve overall query evaluation,
-    we will investigate the impact of caching AMFs and all HTTP requests in general.
+    As Vander Sande et al. suggest that caching of AMFs
+    reduce server delays, we investigate the impact of caching HTTP requests and/or AMFs.
 3. {:#question-dynamic-restriction}
-    **Does selectively enabling AMF positively impact server load and query evaluation times?**
+    **How does selectively enabling AMF impact server load and querying?**
     <br />
     Earlier work introduced AMF as a feature that was always enabled.
     However, some specific AMFs may be too expensive for servers to calculate on the fly.
     As such, it may be beneficial to only enable AMF for queries
     that have a result count lower than a certain threshold.
 4. {:#question-bandwidth}
-    **How does network bandwidth impact client-side performance with AMFs?**
+    **How does network bandwidth impact query performance with AMFs?**
     <br />
     In experiments from earlier work on AMF, the HTTP bandwidth was set to a realistic 1Mbps.
     However, there is still an open question as to what extent different rates have an impact on the importance of AMF.

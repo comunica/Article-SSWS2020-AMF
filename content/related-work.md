@@ -4,8 +4,8 @@
 In this section we cover the relevant existing research relating to our work.
 We start by discussing the TPF interface.
 After that, we discuss different AMFs,
-followed by their use in query evaluation.
-Finally, we discuss the related work on using AMFs for the TPF interface.
+followed by their use in query evaluation,
+and their use for the TPF interface.
 
 ### Triple Pattern Fragments
 {:#related-work-ldf}
@@ -80,7 +80,7 @@ Next to that, AMFs are also a useful tool for improving the performance of _grap
 Bloom filters can therefore be used to
 [efficiently group connected triple patterns by frequency](cite:cites bloomjoinsfrequency),
 to improve the efficiency of merge joins [as a way of representing equivalent classes](cite:cites bloomjoinslarge),
-and even for [joining distributed and stored streams](cite:cites bloomdistributed).
+and for [joining distributed and stored streams](cite:cites bloomdistributed).
 
 Furthermore, Bloom filters are also used in the domain of federated querying to
 optimize the process of _source selection_.
@@ -92,7 +92,7 @@ or it can be used to retrieve as many results as possible.
 ### Approximate Membership Metadata for TPF
 {:#related-work-amf}
 
-Pure TPF query plans typically [produce a large number of so-called _membership requests_](cite:cites amf2015),
+Pure TPF query plans typically [produce a large number of _membership requests_](cite:cites amf2015),
 checking whether a specific triple (without variables) is present in a dataset.
 This was illustrated with queries from the [WatDiv](cite:cites watdiv) benchmark,
 consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).

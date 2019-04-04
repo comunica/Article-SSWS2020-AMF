@@ -1,6 +1,9 @@
 ## Evaluation
 {:#evaluation}
 
+Include in ZIP: bencher, AMF modules, Server impl, AMF experiments
+{:.todo}
+
 The goal of this section is to answer the research questions from [](#problem-statement).
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
 Next, we briefly discuss the implementations of our algorithm.
@@ -20,29 +23,26 @@ Experiment configurations are fully _declarative_, and they can exist in standal
 In order to share the conditions under which the experiment was executed,
 a list of all [used _software versions and their dependencies_ in a Turtle document](cite:cites lsd)
 will be generated after each run together with the evaluation results.
-Comunica Bencher is _open-source_, and is available on GitHub.
+Comunica Bencher is _open-source_, and is available on [GitHub](https://github.com/comunica/comunica-bencher).
 With this, our experiments are fully reproducible.
 
-Include link to anonymized source code dump.
-{:.todo}
-
-Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">evaluation workflow</a>:
+Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">workflow</a>:
 
 <ol id="evaluation-workflow" property="schema:hasPart" resource="#evaluation-workflow" typeof="opmw:WorkflowTemplate" markdown="1">
 <li id="workflow-data" about="#workflow-data" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
   Generate a [WatDiv](cite:cites watdiv) dataset with a given scale factor.
 </li>
 <li id="workflow-queries" about="#workflow-queries" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Generate the corresponding default WatDiv [queries](https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml){:.mandatory} with a given query count.
+  Generate the corresponding default WatDiv [queries](https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml) with a given query count.
 </li>
 <li id="workflow-tpf-server" about="#workflow-tpf-server" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Install [the LDF server software](https://github.com/LinkedDataFragments/Server.js){:.mandatory} with a given configuration, implementing the [TPF specification](https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/){:.mandatory}.
+  Install [the LDF server software](https://github.com/LinkedDataFragments/Server.js){:.mandatory} with a given configuration, implementing the [TPF specification](https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/).
 </li>
 <li id="workflow-cache" about="#workflow-cache" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
   Setup an [NGINX HTTP cache](https://www.nginx.com/){:.mandatory} with a given configuration in front of the LDF server.
 </li>
 <li id="workflow-comunica" about="#workflow-comunica" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Install [the Comunica software](https://github.com/comunica/comunica){:.mandatory} under a given configuration, implementing the [SPARQL 1.1 protocol](https://www.w3.org/TR/sparql11-protocol){:mandatory}.
+  Install [Comunica](cite:cites comunica) under a given configuration, implementing [SPARQL 1.1](https://www.w3.org/TR/sparql11-protocol).
 </li>
 <li id="workflow-comunica-run" about="#workflow-comunica-run" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
   Execute the generated WatDiv queries a given number times on the Comunica client, after doing a warmup run, and record the execution times.
@@ -54,24 +54,21 @@ Concretely, Comunica Bencher offers abstraction of the following <a about="#eval
 
 ### Implementation
 
-Anonymize source code links
-{:.todo}
-
 For implementing the client-side AMF algorithms,
 we make use of JavaScript-based [Comunica SPARQL querying framework](cite:cites comunica).
 Since Comunica already fully supports the TPF algorithm,
 we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
-and are available open-source on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
+and are available open-source on [GitHub](https://github.com/comunica/comunica-feature-amf).
 Concretely, we implemented the original triple-based AMF algorithm,
 our new BGP-based AMF algorithm,
 and a variant of this BGP-based algorithm that pre-fetches out-of-band AMFs in parallel.
 
-The original TPF server extension in [the LDF server software](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf){:.mandatory}
+The original TPF server extension in [the LDF server software](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf)
 by [Vander Sande et al.](cite:cites amf2015)
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 To support our experiments, we extended this implementation with three new features.
-This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2){:.mandatory}.
+This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2).
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given threshold.
@@ -83,14 +80,11 @@ to make pre-computation of AMFs possible.
 Based on our LDF server and Comunica implementations that were discussed in [](#implementation),
 we defined five experiments, corresponding to our five research questions from [](#problem-statement).
 For each experiment, we introduce hypotheses that will be statistically tested based on our results.
-The declararive configuration files for running these experiments with Comunica Bencher are present on [GitHub](https://github.com/comunica/Experiments-AMF){:.mandatory} under an open license,
+The declararive configuration files for running these experiments with Comunica Bencher are present on [GitHub](https://github.com/comunica/Experiments-AMF) under an open license,
 and can be started from scratch by _executing a single command_.
 Furthermore, all raw results and scripts for analyzing them can be found in this same repository.
 
-Anonimize link to repo
-{:.todo}
-
-All of the following experiments have several things in common, unless indicated otherwise.
+All of the following experiments have several things in common.
 First, they are all executed using WatDiv with a dataset scale of 100,
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
 Each experiment includes a warmup phase,
@@ -99,9 +93,9 @@ During this warmup phase, the server caches all generated AMFs.
 For each query, we configured a timeout of 5 minutes.
 Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
 Finally, each experiment uses an NGINX HTTP cache,
-and the client-side query timeout has been set to 5 minutes.
+and the client-side query timeout was 5 minutes.
 All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
-with each Docker container being limited to a one CPU core.
+each Docker container was limited to one CPU core.
 
 1. **Client-side AMF Algorithms**:
     First, we compare different client-side algorithms (_None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined_)

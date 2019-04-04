@@ -24,7 +24,7 @@ We claim that AMF offers a way to achieve this
 without becoming too expensive for servers.
 The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
 and how its previously discovered increase in query execution times can be mitigated.
-Therefore, we extend the client-side algorithm from [](cite:cites amf2015) to exploit AMF metadata
+Therefore, we extend the client-side algorithm from [Vander Sande et al.](cite:cites amf2015) to exploit AMF metadata
 earlier during query evaluation for speeding up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.
 

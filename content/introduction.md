@@ -17,8 +17,13 @@ One such feature is [Approximate Membership Filters (AMFs)](cite:cites amf2015) 
 Clients can detect AMFs in the response, and use it to reduce the required number
 of HTTP requests at the cost of increased query execution times.
 
+As querying with the server-friendly TPF approach
+is typically much slower than with SPARQL endpoints,
+there is a need to make TPF-based querying faster.
+We claim that AMF offers a way to achieve this
+without becoming too expensive for servers.
 The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
-and how this increase in query execution times can be mitigated.
+and how its previously discovered increase in query execution times can be mitigated.
 Therefore, we extend the client-side algorithm from [](cite:cites amf2015) to exploit AMF metadata
 earlier during query evaluation for speeding up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.
@@ -32,7 +37,7 @@ and creating similar ones in the future.
 
 In the next section we cover the related work pertaining to this article.
 After that, we introduce our research questions and hypotheses in [](#problem-statement).
-Next, we introduce our client-side algorithms and server-side enchancements in [](#solution),
+Next, we introduce our client-side algorithms and server-side enhancements in [](#solution),
 and discuss their implementation in [](#implementation).
 In [](#evaluation), we introduce our experimental setup,
 present our results, and test our hypotheses.

@@ -22,7 +22,7 @@ to reach lower query execution times, while keeping the server cost sufficiently
 <!-- Findings     -->
 Our results show that our alternative client-side algorithm significantly reduces
 both the number of HTTP requests and the query execution times
-without significantly increasing server load.
+with only a small increase in server load.
 <!-- Conclusion   -->
 We conclude that server-side caching and (partial) AMF pre-computation is essential,
 and translate these findings into concrete guidelines for data publishers

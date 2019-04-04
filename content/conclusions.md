@@ -4,9 +4,9 @@
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
 Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
-As results have shown, our client-side algorithms significantly reduce query execution times
-compared to the algorithm introduced by Vander Sande et al.
-Furthermore, we have shown that AMF metadata requires limited effort from servers.
+As results have shown, our client-side algorithms make average query execution more than two times faster
+while only requiring 1/3rd the number of HTTP requests,
+at the cost of less than 10% more server CPU usage.
 
 We offer implementations of these algorithms and server enhancements,
 which means that it can be used by any of the existing data publishers

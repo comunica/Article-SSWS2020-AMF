@@ -234,8 +234,8 @@ High result count thresholds slow down query execution.
 <img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c">
 </center>
 <figcaption markdown="block">
-Average server CPU usage when AMF result count thresholds increase does increases
-when caching is enabled, but not if caching is disabled.
+Average server CPU usage increases when AMF result count thresholds increase
+when caching is disabled, but much slower if caching is enabled.
 </figcaption>
 </figure>
 
@@ -252,6 +252,9 @@ but it does not necessarily lower it. For this experiment, setting the threshold
 when HTTP caching is disabled (_p-value: 0.0326_), which confirms [Hypothesis 3.2](#hypo-dynamic-restriction-2).
 On the other hand, if HTTP caching is enabled,
 there is no correlation between AMF result count threshold and server CPU usage (_p-value: 0.4577_), which confirms [Hypothesis 3.3](#hypo-dynamic-restriction-3)).
+For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
+Furthermore, when looking at the raw HTTP logs,
+we observe that by always exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
 
 #### Network Bandwidth
 {:.display-block}

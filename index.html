@@ -96,7 +96,7 @@ This lowers the barrier for reproducing the experiments of this work,
 and creating similar ones in the future.</p>
 
     <p>In the next section we cover the related work pertaining to this article.
-After that, we introduce our research questions and hypotheses in <a href="#problem-statement">Section 3</a>.
+After that, we introduce our research questions in <a href="#problem-statement">Section 3</a>.
 Next, we introduce our client-side algorithms and server-side enhancements in <a href="#solution">Section 4</a>.
 In <a href="#evaluation">Section 5</a>, we introduce our experimental setup,
 present our results, and test our hypotheses.
@@ -237,11 +237,7 @@ that can be used in conjunction with TPF,
 <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> introduced a number of follow-up questions.
 In our work, we aim to answer some of these questions,
 and mitigate the drawback of increased query execution times.
-<span class="remark" data-author="RV">This makes an excellent introduction</span></p>
-
-    <p>We list these as research questions, and defined hypotheses for each of them:</p>
-
-    <p class="todo">Move granular hypotheses to evaluation section, and just keep the RQs here.</p>
+We list these as research questions:</p>
 
     <ol>
       <li id="question-combine"><strong>Can query execution time be lowered by combining triple pattern AMFs client-side on larger BGPs?</strong>
@@ -249,74 +245,31 @@ and mitigate the drawback of increased query execution times.
 Earlier work focused on using AMF metadata to test the membership of fully materialized triples,
 while there is potential for exploiting this for other types of patterns in the query as well.
 For instance, combining multiple AMFs at BGP-level
-by applying AMFs on triple patterns with shared variables.
-<br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.</li>
-          <li id="hypo-combine-2">By combining AMFs client-side at BGP-level, query execution time is lower compared to using AMFs at triple-level.</li>
-          <li id="hypo-combine-3">Using AMFs at both BGP <em>and</em> triple-level does not reduce query execution time compared to only using AMFs at BGP-level.</li>
-        </ol>
-      </li>
+by applying AMFs on triple patterns with shared variables.</li>
       <li id="question-cache"><strong>To what extend does caching of HTTP requests and AMFs speed up query execution?</strong>
 <br />
 As the authors of the earlier work on AMF suggest that caching of AMFs
 can reduce server delays and improve overall query evaluation,
-we will investigate the impact of caching AMFs and all HTTP requests in general.
-<br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-cache-1">Caching all HTTP responses reduce query evaluation times more than caching only AMFs responses.</li>
-          <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
-          <li id="hypo-cache-3">Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
-          <li id="hypo-cache-4">With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.</li>
-          <li id="hypo-cache-5">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.</li>
-        </ol>
-      </li>
+we will investigate the impact of caching AMFs and all HTTP requests in general.</li>
       <li id="question-dynamic-restriction"><strong>Does selectively enabling AMF positively impact server load and query evaluation times?</strong>
 <br />
-<span class="comment" data-author="RT">Pending deletion</span>
-<span class="comment" data-author="RV">any specific reason? results not sufficiently interesting? I like the question</span>
 Earlier work introduced AMF as a feature that was always enabled.
 However, some specific AMFs may be too expensive for servers to calculate on the fly.
 As such, it may be beneficial to only enable AMF for queries
-that have a result count lower than a certain threshold.
-<br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-dynamic-restriction-1">With cached AMFs, lower thresholds slow down query execution.</li>
-          <li id="hypo-dynamic-restriction-2">Without cached AMFs, lower thresholds reduce server load.</li>
-          <li id="hypo-dynamic-restriction-3">With cached AMFs, lower thresholds do not impact server load.</li>
-        </ol>
-      </li>
+that have a result count lower than a certain threshold.</li>
       <li id="question-bandwidth"><strong>How does network bandwidth impact client-side performance with AMFs?</strong>
 <br />
 In experiments from earlier work on AMF, the HTTP bandwidth was set to a realistic 1Mbps.
-However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
+However, there is still an open question as to what extent different rates have an impact on the importance of AMF.</li>
+      <li id="question-probabilities"><strong>How low can AMF false-positive probabilities become to still achieve decent client-side query performance?</strong>
 <br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-bandwidth-1">HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.</li>
-          <li id="hypo-bandwidth-2">HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
-        </ol>
-      </li>
-      <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
-<br />
-<span class="comment" data-author="RV">Rather something about <q>how low can we go</q>?</span>
-<span class="comment" data-author="RT">Pending deletion</span>
 Based on the results the previous authors have suggested that additional experimentation is needed with regards
-to lower <em>AMF false-positive probabilities</em>, as higher probabilities did not have a significant effect on query performance.
-<br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-probabilities-1">Lower probabilities lead to faster client-side query execution.
-<span class="comment" data-author="RV">…up to a certain point? what is the tipping point?</span></li>
-        </ol>
-      </li>
+to lower <em>AMF false-positive probabilities</em>, as higher probabilities did not have a significant effect on query performance.</li>
     </ol>
 
     <p>To come up with an answer to these research questions,
-their hypotheses will be tested in <a href="#evaluation">Section 5</a> based on our experimental results.</p>
+we will introduce statistical hypotheses in <a href="#evaluation">Section 5</a>
+that will be tested based on our experimental results.</p>
 
   </section>
 
@@ -468,7 +421,8 @@ to make pre-computation of AMFs possible.</p>
     <h3 id="experimental-setup">Experimental Setup</h3>
 
     <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Subsection 5.2</a>,
-we defined six experiments, corresponding to our six research questions from <a href="#problem-statement">Section 3</a>.
+we defined five experiments, corresponding to our five research questions from <a href="#problem-statement">Section 3</a>.
+For each experiment, we introduce hypotheses that will be statistically tested based on our results.
 The declararive configuration files for running these experiments with Comunica Bencher are present on <a href="https://github.com/comunica/Experiments-AMF" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​Experiments-​AMF">GitHub</a> under an open license,
 and can be started from scratch by <em>executing a single command</em>.
 Furthermore, all raw results and scripts for analyzing them can be found in this same repository.</p>
@@ -493,19 +447,58 @@ with each Docker container being limited to a one CPU core.</p>
  First, we compare different client-side algorithms (<em>None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined</em>)
  for using AMF metadata.
  Next, we compare different constants for the BGP actor-skipping heurtistic.
- Finally, we compare the effects of exposing different AMF filter implementations (<em>Bloom, GCS</em>) server-side.</li>
+ Finally, we compare the effects of exposing different AMF filter implementations (<em>Bloom, GCS</em>) server-side.
+ <br />
+ <strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.</li>
+          <li id="hypo-combine-2">By combining AMFs client-side at BGP-level, query execution time is lower compared to using AMFs at triple-level.</li>
+          <li id="hypo-combine-3">Using AMFs at both BGP <em>and</em> triple-level does not reduce query execution time compared to only using AMFs at BGP-level.</li>
+        </ol>
+      </li>
       <li><strong>Caching</strong>:
  In this experiment, we evaluate the effects of caching all HTTP requests combined with caching AMF filters server-side.
  We also compare the effects of using AMF metadata client-side or not.
- Finally, we test the effects of warm and cold caches.</li>
+ Finally, we test the effects of warm and cold caches.
+ <br />
+ <strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-cache-1">Caching all HTTP responses reduce query evaluation times more than caching only AMFs responses.</li>
+          <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
+          <li id="hypo-cache-3">Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
+          <li id="hypo-cache-4">With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.</li>
+          <li id="hypo-cache-5">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.</li>
+        </ol>
+      </li>
       <li><strong>Dynamically Enabling AMF</strong>:
  In this experiment, we compare different result count thresholds (<em>0, 1.000, 10.000, 100.000, 1.000.000</em>) with each other,
  with either the server-side AMF filter cache enabled or not.
- We disable the HTTP cache and warmup phase to evaluate a cold-start.</li>
+ We disable the HTTP cache and warmup phase to evaluate a cold-start.
+ <br />
+ <strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-dynamic-restriction-1">With cached AMFs, lower thresholds slow down query execution.</li>
+          <li id="hypo-dynamic-restriction-2">Without cached AMFs, lower thresholds reduce server load.</li>
+          <li id="hypo-dynamic-restriction-3">With cached AMFs, lower thresholds do not impact server load.</li>
+        </ol>
+      </li>
       <li><strong>Network Bandwidths</strong>:
- Different network bandwidths (<em>256kbps, 512kbps, 2048kbps, 4096kbps</em>) are evaluated, and their effects or different AMF algorithms (<em>None, Triple, BGP Combined</em>) are tested.</li>
+ Different network bandwidths (<em>256kbps, 512kbps, 2048kbps, 4096kbps</em>) are evaluated, and their effects or different AMF algorithms (<em>None, Triple, BGP Combined</em>) are tested.
+ <br />
+ <strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-bandwidth-1">HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.</li>
+          <li id="hypo-bandwidth-2">HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
+        </ol>
+      </li>
       <li><strong>False-positive Probabilities</strong>:
- In this final experiment, we compare different AMF false-positive probabilities (<em>1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2</em>).</li>
+ In this final experiment, we compare different AMF false-positive probabilities (<em>1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2</em>).
+ <br />
+ <strong>Hypotheses:</strong>
+        <ol>
+          <li id="hypo-probabilities-1">Lower probabilities lead to faster client-side query execution.</li>
+        </ol>
+      </li>
     </ol>
 
     <h3 id="results">Results</h3>
@@ -631,8 +624,6 @@ when caching is disabled, but much slower if caching is enabled.</p>
       </figcaption>
 </figure>
 
-    <p><span class="comment" data-author="RT">Pending deletion</span></p>
-
     <p><a href="#plot_server_metadata_enabled_cached">Fig. 4</a> shows lower AMF result count thresholds
 lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: 2.11e-07</em>),
 which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
@@ -703,8 +694,6 @@ For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), w
 Extremely low and high probabilities show a negative impact.</p>
       </figcaption>
 </figure>
-
-    <p><span class="comment" data-author="RT">Pending deletion</span></p>
 
     <p><a href="#plot_probabilities">Fig. 10</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).

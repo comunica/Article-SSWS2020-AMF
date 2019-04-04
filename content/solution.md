@@ -1,4 +1,4 @@
-## Client-side AMF algorithms
+## Client-side AMF Algorithms
 {:#solution}
 
 In this section, we discuss the existing and new client-side algorithms that use AMF metadata.
@@ -6,7 +6,7 @@ For the sake of completeness, we first discuss the original triple-based AMF alg
 After that, we introduce our new BGP-based AMF algorithm.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.
 
-### Triple-based AMF algorithm
+### Triple-based AMF Algorithm
 
 [Vander Sande et al.](cite:cites amf2015) introduced an algorithm
 that acts as a cheap pre-processing step for testing the membership of triples.
@@ -33,7 +33,7 @@ as a pre-filtering step for testing the membership of triples.
 
 <span class="comment" data-author="RV"><code>super</code> probably doesn't take an AMF, does it?</span>
 
-### BGP-based AMF algorithm
+### BGP-based AMF Algorithm
 
 Following the idea of the triple-based algorithm,
 we introduce an extension that applies this concept for BGPs.
@@ -62,7 +62,7 @@ BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.
 
 <span class="comment" data-author="RV"><code>super</code> probably doesn't take an AMF, does it?</span>
 
-### Heuristic for enabling the BGP Algorithm
+### Heuristic for Enabling the BGP Algorithm
 
 While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
 it may lead to larger AMFs being downloaded, possibly incurring a larger HTTP overhead.

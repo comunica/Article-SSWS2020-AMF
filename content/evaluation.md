@@ -261,7 +261,7 @@ when HTTP caching is disabled (_p-value: 0.0326_), which confirms [Hypothesis 3.
 On the other hand, if HTTP caching is enabled,
 there is no correlation between AMF result count threshold and server CPU usage (_p-value: 0.4577_), which confirms [Hypothesis 3.3](#hypo-dynamic-restriction-3)).
 
-#### Network bandwidth
+#### Network Bandwidth
 {:.display-block}
 
 <figure id="plot_delay_none">
@@ -351,7 +351,7 @@ On average, a false-positive probability of 1/64 leads to the lowest overall que
 ### Discussion
 <span class="comment" data-author="RV">to conclusion, and make current conclusion subsection <q>Recommendations</q>?</span>
 
-#### BGP-based algorithms improve query efficiency
+#### BGP-based Algorithms Improve Query Efficiency
 
 Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (_[Research Question 1](#question-combine)_).
@@ -361,7 +361,7 @@ but further research is needed to come up with a more general heuristic that wor
 and is not overfitted to these experiments.
 <span class="comment" data-author="RV">do we have evidence for overfitting?</span>
 
-#### BGP-based algorithms postpone time to first results
+#### BGP-based Algorithms Postpone Time to First Results
 
 Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 the diefficiency values are typically also lower, which means that results come in at a lower rate.
@@ -386,7 +386,7 @@ Query result arrival times for query F3 for the different client-side algorithms
 </figcaption>
 </figure>
 
-#### Pre-computation and caching of AMFs is essential
+#### Pre-computation and Caching of AMFs is Essential
 
 Our results show that AMF-aware querying only has a positive impact on query evaluation times
 if the server can deliver AMF filters sufficiently fast (_[Research Question 2](#question-cache)_).
@@ -419,7 +419,7 @@ Triple patterns are sorted by decreasing number of matches.
 </figcaption>
 </figure>
 
-#### Bloom filters are preferred over GCS with active cache
+#### Bloom Filters are Preferred over GCS with Active Cache
 
 Results show that when AMFs are pre-computed,
 Bloom filters achieve faster query evaluation times than GCS (_[Research Question 2](#question-cache)_).
@@ -428,7 +428,7 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.
 
-#### Always emit AMF metadata out-of-band
+#### Always Emit AMF Metadata Out-of-band
 
 Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
 on query evaluation times and the total number of HTTP requests (_[Research Question 5](#question-inband)_).
@@ -436,7 +436,7 @@ However, as there may be clients that do no understand AMF metadata,
 there will be HTTP data transfer overhead when AMF metadata would be included in-band.
 For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.
 
-#### A good trade-off between false-positive probabilities and AMF size
+#### A Good Trade-off Between False-positive Probabilities and AMF Size
 
 Lowering the false-positive probability of an AMF increases its size.
 As we have seen that larger AMFs have an impact on query evaluation times,

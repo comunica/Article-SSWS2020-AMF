@@ -36,7 +36,7 @@ This lowers the barrier for reproducing the experiments of this work,
 and creating similar ones in the future.
 
 In the next section we cover the related work pertaining to this article.
-After that, we introduce our research questions and hypotheses in [](#problem-statement).
+After that, we introduce our research questions in [](#problem-statement).
 Next, we introduce our client-side algorithms and server-side enhancements in [](#solution).
 In [](#evaluation), we introduce our experimental setup,
 present our results, and test our hypotheses.

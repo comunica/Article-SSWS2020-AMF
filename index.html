@@ -283,10 +283,9 @@ After that, we introduce our new BGP-based AMF algorithm.</p>
 
     <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> introduced an algorithm
 that acts as a cheap pre-processing step for testing the membership of triples.
-This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> for evaluating SPARQL queries.</p>
+This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> for evaluating SPARQL queries.<a href="#amf-triple-pseudo">Listing 1</a> depicts this algorithm in pseudo-code.</p>
 
-    <p>This algorithm can be seen in pseudo-code in <a href="#amf-triple-pseudo">Listing 1</a>.
-Concretely, every triple pattern that has all of its variables resolved to constants
+    <p>Concretely, every triple pattern that has all of its variables resolved to constants
 is run through this function right before more a expensive HTTP request would be performed.
 This function takes a triple and a query context containing the AMFs
 that were detected during the last TPF response for that pattern.
@@ -437,6 +436,10 @@ Finally, each experiment uses an NGINX HTTP cache,
 and the client-side query timeout was 5 minutes.
 All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
 each Docker container was limited to one CPU core.</p>
+
+    <p><span class="comment" data-author="MVS">
+Refer back to RQ here
+</span></p>
 
     <ol>
       <li><strong>Client-side AMF Algorithms</strong>:

@@ -237,24 +237,21 @@ and mitigate the drawback of increased query execution times.
     <p class="todo">Move granular hypotheses to evaluation section, and just keep the RQs here.</p>
 
     <ol>
-      <li id="question-combine"><strong>Can query evaluation be improved by <em>combining AMFs</em> client-side?</strong>
-<span class="comment" data-author="RV">For what definition of <q>improved</q>? Make clear by rephrasing the question to include the answer.</span>
+      <li id="question-combine"><strong>Can query execution time be lowered by combining triple pattern AMFs client-side on larger BGPs?</strong>
 <br />
 Earlier work focused on using AMF metadata to test the membership of fully materialized triples,
-while there is potential for exploiting this for other types of patterns in the query as well,
-e.g., by combining multiple AMFs.
-<span class="comment" data-author="RV">Say that in the question then 😁 <q>Does the combination of multiple 1-variable AMFs improve query performance (or more specific) on larger BGPs?</q></span>
+while there is potential for exploiting this for other types of patterns in the query as well.
+For instance, combining multiple AMFs at BGP-level
+by applying AMFs on triple patterns with shared variables.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.
-<span class="comment" data-author="RV">Combining?</span></li>
+          <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.</li>
           <li id="hypo-combine-2">By combining AMFs client-side at BGP-level, query execution time is lower compared to using AMFs at triple-level.</li>
           <li id="hypo-combine-3">Using AMFs at both BGP <em>and</em> triple-level does not reduce query execution time compared to only using AMFs at BGP-level.</li>
         </ol>
       </li>
-      <li id="question-cache"><strong>Does caching of HTTP requests and AMFs speed up query execution?</strong>
-<span class="comment" data-author="RV"><q>To what extent</q>?</span>
+      <li id="question-cache"><strong>To what extend does caching of HTTP requests and AMFs speed up query execution?</strong>
 <br />
 As the authors of the earlier work on AMF suggest that caching of AMFs
 can reduce server delays and improve overall query evaluation,
@@ -262,18 +259,14 @@ we will investigate the impact of caching AMFs and all HTTP requests in general.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-cache-1">Caching HTTP requests reduces query evaluation times more than caching only AMFs.
-<span class="comment" data-author="RV"><q>responses</q>? but hard for people to understand the difference at this point</span></li>
+          <li id="hypo-cache-1">Caching all HTTP responses reduce query evaluation times more than caching only AMFs responses.</li>
           <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
           <li id="hypo-cache-3">Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
           <li id="hypo-cache-4">With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.</li>
-          <li id="hypo-cache-5">Query evaluation with a cold cache is significantly slower than query evaluation with a warm cache.
-<span class="comment" data-author="RV">make falsifiable</span></li>
-          <li id="hypo-cache-6">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.</li>
+          <li id="hypo-cache-5">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.</li>
         </ol>
       </li>
-      <li id="question-dynamic-restriction"><strong>How do <em>different AMF generation thresholds</em> impact server load and query evaluation times?</strong>
-<span class="comment" data-author="RV">suggestion: <q>Does selectively enabling/disabling AMF positively impact server load and query evaluation times?</q></span>
+      <li id="question-dynamic-restriction"><strong>Does selectively enabling AMF positively impact server load and query evaluation times?</strong>
 <br />
 <span class="comment" data-author="RT">Pending deletion</span>
 <span class="comment" data-author="RV">any specific reason? results not sufficiently interesting? I like the question</span>
@@ -284,16 +277,14 @@ that have a result count lower than a certain threshold.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
-          <li id="hypo-dynamic-restriction-1">Lower thresholds slow down query execution with cached AMFs.</li>
-          <li id="hypo-dynamic-restriction-2">Lower thresholds reduce server load without cached AMFs.</li>
-          <li id="hypo-dynamic-restriction-3">Lower thresholds do not impact server load with cached AMFs.
-<span class="comment" data-author="RV">rephrase the above to put <q>with…</q> first, easier to parse?</span></li>
+          <li id="hypo-dynamic-restriction-1">With cached AMFs, lower thresholds slow down query execution.</li>
+          <li id="hypo-dynamic-restriction-2">Without cached AMFs, lower thresholds reduce server load.</li>
+          <li id="hypo-dynamic-restriction-3">With cached AMFs, lower thresholds do not impact server load.</li>
         </ol>
       </li>
       <li id="question-bandwidth"><strong>How does network bandwidth impact client-side performance with AMFs?</strong>
 <br />
-Experiments in earlier work on AMF were based on limited HTTP bandwidth to a realistic 1Mbps.
-<span class="comment" data-author="RV">hard to parse previous sentence</span>
+In experiments from earlier work on AMF, the HTTP bandwidth was set to a realistic 1Mbps.
 However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
 <br />
 <strong>Hypotheses:</strong>
@@ -302,10 +293,9 @@ However, there is still an open question as to what extent different rates have 
           <li id="hypo-bandwidth-2">HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
         </ol>
       </li>
-      <li id="question-inband"><strong>How is query throughput improved by adding AMF metadata <em>out-of-band</em> of TPF HTTP responses?</strong>
+      <li id="question-inband"><strong>How is query throughput improved by adding AMF metadata out-of-band of TPF HTTP responses?</strong>
 <br />
 <span class="comment" data-author="RT">Pending deletion</span>
-<span class="comment" data-author="RV">not important/necessary anymore for reduction in time?</span>
 In previous work, AMF metadata was always included in-band with the TPF response,
 which increased the size of these responses.
 This opens the question as to whether moving AMF metadata <em>out-of-band</em>
@@ -322,7 +312,7 @@ behind a link that clients should follow would improve query performance.
 <span class="comment" data-author="RV">Rather something about <q>how low can we go</q>?</span>
 <span class="comment" data-author="RT">Pending deletion</span>
 Based on the results the previous authors have suggested that additional experimentation is needed with regards
-to lower <em>AMF false-positive probabilities</em>, as higher probabilities do not have a significant effect on query performance.
+to lower <em>AMF false-positive probabilities</em>, as higher probabilities did not have a significant effect on query performance.
 <br />
 <strong>Hypotheses:</strong>
         <ol>
@@ -767,11 +757,9 @@ compared to just caching HTTP requests (<em>p-value: 0.7694</em>), so we accept 
 we see that if HTTP caching is <em>disabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly lower</em> than AMF-aware approaches (<em>p-value: &lt; 2.2e-16</em>), which confirms <a href="#hypo-cache-3">Hypothesis 2.3</a>.
 On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 2.2e-16</em>), which confirms <a href="#hypo-cache-4">Hypothesis 2.4</a>.</p>
 
-    <p class="todo"><a href="#hypo-cache-5">Hypothesis 2.5</a></p>
-
     <p>Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
-the difference is only small in most cases, so we accept <a href="#hypo-cache-6">Hypothesis 2.6</a> with a low significance (<em>p-value: 0.1786</em>).</p>
+the difference is only small in most cases, so we accept <a href="#hypo-cache-5">Hypothesis 2.5</a> with a low significance (<em>p-value: 0.1786</em>).</p>
 
     <h4 class="display-block" id="dynamically-enabling-amf">Dynamically Enabling AMF</h4>
 
@@ -1013,8 +1001,7 @@ compared to the algorithm introduced by Vander Sande et al.
 Furthermore, we have shown that AMF metadata requires limited effort from servers.</p>
 
     <p>We offer implementations of these algorithms and server enhancements,
-which means that it can be used by any of the 650.000+ data publishers
-<span class="comment" data-author="RV">well, LODL is one publisher (and they might be closing), so wouldn’t mention numbers</span>
+which means that it can be used by any of the existing data publishers
 that are exposing their data through a TPF interface,
 or any client that aims to query from them.
 Based on our discussion in <a href="#evaluation">Section 6</a>,

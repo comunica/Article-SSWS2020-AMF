@@ -540,8 +540,7 @@ to make pre-computation of AMFs possible.</p>
 
     <p>The goal of this section is to answer the research questions from <a href="#problem-statement">Section 3</a>.
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
-Next, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.
-Finally, we discuss these results to answer our research questions.</p>
+Next, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.</p>
 
     <h3 id="reusable-benchmarking-framework">Reusable Benchmarking Framework</h3>
 
@@ -877,10 +876,28 @@ This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.</p>
 
-    <h3 id="discussion">Discussion</h3>
-    <p><span class="comment" data-author="RV">to conclusion, and make current conclusion subsection <q>Recommendations</q>?</span></p>
+  </section>
 
-    <h4 id="bgp-based-algorithms-improve-query-efficiency">BGP-based Algorithms Improve Query Efficiency</h4>
+  <section id="conclusions">
+    <h2>Conclusions</h2>
+
+    <p>In this article, we introduced client-side and server-side improvements
+to the AMF feature for TPF.
+Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
+As results have shown, our client-side algorithms significantly reduce query execution times
+compared to the algorithm introduced by Vander Sande et al.
+Furthermore, we have shown that AMF metadata requires limited effort from servers.</p>
+
+    <p>We offer implementations of these algorithms and server enhancements,
+which means that it can be used by any of the existing data publishers
+that are exposing their data through a TPF interface,
+or any client that aims to query from them.</p>
+
+    <p>In this section, we conclude our findings with respect to our research questions,
+after which we introduce a set of recommendations for data publishers using AMF with TPF.
+Finally, we present our perspectives on future work.</p>
+
+    <h3 id="bgp-based-algorithms-improve-query-efficiency">BGP-based Algorithms Improve Query Efficiency</h3>
 
     <p>Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (<em><a href="#question-combine">Research Question 1</a></em>).
@@ -890,7 +907,7 @@ but further research is needed to come up with a more general heuristic that wor
 and is not overfitted to these experiments.
 <span class="comment" data-author="RV">do we have evidence for overfitting?</span></p>
 
-    <h4 id="bgp-based-algorithms-postpone-time-to-first-results">BGP-based Algorithms Postpone Time to First Results</h4>
+    <h3 id="bgp-based-algorithms-postpone-time-to-first-results">BGP-based Algorithms Postpone Time to First Results</h3>
 
     <p>Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 the diefficiency values are typically also lower, which means that results come in at a lower rate.
@@ -915,7 +932,7 @@ lead to even more performance gains for the BGP-level algorithms (<em><a href="#
       </figcaption>
 </figure>
 
-    <h4 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h4>
+    <h3 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h3>
 
     <p>Our results show that AMF-aware querying only has a positive impact on query evaluation times
 if the server can deliver AMF filters sufficiently fast (<em><a href="#question-cache">Research Question 2</a></em>).
@@ -948,7 +965,7 @@ Triple patterns are sorted by decreasing number of matches.</p>
       </figcaption>
 </figure>
 
-    <h4 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom Filters are Preferred over GCS with Active Cache</h4>
+    <h3 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom Filters are Preferred over GCS with Active Cache</h3>
 
     <p>Results show that when AMFs are pre-computed,
 Bloom filters achieve faster query evaluation times than GCS (<em><a href="#question-cache">Research Question 2</a></em>).
@@ -957,7 +974,7 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.</p>
 
-    <h4 id="always-emit-amf-metadata-out-of-band">Always Emit AMF Metadata Out-of-band</h4>
+    <h3 id="always-emit-amf-metadata-out-of-band">Always Emit AMF Metadata Out-of-band</h3>
 
     <p>Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
 on query evaluation times and the total number of HTTP requests (<em><a href="#question-inband">Research Question 5</a></em>).
@@ -965,7 +982,7 @@ However, as there may be clients that do no understand AMF metadata,
 there will be HTTP data transfer overhead when AMF metadata would be included in-band.
 For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.</p>
 
-    <h4 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h4>
+    <h3 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h3>
 
     <p>Lowering the false-positive probability of an AMF increases its size.
 As we have seen that larger AMFs have an impact on query evaluation times,
@@ -975,23 +992,9 @@ as that leads to more unneeded HTTP requests.
 Our results have shown that a probability of 1/64 leads to an optimal trade-off for our experiments (<em><a href="#question-probabilities">Research Question 6</a></em>).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.</p>
 
-  </section>
+    <h3 id="recommendations">Recommendations</h3>
 
-  <section id="conclusions">
-    <h2>Conclusions</h2>
-
-    <p>In this article, we introduced client-side and server-side improvements
-to the AMF feature for TPF.
-Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
-As results have shown, our client-side algorithms significantly reduce query execution times
-compared to the algorithm introduced by Vander Sande et al.
-Furthermore, we have shown that AMF metadata requires limited effort from servers.</p>
-
-    <p>We offer implementations of these algorithms and server enhancements,
-which means that it can be used by any of the existing data publishers
-that are exposing their data through a TPF interface,
-or any client that aims to query from them.
-Based on our discussion in <a href="#evaluation">Section 6</a>,
+    <p>Based on the conclusions of our experimental results,
 we offer the following guidelines for publishers that aim to use the AMF feature:</p>
 
     <ul>
@@ -1001,6 +1004,8 @@ we offer the following guidelines for publishers that aim to use the AMF feature
       <li>Emit AMF metadata <strong>out-of-band</strong>.</li>
       <li>Use a false-positive <strong>probability of 1/64</strong>.</li>
     </ul>
+
+    <h3 id="future-work">Future work</h3>
 
     <p>Even though we answered many open questions regarding AMFs,
 there are a couple of new questions.

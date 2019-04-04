@@ -9,9 +9,8 @@ After that, we introduce our new BGP-based AMF algorithm.
 
 [Vander Sande et al.](cite:cites amf2015) introduced an algorithm
 that acts as a cheap pre-processing step for testing the membership of triples.
-This algorithm was used in combination with the streaming [client-side TPF algorithm](cite:cites ldf) for evaluating SPARQL queries.
+This algorithm was used in combination with the streaming [client-side TPF algorithm](cite:cites ldf) for evaluating SPARQL queries.[](#amf-triple-pseudo) depicts this algorithm in pseudo-code.
 
-This algorithm can be seen in pseudo-code in [](#amf-triple-pseudo).
 Concretely, every triple pattern that has all of its variables resolved to constants
 is run through this function right before more a expensive HTTP request would be performed.
 This function takes a triple and a query context containing the AMFs

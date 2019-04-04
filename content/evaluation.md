@@ -208,12 +208,9 @@ If we compare these results with the results for non-AMF-aware querying,
 we see that if HTTP caching is _disabled_, query evaluation times for non-AMF-aware querying are _significantly lower_ than AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.3](#hypo-cache-3).
 On the other hand, if HTTP caching is _enabled_, query evaluation times for non-AMF-aware querying are _significantly worse_ than with AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.4](#hypo-cache-4).
 
-[Hypothesis 2.5](#hypo-cache-5)
-{:.todo}
-
 Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
-the difference is only small in most cases, so we accept [Hypothesis 2.6](#hypo-cache-6) with a low significance (_p-value: 0.1786_).
+the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-cache-5) with a low significance (_p-value: 0.1786_).
 
 #### Dynamically Enabling AMF
 {:.display-block}

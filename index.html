@@ -84,7 +84,7 @@ We claim that AMF offers a way to achieve this
 without becoming too expensive for servers.
 The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
 and how its previously discovered increase in query execution times can be mitigated.
-Therefore, we extend the client-side algorithm from <span class="references">[<a href="#ref-3">3</a>]</span> to exploit AMF metadata
+Therefore, we extend the client-side algorithm from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> to exploit AMF metadata
 earlier during query evaluation for speeding up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.</p>
 
@@ -110,8 +110,8 @@ Finally, we draw conclusions in <a href="#conclusions">Section 6</a>.</p>
     <p>In this section we cover the relevant existing research relating to our work.
 We start by discussing the TPF interface.
 After that, we discuss different AMFs,
-followed by their use in query evaluation.
-Finally, we discuss the related work on using AMFs for the TPF interface.</p>
+followed by their use in query evaluation,
+and their use for the TPF interface.</p>
 
     <h3 id="related-work-ldf">Triple Pattern Fragments</h3>
 
@@ -185,7 +185,7 @@ as a way to <a property="schema:citation http://purl.org/spar/cito/cites" href="
 Bloom filters can therefore be used to
 <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=2063784">efficiently group connected triple patterns by frequency</a> <span class="references">[<a href="#ref-15">15</a>]</span>,
 to improve the efficiency of merge joins <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.researchgate.net/profile/Thomas_Neumann2/publication/47863714_Scalable_Join_Processing_on_Very_Large_RDF_Graphs/links/00b7d51d1687cae740000000.pdf">as a way of representing equivalent classes</a> <span class="references">[<a href="#ref-16">16</a>]</span>,
-and even for <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674">joining distributed and stored streams</a> <span class="references">[<a href="#ref-17">17</a>]</span>.</p>
+and for <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674">joining distributed and stored streams</a> <span class="references">[<a href="#ref-17">17</a>]</span>.</p>
 
     <p>Furthermore, Bloom filters are also used in the domain of federated querying to
 optimize the process of <em>source selection</em>.
@@ -196,7 +196,7 @@ or it can be used to retrieve as many results as possible.</p>
 
     <h3 id="related-work-amf">Approximate Membership Metadata for TPF</h3>
 
-    <p>Pure TPF query plans typically <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">produce a large number of so-called <em>membership requests</em></a> <span class="references">[<a href="#ref-3">3</a>]</span>,
+    <p>Pure TPF query plans typically <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">produce a large number of <em>membership requests</em></a> <span class="references">[<a href="#ref-3">3</a>]</span>,
 checking whether a specific triple (without variables) is present in a dataset.
 This was illustrated with queries from the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf">WatDiv</a> <span class="references">[<a href="#ref-19">19</a>]</span> benchmark,
 consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
@@ -246,18 +246,17 @@ Earlier work focused on using AMF metadata to test the membership of fully mater
 while there is potential for exploiting this for other types of patterns in the query as well.
 For instance, combining multiple AMFs at BGP-level
 by applying AMFs on triple patterns with shared variables.</li>
-      <li id="question-cache"><strong>To what extend does caching of HTTP requests and AMFs speed up query execution?</strong>
+      <li id="question-cache"><strong>To what extent does HTTP caching and AMFs speed up query execution?</strong>
 <br />
-As the authors of the earlier work on AMF suggest that caching of AMFs
-can reduce server delays and improve overall query evaluation,
-we will investigate the impact of caching AMFs and all HTTP requests in general.</li>
-      <li id="question-dynamic-restriction"><strong>Does selectively enabling AMF positively impact server load and query evaluation times?</strong>
+As Vander Sande et al. suggest that caching of AMFs
+reduce server delays, we investigate the impact of caching HTTP requests and/or AMFs.</li>
+      <li id="question-dynamic-restriction"><strong>How does selectively enabling AMF impact server load and querying?</strong>
 <br />
 Earlier work introduced AMF as a feature that was always enabled.
 However, some specific AMFs may be too expensive for servers to calculate on the fly.
 As such, it may be beneficial to only enable AMF for queries
 that have a result count lower than a certain threshold.</li>
-      <li id="question-bandwidth"><strong>How does network bandwidth impact client-side performance with AMFs?</strong>
+      <li id="question-bandwidth"><strong>How does network bandwidth impact query performance with AMFs?</strong>
 <br />
 In experiments from earlier work on AMF, the HTTP bandwidth was set to a realistic 1Mbps.
 However, there is still an open question as to what extent different rates have an impact on the importance of AMF.</li>
@@ -344,10 +343,13 @@ which will down the line invoke expensive HTTP requests.</p>
   <section id="evaluation">
     <h2>Evaluation</h2>
 
+    <p class="todo">Include in ZIP: bencher, AMF modules, Server impl, AMF experiments</p>
+
     <p>The goal of this section is to answer the research questions from <a href="#problem-statement">Section 3</a>.
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
 Next, we briefly discuss the implementations of our algorithm.
-Finally, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.</p>
+After that, we present our experimental setup and our statistical hypotheses.
+Finally, we present our results and testing of our hypotheses.</p>
 
     <h3 id="reusable-benchmarking-framework">Reusable Benchmarking Framework</h3>
 
@@ -362,28 +364,26 @@ Experiment configurations are fully <em>declarative</em>, and they can exist in 
 In order to share the conditions under which the experiment was executed,
 a list of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-20">20</a>]</span>
 will be generated after each run together with the evaluation results.
-Comunica Bencher is <em>open-source</em>, and is available on GitHub.
+Comunica Bencher is <em>open-source</em>, and is available on <a href="https://github.com/comunica/comunica-bencher">GitHub</a>.
 With this, our experiments are fully reproducible.</p>
 
-    <p class="todo">Include link to anonymized source code dump.</p>
-
-    <p>Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">evaluation workflow</a>:</p>
+    <p>Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">workflow</a>:</p>
 
     <ol id="evaluation-workflow" property="schema:hasPart" resource="#evaluation-workflow" typeof="opmw:WorkflowTemplate">
 <li id="workflow-data" about="#workflow-data" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
         <p>Generate a <a property="schema:citation http://purl.org/spar/cito/cites" href="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf">WatDiv</a> <span class="references">[<a href="#ref-19">19</a>]</span> dataset with a given scale factor.</p>
       </li>
 <li id="workflow-queries" about="#workflow-queries" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-        <p>Generate the corresponding default WatDiv <a href="https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml" class="mandatory" data-link-text="https:/​/​dsg.uwaterloo.ca/​watdiv/​basic-​testing.shtml">queries</a> with a given query count.</p>
+        <p>Generate the corresponding default WatDiv <a href="https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml">queries</a> with a given query count.</p>
       </li>
 <li id="workflow-tpf-server" about="#workflow-tpf-server" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-        <p>Install <a href="https://github.com/LinkedDataFragments/Server.js" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js">the LDF server software</a> with a given configuration, implementing the <a href="https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/" class="mandatory" data-link-text="https:/​/​www.hydra-​cg.com/​spec/​latest/​triple-​pattern-​fragments/​">TPF specification</a>.</p>
+        <p>Install <a href="https://github.com/LinkedDataFragments/Server.js" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js">the LDF server software</a> with a given configuration, implementing the <a href="https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/">TPF specification</a>.</p>
       </li>
 <li id="workflow-cache" about="#workflow-cache" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
         <p>Setup an <a href="https://www.nginx.com/" class="mandatory" data-link-text="https:/​/​www.nginx.com/​">NGINX HTTP cache</a> with a given configuration in front of the LDF server.</p>
       </li>
 <li id="workflow-comunica" about="#workflow-comunica" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-        <p>Install <a href="https://github.com/comunica/comunica" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica">the Comunica software</a> under a given configuration, implementing the <a href="https://www.w3.org/TR/sparql11-protocol">SPARQL 1.1 protocol</a>.</p>
+        <p>Install <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-6">6</a>]</span> under a given configuration, implementing <a href="https://www.w3.org/TR/sparql11-protocol">SPARQL 1.1</a>.</p>
       </li>
 <li id="workflow-comunica-run" about="#workflow-comunica-run" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
         <p>Execute the generated WatDiv queries a given number times on the Comunica client, after doing a warmup run, and record the execution times.</p>
@@ -395,23 +395,21 @@ With this, our experiments are fully reproducible.</p>
 
     <h3 id="implementation">Implementation</h3>
 
-    <p class="todo">Anonymize source code links</p>
-
     <p>For implementing the client-side AMF algorithms,
 we make use of JavaScript-based <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica SPARQL querying framework</a> <span class="references">[<a href="#ref-6">6</a>]</span>.
 Since Comunica already fully supports the TPF algorithm,
 we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
-and are available open-source on <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">GitHub</a>.
+and are available open-source on <a href="https://github.com/comunica/comunica-feature-amf">GitHub</a>.
 Concretely, we implemented the original triple-based AMF algorithm,
 our new BGP-based AMF algorithm,
 and a variant of this BGP-based algorithm that pre-fetches out-of-band AMFs in parallel.</p>
 
-    <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf">the LDF server software</a>
+    <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf">the LDF server software</a>
 by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 To support our experiments, we extended this implementation with three new features.
-This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.
+This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2">GitHub</a>.
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given threshold.
@@ -423,13 +421,11 @@ to make pre-computation of AMFs possible.</p>
     <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Subsection 5.2</a>,
 we defined five experiments, corresponding to our five research questions from <a href="#problem-statement">Section 3</a>.
 For each experiment, we introduce hypotheses that will be statistically tested based on our results.
-The declararive configuration files for running these experiments with Comunica Bencher are present on <a href="https://github.com/comunica/Experiments-AMF" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​Experiments-​AMF">GitHub</a> under an open license,
+The declararive configuration files for running these experiments with Comunica Bencher are present on <a href="https://github.com/comunica/Experiments-AMF">GitHub</a> under an open license,
 and can be started from scratch by <em>executing a single command</em>.
 Furthermore, all raw results and scripts for analyzing them can be found in this same repository.</p>
 
-    <p class="todo">Anonimize link to repo</p>
-
-    <p>All of the following experiments have several things in common, unless indicated otherwise.
+    <p>All of the following experiments have several things in common.
 First, they are all executed using WatDiv with a dataset scale of 100,
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
 Each experiment includes a warmup phase,
@@ -438,9 +434,9 @@ During this warmup phase, the server caches all generated AMFs.
 For each query, we configured a timeout of 5 minutes.
 Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
 Finally, each experiment uses an NGINX HTTP cache,
-and the client-side query timeout has been set to 5 minutes.
+and the client-side query timeout was 5 minutes.
 All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
-with each Docker container being limited to a one CPU core.</p>
+each Docker container was limited to one CPU core.</p>
 
     <ol>
       <li><strong>Client-side AMF Algorithms</strong>:
@@ -871,7 +867,7 @@ which is not trivial, as filters of multiple sources may need to be combined.</p
   <dt id="ref-16">[16]</dt>
   <dd resource="https://www.researchgate.net/profile/Thomas_Neumann2/publication/47863714_Scalable_Join_Processing_on_Very_Large_RDF_Graphs/links/00b7d51d1687cae740000000.pdf" typeof="schema:Article">Neumann, T., Weikum, G.: Scalable join processing on very large RDF graphs. In: Proceedings of the 2009 ACM SIGMOD International Conference on Management of data. pp. 627–640. ACM (2009).</dd>
   <dt id="ref-17">[17]</dt>
-  <dd resource="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674" typeof="schema:Article">Dia, A.F., Aoul, Z.K., Boly, A., Métais, E.: Fast SPARQL join processing between distributed streams and stored RDF graphs using bloom filters. In: 2018 12th International Conference on Research Challenges in Information Science (RCIS) (2018).</dd>
+  <dd resource="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674" typeof="schema:Article">Dia, A.F., Aoul, Z.K., Boly, A., Métais, E.: Fast SPARQL join processing between distributed streams and stored RDF graphs using bloom filters. In: 12th International Conference on Research Challenges in Information Science (2018).</dd>
   <dt id="ref-18">[18]</dt>
   <dd resource="https://domino.mpi-inf.mpg.de/intranet/ag5/ag5publ.nsf/0/DAAD136B50B0C0ECC12579E6004D6582/$file/p2-hose.pdf" typeof="schema:Article">Hose, K., Schenkel, R.: Towards benefit-based RDF source selection for SPARQL queries. In: Proceedings of the 4th International Workshop on Semantic Web Information Management. p. 2. ACM (2012).</dd>
   <dt id="ref-19">[19]</dt>

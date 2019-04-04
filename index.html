@@ -97,11 +97,10 @@ and creating similar ones in the future.</p>
 
     <p>In the next section we cover the related work pertaining to this article.
 After that, we introduce our research questions and hypotheses in <a href="#problem-statement">Section 3</a>.
-Next, we introduce our client-side algorithms and server-side enhancements in <a href="#solution">Section 4</a>,
-and discuss their implementation in <a href="#implementation">Section 5</a>.
-In <a href="#evaluation">Section 6</a>, we introduce our experimental setup,
+Next, we introduce our client-side algorithms and server-side enhancements in <a href="#solution">Section 4</a>.
+In <a href="#evaluation">Section 5</a>, we introduce our experimental setup,
 present our results, and test our hypotheses.
-Finally, we draw conclusions in <a href="#conclusions">Section 7</a>.</p>
+Finally, we draw conclusions in <a href="#conclusions">Section 6</a>.</p>
 
   </section>
 
@@ -329,7 +328,7 @@ to lower <em>AMF false-positive probabilities</em>, as higher probabilities did 
     </ol>
 
     <p>To come up with an answer to these research questions,
-their hypotheses will be tested in <a href="#evaluation">Section 6</a> based on our experimental results.</p>
+their hypotheses will be tested in <a href="#evaluation">Section 5</a> based on our experimental results.</p>
 
   </section>
 
@@ -414,7 +413,7 @@ This heuristic has been designed for fast calculation,
 with exactness as a lower priority.
 Based on measurements, we set <code>AMF_TRIPLE_SIZE</code> to 2 bytes,
 and <code>TPF_BINDING_SIZE</code> to 1000 bytes by default.
-In <a href="#evaluation">Section 6</a>, we will evaluate the effects for different <code>TPF_BINDING_SIZE</code> values.
+In <a href="#evaluation">Section 5</a>, we will evaluate the effects for different <code>TPF_BINDING_SIZE</code> values.
 In future work, more exact heuristics should be investigated
 that take perform live profiling of HTTP requests and delays to avoid the need of these constants.</p>
 
@@ -432,120 +431,13 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
 
   </section>
 
-  <section id="implementation">
-    <h2>Implementation</h2>
-
-    <p>In this section, we discuss the implementations of the client-side algorithms
-that were discussed in <a href="#solution">Section 4</a>, and our server-side extensions.</p>
-
-    <p class="todo">Anonymize source code links</p>
-
-    <h3 id="client-side-implementation-in-comunica">Client-side Implementation in Comunica</h3>
-
-    <p>For our implementation, we make use of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-6">6</a>]</span>,
-which is a highly modular SPARQL querying framework in JavaScript.
-Comunica uses an <em>actor-based</em> architecture to achieve loose coupling between modules.
-Each actor is responsible for solving a certain task in a certain way.
-Actors can be registered on task-specific <em>buses</em>.
-If a certain task needs to be solved, <em>mediators</em> are responsible for picking the <em>best</em> actors in that bus,
-and letting that actor execute the task.
-Comunica offers more than 100 actors that, when combined, are able to solve complex SPARQL queries.
-This combination is achieved using <a property="schema:citation http://purl.org/spar/cito/cites" href="http://componentsjs.readthedocs.io/en/latest/">Components.js</a> <span class="references">[<a href="#ref-20">20</a>]</span>,
-a dependency injection framework that works with semantic configuration files.</p>
-
-    <p>As Comunica already fully supports the TPF algorithm out-of-the-box,
-it significantly lowered the barrier for implementing our client-side AMF algorithms in this framework.
-Its modular structure makes it ideal for us to add on to the existing implementation,
-without having to change the existing code base.
-Following the conventions of Comunica,
-we also wrote extensive unit tests to test the correctness of our implementation.</p>
-
-    <p>Concretely, we introduce one new bus, and seven new actors.
-They are implemented in separate Comunica modules,
-and are available open-source on <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">GitHub</a>.</p>
-
-    <ul>
-      <li>AMF Bus: Bus for actors that can construct AMFs.</li>
-      <li>Bloom AMF Actor: Actor for constructing Bloom filters.</li>
-      <li>GCS AMF Actor: Actor for constructing GCS filters.</li>
-      <li>AMF Metadata Extractor Actor: Actor that extracts AMF metadata and instantiates AMFs.</li>
-      <li>AMF Quad Pattern Actor: An AMF-aware quad pattern actor.</li>
-      <li>AMF BGP Actor: An AMF-aware BGP actor.</li>
-      <li>Combined AMF BGP Actor: An AMF-aware BGP actor that pre-fetches AMFs.</li>
-    </ul>
-
-    <p>The first four modules are responsible for interpreting the AMF metadata,
-and the last three modules make use of the detected AMFs during query evaluation.
-As Comunica works with RDF <em>quads</em> instead of RDF <em>triples</em>,
-all algorithms that were introduced in <a href="#solution">Section 4</a> were generalized to this model.
-We will discuss both groups hereafter.</p>
-
-    <h4 id="amf-metadata-detection">AMF Metadata Detection</h4>
-
-    <p>The AMF Bus is responsible for holding actors that can instantiate AMFs of a certain type
-based on a set of properties.
-These properties contain things such as the type of AMF,
-the binary AMF data as was provided by the server,
-and the variable for which the AMF applies.
-For this bus, we implemented two actors, which respectively implement Bloom filters and GCS.</p>
-
-    <p>Next to this, we also implemented and actor to extract AMF metadata,
-which we registered to the already existing metadata extraction bus in Comunica.
-This actor will receive RDF quads as input,
-and it will detect any AMF metadata.
-Based on the detected AMF metadata, it will instantiate all relevant AMFs using the AMF Bus,
-and add these instances to Comunica’s shared query context, so that it can be used later on during query evaluation.</p>
-
-    <h4 id="amf-query-evaluation">AMF Query Evaluation</h4>
-
-    <p>The <em>AMF Quad Pattern Actor</em> implements the triple-based AMF algorithm
-by registering onto the quad pattern bus.
-This actor is only active for quad patterns that are fully materialized quads,
-and when AMFs are present in the shared query context.</p>
-
-    <p>The <em>AMF BGP Actor</em> implements our new BGP-based AMF algorithm,
-which registers onto the BGP bus.
-This also implements our heuristic where the constants are configurable.
-This actor is active for all BGPs, but only if AMFs are present in the shared query context.</p>
-
-    <p>We also implemented a <em>Combined AMF BGP Actor</em>,
-that is an improvement to the <em>AMF BGP Actor</em>
-that actively pre-fetches all AMFs that are out-of-band.
-This can slightly improve performance when multiple patterns exist in the BGP that all have AMFs,
-because HTTP requests are parallelized.</p>
-
-    <h3 id="server-extensions-in-serverjs">Server Extensions in Server.js</h3>
-
-    <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf">Server.js</a>
-by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
-allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
-These filters would be added in-band as metadata to TPFs.
-We extended this implementation with three new features.
-This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.</p>
-
-    <p>First, since we want to evaluate whether or not including AMF metadata in-band
-can reduce the total number of HTTP requests and query execution times,
-we implemented a way to emit this metadata in-band if the triple count of the given pattern is below a certain configurable threshold.
-Originally, all AMF metadata would always be emitted out-of-band,
-which requires an additional HTTP request for clients.
-This threshold should not be set too high, as large AMFs will introduce some overhead for clients
-that do not need or do not understand AMF metadata.</p>
-
-    <p>Secondly, in order to measure the server overhead of large AMFs,
-we added a config option to dynamically enable AMFs for triple patterns
-with number of matching triples below a given threshold.</p>
-
-    <p>Finally, we implemented an optional file-based cache to avoid recomputing AMFs
-to make pre-computation of AMFs possible.</p>
-
-  </section>
-
   <section id="evaluation">
     <h2>Evaluation</h2>
 
     <p>The goal of this section is to answer the research questions from <a href="#problem-statement">Section 3</a>.
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
-Next, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.</p>
+Next, we briefly discuss the implementations of our algorithm.
+Finally, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.</p>
 
     <h3 id="reusable-benchmarking-framework">Reusable Benchmarking Framework</h3>
 
@@ -558,7 +450,7 @@ we developed a reusable benchmarking framework for Linked Data Fragments experim
 This tool is based on <a href="https://www.docker.com/">Docker</a>, and allows isolated execution of experiments over different containers.
 Experiment configurations are fully <em>declarative</em>, and they can exist in standalone repositories.
 In order to share the conditions under which the experiment was executed,
-a list of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-21">21</a>]</span>
+a list of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-20">20</a>]</span>
 will be generated after each run together with the evaluation results.
 Comunica Bencher is <em>open-source</em>, and is available on GitHub.
 With this, our experiments are fully reproducible.</p>
@@ -591,9 +483,34 @@ With this, our experiments are fully reproducible.</p>
       </li>
 </ol>
 
+    <h3 id="implementation">Implementation</h3>
+
+    <p class="todo">Anonymize source code links</p>
+
+    <p>For implementing the client-side AMF algorithms,
+we make use of JavaScript-based <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica SPARQL querying framework</a> <span class="references">[<a href="#ref-6">6</a>]</span>.
+Since Comunica already fully supports the TPF algorithm,
+we could implement our algorithms as fully standalone plugins.
+Our algorithms are implemented in separate Comunica modules,
+and are available open-source on <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">GitHub</a>.
+Concretely, we implemented the original triple-based AMF algorithm,
+our new BGP-based AMF algorithm,
+and a variant of this BGP-based algorithm that pre-fetches out-of-band AMFs in parallel.</p>
+
+    <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf">the LDF server software</a>
+by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
+allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
+To support our experiments, we extended this implementation with three new features.
+This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.
+In order to measure the server overhead of large AMFs,
+we added a config option to dynamically enable AMFs for triple patterns
+with number of matching triples below a given threshold.
+Next to that, we implemented an optional file-based cache to avoid recomputing AMFs
+to make pre-computation of AMFs possible.</p>
+
     <h3 id="experimental-setup">Experimental Setup</h3>
 
-    <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Section 5</a>,
+    <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Subsection 5.2</a>,
 we defined six experiments, corresponding to our six research questions from <a href="#problem-statement">Section 3</a>.
 The declararive configuration files for running these experiments with Comunica Bencher are present on <a href="https://github.com/comunica/Experiments-AMF" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​Experiments-​AMF">GitHub</a> under an open license,
 and can be started from scratch by <em>executing a single command</em>.
@@ -706,7 +623,7 @@ which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (<em>p-value: 0.1842</em>).
 <span class="comment" data-author="RV">thought so; let’s not do this?</span></p>
 
-    <p><a href="#plot_client_algos_dief">Fig. 3</a> shows the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf">time diefficiency metric</a> <span class="references">[<a href="#ref-22">22</a>]</span>
+    <p><a href="#plot_client_algos_dief">Fig. 3</a> shows the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf">time diefficiency metric</a> <span class="references">[<a href="#ref-21">21</a>]</span>
 values for all queries over all client-side algorithms.
 This metric is used to measure the continuous arrival rate of query results,
 where higher values indicate faster result arrival rates.
@@ -958,7 +875,7 @@ after which they can still be cached.</p>
 When setting the WatDiv dataset to a size of 10M triples, there are only 90 triple patterns with a size larger than 10.000.
 Setting that size to 100M triples, this number increases to 255, so this is not a linear increase.
 Due to this low number of very large patterns, we can easily pre-compute these offline before dataset publication time.
-Since the WatDiv dataset achieves a high diversity of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=1989340"><em>structuredness</em>, it is similar to real-world RDF datasets</a> <span class="references">[<a href="#ref-23">23</a>]</span>.
+Since the WatDiv dataset achieves a high diversity of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=1989340"><em>structuredness</em>, it is similar to real-world RDF datasets</a> <span class="references">[<a href="#ref-22">22</a>]</span>.
 As such, this behavior can be generalized to other datasets with a similar structuredness.</p>
 
     <figure id="plot_triple_pattern_counts">
@@ -1019,7 +936,7 @@ there are a couple of new questions.
 First, we need further investigation on our heuristic for dynamically disabling the BGP-based AMF algorithm.
 Second, dynamically switching between algorithms may improve diefficiency,
 as the BGP-based algorithm postpones time until first result.
-Finally, as approaches such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ashraf.aboulnaga.me/pubs/www16soliddemo.pdf">Solid</a> <span class="references">[<a href="#ref-24">24</a>]</span> are pushing towards a more <em>decentralized</em> Web,
+Finally, as approaches such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ashraf.aboulnaga.me/pubs/www16soliddemo.pdf">Solid</a> <span class="references">[<a href="#ref-23">23</a>]</span> are pushing towards a more <em>decentralized</em> Web,
 investigation of AMFs in the context of federated querying is needed,
 which is not trivial, as filters of multiple sources may need to be combined.</p>
 
@@ -1069,14 +986,12 @@ which is not trivial, as filters of multiple sources may need to be combined.</p
   <dt id="ref-19">[19]</dt>
   <dd resource="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf" typeof="schema:Article">Aluç, G., Hartig, O., Özsu, M.T., Daudjee, K.: Diversified stress testing of RDF data management systems. In: International Semantic Web Conference (2014).</dd>
   <dt id="ref-20">[20]</dt>
-  <dd resource="http://componentsjs.readthedocs.io/en/latest/" typeof="schema:CreativeWork">Taelman, R.: Components.js. <a href="http://componentsjs.readthedocs.io/en/latest/">http:/​/​componentsjs.readthedocs.io/en/latest/</a></dd>
-  <dt id="ref-21">[21]</dt>
   <dd resource="https://linkedsoftwaredependencies.org/articles/describing-experiments/" typeof="schema:Article">Van Herwegen, J., Taelman, R., Capadisli, S., Verborgh, R.: Describing configurations of software experiments as Linked Data. In: Proceedings of the First Workshop on Enabling Open Semantic Science (SemSci) (2017).</dd>
-  <dt id="ref-22">[22]</dt>
+  <dt id="ref-21">[21]</dt>
   <dd resource="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf" typeof="schema:Article">Acosta, M., Vidal, M.-E., Sure-Vetter, Y.: Diefficiency metrics: measuring the continuous efficiency of query processing approaches. In: International Semantic Web Conference. pp. 3–19. Springer (2017).</dd>
-  <dt id="ref-23">[23]</dt>
+  <dt id="ref-22">[22]</dt>
   <dd resource="https://dl.acm.org/citation.cfm?id=1989340" typeof="schema:Article">Duan, S., Kementsietsidis, A., Srinivas, K., Udrea, O.: Apples and oranges: a comparison of RDF benchmarks and real RDF datasets. In: Proceedings of the 2011 ACM SIGMOD International Conference on Management of data</dd>
-  <dt id="ref-24">[24]</dt>
+  <dt id="ref-23">[23]</dt>
   <dd resource="https://ashraf.aboulnaga.me/pubs/www16soliddemo.pdf" typeof="schema:Article">Mansour, E., Sambra, A.V., Hawke, S., Zereba, M., Capadisli, S., Ghanem, A., Aboulnaga, A., Berners-Lee, T.: A demonstration of the solid platform for social web applications. In: Proceedings of the 25th International Conference Companion on World Wide Web</dd>
 </dl>
 </section>

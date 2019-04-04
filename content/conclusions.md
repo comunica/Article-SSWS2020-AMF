@@ -9,8 +9,7 @@ compared to the algorithm introduced by Vander Sande et al.
 Furthermore, we have shown that AMF metadata requires limited effort from servers.
 
 We offer implementations of these algorithms and server enhancements,
-which means that it can be used by any of the 650.000+ data publishers
-<span class="comment" data-author="RV">well, LODL is one publisher (and they might be closing), so wouldn't mention numbers</span>
+which means that it can be used by any of the existing data publishers
 that are exposing their data through a TPF interface,
 or any client that aims to query from them.
 Based on our discussion in [](#evaluation),

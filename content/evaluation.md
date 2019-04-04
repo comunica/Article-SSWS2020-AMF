@@ -4,7 +4,8 @@
 The goal of this section is to answer the research questions from [](#problem-statement).
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
 Next, we briefly discuss the implementations of our algorithm.
-Finally, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.
+After that, we present our experimental setup and our statistical hypotheses.
+Finally, we present our results and testing of our hypotheses.
 
 ### Reusable Benchmarking Framework
 

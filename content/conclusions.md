@@ -23,19 +23,18 @@ Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (_[Research Question 1](#question-combine)_).
 However, the are a few outliers where our new algorithms perform _worse_ than the triple-based algorithm.
 Our results have shown that a heuristic that can decide whether or not to use the BGP-based algorithm can solve this problem,
-but further research is needed to come up with a more general heuristic that works in a variety of cases
-and is not overfitted to these experiments.
-<span class="comment" data-author="RV">do we have evidence for overfitting?</span>
+but further research is needed to come up with a more general heuristic that works in a variety of cases.
 
 ### BGP-based Algorithms Postpone Time to First Results
 
 Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
-the diefficiency values are typically also lower, which means that results come in at a lower rate.
-<span class="comment" data-author="RV">last part not correct IMHO; the average rate must still be higher, right?</span>
+the diefficiency values are typically also lower.
 The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen with query F3 in [](#plot_query_times_F3),
 and is observable for other queries as well.
 This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
-This is because the BGP-based algorithms tends to use larger AMFs, which introduces a bottleneck when requesting them over HTTP.
+However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
+The reason for this is that the BGP-based algorithms tends to use larger AMFs,
+which introduces a bottleneck when requesting them over HTTP.
 Even though we have this overhead, the gains we get from this are typically worth it,
 as results come in much faster once the AMFs have been downloaded.
 This figure shows that dynamically switching between different algorithms may be interesting to investigate in future work.

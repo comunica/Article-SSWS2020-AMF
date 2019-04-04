@@ -1,6 +1,6 @@
-function hasTriple(triple, amf) {
+function hasTriple(triple, context) {
   for position in ['subject', 'predicate', 'object']
-    if amf[position].filter(triple[position])
+    if !context.amf[position].contains(triple[position])
       return false;
-  return super.hasTriple(triple, amf);
+  return super.hasTriple(triple, context);
 }

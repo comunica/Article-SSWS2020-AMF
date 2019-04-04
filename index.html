@@ -205,6 +205,7 @@ which indicates that optimizing membership queries can have a positive effect on
 servers can combine multiple interface features
 to assist supporting clients with query evaluation.
 An interface feature with approximate membership metadata
+for all variables in the requested triple patterns
 <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">considerably reduced the number of membership requests to a server</a> <span class="references">[<a href="#ref-3">3</a>]</span>.
 Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.
@@ -341,31 +342,26 @@ Finally, we introduce a heuristic that determines whether or not the BGP-based a
 that acts as a cheap pre-processing step for testing the membership of triples.
 This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> for evaluating SPARQL queries.</p>
 
-    <p><span class="comment" data-author="RV">Up until now, I had the impression that there would be one AMF that took a triple pattern. But it’s three (independent) position-based filters.</span></p>
-
     <p>This algorithm can be seen in pseudo-code in <a href="#amf-triple-pseudo">Listing 1</a>.
 Concretely, every triple pattern that has all of its variables resolved to constants
 is run through this function right before more a expensive HTTP request would be performed.
-This function takes a triple and the AMFs that were detected during the last TPF response for that pattern.
+This function takes a triple and a query context containing the AMFs
+that were detected during the last TPF response for that pattern.
 It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
 Once all checks pass, the original HTTP-based membership logic will be invoked.</p>
 
     <figure id="amf-triple-pseudo" class="listing">
-<pre><code>function hasTriple(triple, amf) {
+<pre><code>function hasTriple(triple, context) {
 </code><code>  for position in [&#39;subject&#39;, &#39;predicate&#39;, &#39;object&#39;]
-</code><code>    if amf[position].filter(triple[position])
+</code><code>    if !context.amf[position].contains(triple[position])
 </code><code>      return false;
-</code><code>  return super.hasTriple(triple, amf);
+</code><code>  return super.hasTriple(triple, context);
 </code><code>}</code></pre>
 <figcaption>
         <p><span class="label">Listing 1:</span> Triple-based AMF algorithm by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
 as a pre-filtering step for testing the membership of triples.</p>
       </figcaption>
 </figure>
-
-    <p><span class="comment" data-author="RV">suggestion: replace <code>filter</code> by <code>contains</code> and negate the condition (which seems to be missing)?</span></p>
-
-    <p><span class="comment" data-author="RV"><code>super</code> probably doesn’t take an AMF, does it?</span></p>
 
     <h3 id="bgp-based-amf-algorithm">BGP-based AMF Algorithm</h3>
 
@@ -377,7 +373,7 @@ In theory, this should filter (true negative) bindings earlier in the query eval
 
     <p><a href="#amf-bgp-pseudo">Listing 2</a> shows this algorithm in pseudo-code.
 Just like the triple-based algorithm, it acts as a pre-processing step when BGPs are being processed.
-It takes a list of triple patterns as input, and a list of corresponding AMFs
+It takes a list of triple patterns as input, and query context containing a list of corresponding AMFs
 that were detected during the last TPF responses for each respective pattern.
 The algorithm iterates over each pattern,
 and for each triple component that is not a variable, it will run it through its AMF.
@@ -386,28 +382,25 @@ If all checks on the other hand pass, the original BGP logic will be invoked,
 which will down the line invoke expensive HTTP requests.</p>
 
     <figure id="amf-bgp-pseudo" class="listing">
-<pre><code>function getBindings(triplePatterns, amfs) {
-</code><code>  for ((triplePattern, amf) in (triplePatterns, amfs))
+<pre><code>function getBindings(triplePatterns, context) {
+</code><code>  for ((triplePattern, amf) in (triplePatterns, context.amfs))
 </code><code>    for position in [&#39;subject&#39;, &#39;predicate&#39;, &#39;object&#39;]
 </code><code>      if ((!triplePattern[position].isVariable()
-</code><code>          &amp;&amp; !amf[position].filter(triplePattern.subject))
+</code><code>          &amp;&amp; !amf[position].contains(triplePattern.subject))
 </code><code>        return new EmptyStream();
-</code><code>  return super.getBindings(bgpPatterns, amfs);
+</code><code>  return super.getBindings(bgpPatterns, context);
 </code><code>}</code></pre>
 <figcaption>
         <p><span class="label">Listing 2:</span> BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.</p>
       </figcaption>
 </figure>
 
-    <p><span class="comment" data-author="RV">why suddenly multiple AMFs here?</span></p>
-
-    <p><span class="comment" data-author="RV"><code>super</code> probably doesn’t take an AMF, does it?</span></p>
-
     <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for Enabling the BGP Algorithm</h3>
 
     <p>While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
 it may lead to larger AMFs being downloaded, possibly incurring a larger HTTP overhead.
-In some cases, this cost may become too high if the number of bindings that needs to be tested is low.</p>
+In some cases, this cost may become too high if the number of bindings that needs to be tested is low,
+e.g. downloading an AMF of 10MB would be too costly when only a single binding needs to be tested.</p>
 
     <p>To cope with these cases, we introduce a heuristic in <a href="#amf-bgp-heuristic-pseudo">Listing 3</a>,
 that will estimate whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
@@ -420,12 +413,10 @@ In <a href="#evaluation">Section 6</a>, we will evaluate the effects for differ
 In future work, more exact heuristics should be investigated
 that take perform live profiling of HTTP requests and delays to avoid the need of these constants.</p>
 
-    <p><span class="comment" data-author="RV">more important is an intuitive idea of why/how the heuristic works</span></p>
-
     <figure id="amf-bgp-heuristic-pseudo" class="listing">
-<pre><code>function isBgpAmfEffective(bindingsCount, triplePatternCounts) {
-</code><code>  totalAmfsSize = triplePatternCounts.sum() * AMF_TRIPLE_SIZE;
-</code><code>  joinRequestData = (bindingsCount * triplePatternCounts.length)
+<pre><code>function preferAmfForBgp(bindingsCount, triplePatternMatches) {
+</code><code>  totalAmfsSize = triplePatternMatches.sum() * AMF_TRIPLE_SIZE;
+</code><code>  joinRequestData = (bindingsCount * triplePatternMatches.length)
 </code><code>      * TPF_BINDING_SIZE;
 </code><code>  return totalAmfsSize &lt; joinRequestData;
 </code><code>}</code></pre>
@@ -433,11 +424,6 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
         <p><span class="label">Listing 3:</span> Heuristic for checking if the BGP-based AMF algorithm should be executed.</p>
       </figcaption>
 </figure>
-
-    <p><span class="comment" data-author="RV">how about <code>preferAmfForBgp</code>?</span></p>
-
-    <p><span class="comment" data-author="RV">I don’t understand the inputs by their name</span>
-<span class="comment" data-author="RV">how about <code>triplePatternMatchCountss</code>?</span></p>
 
   </section>
 

@@ -1,8 +1,8 @@
-function getBindings(triplePatterns, amfs) {
-  for ((triplePattern, amf) in (triplePatterns, amfs))
+function getBindings(triplePatterns, context) {
+  for ((triplePattern, amf) in (triplePatterns, context.amfs))
     for position in ['subject', 'predicate', 'object']
       if ((!triplePattern[position].isVariable()
-          && !amf[position].filter(triplePattern.subject))
+          && !amf[position].contains(triplePattern.subject))
         return new EmptyStream();
-  return super.getBindings(bgpPatterns, amfs);
+  return super.getBindings(bgpPatterns, context);
 }

@@ -45,7 +45,7 @@ to reach lower query execution times, while keeping the server cost sufficiently
 <!-- Findings     -->
 Our results show that our alternative client-side algorithm significantly reduces
 both the number of HTTP requests and the query execution times
-without significantly increasing server load.
+with only a small increase in server load.
 <!-- Conclusion   -->
 We conclude that server-side caching and (partial) AMF pre-computation is essential,
 and translate these findings into concrete guidelines for data publishers
@@ -77,8 +77,13 @@ One such feature is <a property="schema:citation http://purl.org/spar/cito/cites
 Clients can detect AMFs in the response, and use it to reduce the required number
 of HTTP requests at the cost of increased query execution times.</p>
 
-    <p>The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
-and how this increase in query execution times can be mitigated.
+    <p>As querying with the server-friendly TPF approach
+is typically much slower than with SPARQL endpoints,
+there is a need to make TPF-based querying faster.
+We claim that AMF offers a way to achieve this
+without becoming too expensive for servers.
+The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
+and how its previously discovered increase in query execution times can be mitigated.
 Therefore, we extend the client-side algorithm from <span class="references">[<a href="#ref-3">3</a>]</span> to exploit AMF metadata
 earlier during query evaluation for speeding up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.</p>
@@ -92,7 +97,7 @@ and creating similar ones in the future.</p>
 
     <p>In the next section we cover the related work pertaining to this article.
 After that, we introduce our research questions and hypotheses in <a href="#problem-statement">Section 3</a>.
-Next, we introduce our client-side algorithms and server-side enchancements in <a href="#solution">Section 4</a>,
+Next, we introduce our client-side algorithms and server-side enhancements in <a href="#solution">Section 4</a>,
 and discuss their implementation in <a href="#implementation">Section 5</a>.
 In <a href="#evaluation">Section 6</a>, we introduce our experimental setup,
 present our results, and test our hypotheses.
@@ -768,8 +773,8 @@ High result count thresholds slow down query execution.</p>
 <img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 7:</span> Average server CPU usage when AMF result count thresholds increase does increases
-when caching is enabled, but not if caching is disabled.</p>
+        <p><span class="label">Fig. 7:</span> Average server CPU usage increases when AMF result count thresholds increase
+when caching is disabled, but much slower if caching is enabled.</p>
       </figcaption>
 </figure>
 
@@ -785,7 +790,10 @@ but it does not necessarily lower it. For this experiment, setting the threshold
     <p><a href="#plot_threshold_serverload">Fig. 7</a> shows that lower AMF result count thresholds lead to lower server loads
 when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>.
 On the other hand, if HTTP caching is enabled,
-there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).</p>
+there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).
+For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
+Furthermore, when looking at the raw HTTP logs,
+we observe that by always exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.</p>
 
     <h4 class="display-block" id="network-bandwidth">Network Bandwidth</h4>
 
@@ -884,9 +892,9 @@ On average, a false-positive probability of 1/64 leads to the lowest overall que
     <p>In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
 Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
-As results have shown, our client-side algorithms significantly reduce query execution times
-compared to the algorithm introduced by Vander Sande et al.
-Furthermore, we have shown that AMF metadata requires limited effort from servers.</p>
+As results have shown, our client-side algorithms make average query execution more than two times faster
+while only requiring 1/3rd the number of HTTP requests,
+at the cost of less than 10% more server CPU usage.</p>
 
     <p>We offer implementations of these algorithms and server enhancements,
 which means that it can be used by any of the existing data publishers

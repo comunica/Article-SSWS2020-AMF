@@ -9,7 +9,7 @@ such as Triple Pattern Fragments (TPF) with additional metadata
 can positively impact the client and/or server in terms of performance.
 <!-- Need         -->
 Specifically, Approximate Membership Filters (AMFs)
-—filters that are small and probabililistic—
+—filters that are small and probabilistic—
 were shown to reduce the number of HTTP requests,
 at the expense of increasing query execution times.
 <!-- Task         -->

@@ -213,6 +213,8 @@ for all variables in the requested triple patterns
 <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">considerably reduced the number of membership requests to a server</a> <span class="references">[<a href="#ref-3">3</a>]</span>.
 Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.
+In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
+the actual binary AMFs are included out-of-band behind a link in the metadata.
 Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives
@@ -296,20 +298,6 @@ However, there is still an open question as to what extent different rates have 
         <ol>
           <li id="hypo-bandwidth-1">HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.</li>
           <li id="hypo-bandwidth-2">HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
-        </ol>
-      </li>
-      <li id="question-inband"><strong>How is query throughput improved by adding AMF metadata out-of-band of TPF HTTP responses?</strong>
-<br />
-<span class="comment" data-author="RT">Pending deletion</span>
-In previous work, AMF metadata was always included in-band with the TPF response,
-which increased the size of these responses.
-This opens the question as to whether moving AMF metadata <em>out-of-band</em>
-behind a link that clients should follow would improve query performance.
-<br />
-<strong>Hypotheses:</strong>
-        <ol>
-          <li id="hypo-inband-1">Out-of-band AMF metadata speeds up client-side query evaluation.</li>
-          <li id="hypo-inband-2">Out-of-band AMF metadata increases the total amount of HTTP requests.</li>
         </ol>
       </li>
       <li id="question-probabilities"><strong>Which AMF <em>false-positive probabilities</em> achieve the best client-side query performance?</strong>
@@ -547,8 +535,6 @@ with each Docker container being limited to a one CPU core.</p>
  We disable the HTTP cache and warmup phase to evaluate a cold-start.</li>
       <li><strong>Network Bandwidths</strong>:
  Different network bandwidths (<em>256kbps, 512kbps, 2048kbps, 4096kbps</em>) are evaluated, and their effects or different AMF algorithms (<em>None, Triple, BGP Combined</em>) are tested.</li>
-      <li><strong>In-band vs. Out-of-band</strong>:
- For this experiment, we test the effects of different triple count thresholds (<em>0, 1.000, 10.000, 100.000, 1.000.000</em>) for exposing AMF metadata in-band or not.</li>
       <li><strong>False-positive Probabilities</strong>:
  In this final experiment, we compare different AMF false-positive probabilities (<em>1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2</em>).</li>
     </ol>
@@ -755,31 +741,6 @@ The BGP-level AMF algorithm on the other hand keeps becoming faster with increas
 We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (<em>p-values: 0.2905, 0.2306</em>), so we reject <a href="#hypo-bandwidth-1">Hypothesis 4.1</a>.
 For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), which accepts <a href="#hypo-bandwidth-2">Hypothesis 4.2</a>.</p>
 
-    <h4 class="display-block" id="in-band-vs-out-of-band">In-band vs. Out-of-band</h4>
-
-    <figure id="plot_in_vs_out_band">
-<center>
-<img src="img/experiments/in_vs_out_band/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c" />
-<img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
-</center>
-<figcaption>
-        <p><span class="label">Fig. 11:</span> Query evaluation times comparing out-of-band and in-band based on different
-AMF triple count threshold show no major differences.</p>
-      </figcaption>
-</figure>
-
-    <p><span class="comment" data-author="RT">Pending deletion</span></p>
-
-    <p><a href="#plot_in_vs_out_band">Fig. 11</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
-Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
-so we reject <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
-
-    <p>Furthermore, when analyzing the HTTP logs, we observe only a very decrease (&lt;1%) in the number of requests for in-band AMF metadata.
-As this difference is insignificant (<em>p-value: 0.406</em>), we need to reject <a href="#hypo-inband-2">Hypothesis 5.2</a>
-in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.</p>
-
-    <p><span class="comment" data-author="RV">mja, caching… probably not that interesting. should go.</span></p>
-
     <h4 class="display-block" id="false-positive-probabilities">False-positive Probabilities</h4>
 
     <figure id="plot_probabilities">
@@ -788,16 +749,16 @@ in which we expected the number of HTTP requests to significantly increase when 
 <img src="img/experiments/probabilities/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 12:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
+        <p><span class="label">Fig. 11:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
 Extremely low and high probabilities show a negative impact.</p>
       </figcaption>
 </figure>
 
     <p><span class="comment" data-author="RT">Pending deletion</span></p>
 
-    <p><a href="#plot_probabilities">Fig. 12</a> shows that different false-positive probabilities have some impact on query evaluation times.
+    <p><a href="#plot_probabilities">Fig. 11</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.184</em>).
-This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
+This means that we reject <a href="#hypo-probabilities-1">Hypothesis 5.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.</p>
 
@@ -834,7 +795,7 @@ but further research is needed to come up with a more general heuristic that wor
 
     <p>Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 the diefficiency values are typically also lower.
-The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen with query F3 in <a href="#plot_query_times_F3">Fig. 13</a>,
+The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen with query F3 in <a href="#plot_query_times_F3">Fig. 12</a>,
 and is observable for other queries as well.
 This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
 However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
@@ -852,7 +813,7 @@ lead to even more performance gains for the BGP-level algorithms (<em><a href="#
 <img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 13:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
+        <p><span class="label">Fig. 12:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
       </figcaption>
 </figure>
 
@@ -871,7 +832,7 @@ which means that AMF creation of size 10.000 takes only 0.125 seconds.
 As such, AMFs of size 10.000 or less can be created with acceptable durations for Web servers,
 after which they can still be cached.</p>
 
-    <p><a href="#plot_triple_pattern_counts">Fig. 14</a> shows that there is only a very small number of triple patterns with a very large number of matches.
+    <p><a href="#plot_triple_pattern_counts">Fig. 13</a> shows that there is only a very small number of triple patterns with a very large number of matches.
 When setting the WatDiv dataset to a size of 10M triples, there are only 90 triple patterns with a size larger than 10.000.
 Setting that size to 100M triples, this number increases to 255, so this is not a linear increase.
 Due to this low number of very large patterns, we can easily pre-compute these offline before dataset publication time.
@@ -883,7 +844,7 @@ As such, this behavior can be generalized to other datasets with a similar struc
 <img src="img/triple_pattern_counts/plot_counts.svg" alt="Triple pattern counts" class="plot_non_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 14:</span> Logarithmic plot of the number of matches for triple patterns in five datasets of varying sizes,
+        <p><span class="label">Fig. 13:</span> Logarithmic plot of the number of matches for triple patterns in five datasets of varying sizes,
 limited to the 1000 patterns with the most matches.
 Triple patterns are sorted by decreasing number of matches.</p>
       </figcaption>
@@ -898,14 +859,6 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.</p>
 
-    <h3 id="always-emit-amf-metadata-out-of-band">Always Emit AMF Metadata Out-of-band</h3>
-
-    <p>Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
-on query evaluation times and the total number of HTTP requests (<em><a href="#question-inband">Research Question 5</a></em>).
-However, as there may be clients that do no understand AMF metadata,
-there will be HTTP data transfer overhead when AMF metadata would be included in-band.
-For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.</p>
-
     <h3 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h3>
 
     <p>Lowering the false-positive probability of an AMF increases its size.
@@ -913,7 +866,7 @@ As we have seen that larger AMFs have an impact on query evaluation times,
 we do not want AMFs to become too large.
 On the other hand, we do not want the false-positive probabilities to become too low,
 as that leads to more unneeded HTTP requests.
-Our results have shown that a probability of 1/64 leads to an optimal trade-off for our experiments (<em><a href="#question-probabilities">Research Question 6</a></em>).
+Our results have shown that a probability of 1/64 leads to an optimal trade-off for our experiments (<em><a href="#question-probabilities">Research Question 5</a></em>).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.</p>
 
     <h3 id="recommendations">Recommendations</h3>
@@ -925,7 +878,6 @@ we offer the following guidelines for publishers that aim to use the AMF feature
       <li>Enable <strong>HTTP caching</strong> with a tool such as <a href="https://www.nginx.com/">NGINX</a>.</li>
       <li><strong>Pre-compute AMFs</strong>, or at least cache, AMFs of size 10.000 or higher.</li>
       <li>If AMFs can be cached, prefer <strong>Bloom filters</strong> over GCS.</li>
-      <li>Emit AMF metadata <strong>out-of-band</strong>.</li>
       <li>Use a false-positive <strong>probability of 1/64</strong>.</li>
     </ul>
 

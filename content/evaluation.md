@@ -141,17 +141,6 @@ BGP-based approaches are mostly faster.
 <span class=comment data-author=RV>make text bigger; graphs should be single-color fills, no outlines</span>
 <span class=comment data-author=RV>put some logic in the colors: none can be white-ish, BGPS and BGPC similar shades</span>
 
-<figure id="plot_skip_bgp_heuristic">
-<center>
-<img src="img/experiments/skip_bgp_heuristic/plot_no_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (non-C)" class="plot_non_c">
-<img src="img/experiments/skip_bgp_heuristic/plot_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (C)" class="plot_c">
-</center>
-<figcaption markdown="block">
-Query evaluation times when enabling the heuristic in the client-side combined BGP algorithm.
-The heuristic shows a slight improvement in most cases.
-</figcaption>
-</figure>
-
 <figure id="plot_client_algos_dief">
 <center>
 <img src="img/experiments/client_algos/dief_time.svg" alt="Diefficiency values for Client-side AMF Algorithms" class="plot_non_c">
@@ -181,14 +170,6 @@ which make them significantly faster (_p-values: 0.0090, 0.0041_)
 and confirms [Hypothesis 1.2](#hypo-combine-2).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
 has no statistically significant effect (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
-
-In [](#plot_skip_bgp_heuristic), we show the results where we apply the heuristic
-for dynamically disabling the BGP heuristic based on different parameter values.
-On average, setting the request size parameter value to 2000 has the lowest average evaluation time for this experiment.
-This case achieves lower evaluation times for 19 of the 20 queries,
-which is an improvement compared to not using the heuristic.
-This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
-<span class=comment data-author=RV>thought so; let's not do this?</span>
 
 [](#plot_client_algos_dief) shows the [time diefficiency metric](cite:cites diefficiency)
 values for all queries over all client-side algorithms.

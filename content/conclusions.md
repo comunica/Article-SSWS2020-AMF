@@ -22,8 +22,8 @@ Finally, we present our perspectives on future work.
 Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (_[Research Question 1](#question-combine)_).
 However, the are a few outliers where our new algorithms perform _worse_ than the triple-based algorithm.
-Our results have shown that a heuristic that can decide whether or not to use the BGP-based algorithm can solve this problem,
-but further research is needed to come up with a more general heuristic that works in a variety of cases.
+In the future, heuristical approaches that calculate the potential effectiveness of the BGP-based algorithm
+can be investigated to solve this problem.
 
 ### BGP-based Algorithms Postpone Time to First Results
 
@@ -118,7 +118,7 @@ we offer the following guidelines for publishers that aim to use the AMF feature
 
 Even though we answered many open questions regarding AMFs,
 there are a couple of new questions.
-First, we need further investigation on our heuristic for dynamically disabling the BGP-based AMF algorithm.
+First, we need investigation on ways to dynamically switch between different kinds of client-side AMF algorithms.
 Second, dynamically switching between algorithms may improve diefficiency,
 as the BGP-based algorithm postpones time until first result.
 Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web,

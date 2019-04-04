@@ -12,8 +12,6 @@ Finally, we introduce a heuristic that determines whether or not the BGP-based a
 that acts as a cheap pre-processing step for testing the membership of triples.
 This algorithm was used in combination with the streaming [client-side TPF algorithm](cite:cites ldf) for evaluating SPARQL queries.
 
-<span class="comment" data-author="RV">Up until now, I had the impression that there would be one AMF that took a triple pattern. But it's three (independent) position-based filters.</span>
-
 This algorithm can be seen in pseudo-code in [](#amf-triple-pseudo).
 Concretely, every triple pattern that has all of its variables resolved to constants
 is run through this function right before more a expensive HTTP request would be performed.

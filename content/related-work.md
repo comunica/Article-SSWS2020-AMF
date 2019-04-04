@@ -105,6 +105,7 @@ In the spirit of LDF,
 servers can combine multiple interface features
 to assist supporting clients with query evaluation.
 An interface feature with approximate membership metadata
+for all variables in the requested triple patterns
 [considerably reduced the number of membership requests to a server](cite:cites amf2015).
 Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.

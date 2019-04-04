@@ -22,7 +22,7 @@ is typically much slower than with SPARQL endpoints,
 there is a need to make TPF-based querying faster.
 We claim that AMF offers a way to achieve this
 without becoming too expensive for servers.
-The goal of this work is to gain a better understanding of how AMF interfacts with TPF,
+The goal of this work is to gain a better understanding of how AMF interacts with TPF,
 and how its previously discovered increase in query execution times can be mitigated.
 Therefore, we extend the client-side algorithm from [Vander Sande et al.](cite:cites amf2015) to exploit AMF metadata
 earlier during query evaluation for speeding up query execution.

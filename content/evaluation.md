@@ -3,7 +3,8 @@
 
 The goal of this section is to answer the research questions from [](#problem-statement).
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
-Next, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.
+Next, we briefly discuss the implementations of our algorithm.
+Finally, we present our experimental setup, followed by the presentation of our results and testing of our hypotheses.
 
 ### Reusable Benchmarking Framework
 
@@ -49,6 +50,32 @@ Concretely, Comunica Bencher offers abstraction of the following <a about="#eval
   For each experiment, plot the execution times for all combinations and queries next to each other.
 </li>
 </ol>
+
+### Implementation
+
+Anonymize source code links
+{:.todo}
+
+For implementing the client-side AMF algorithms,
+we make use of JavaScript-based [Comunica SPARQL querying framework](cite:cites comunica).
+Since Comunica already fully supports the TPF algorithm,
+we could implement our algorithms as fully standalone plugins.
+Our algorithms are implemented in separate Comunica modules,
+and are available open-source on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
+Concretely, we implemented the original triple-based AMF algorithm,
+our new BGP-based AMF algorithm,
+and a variant of this BGP-based algorithm that pre-fetches out-of-band AMFs in parallel.
+
+The original TPF server extension in [the LDF server software](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf){:.mandatory}
+by [Vander Sande et al.](cite:cites amf2015)
+allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
+To support our experiments, we extended this implementation with three new features.
+This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2){:.mandatory}.
+In order to measure the server overhead of large AMFs,
+we added a config option to dynamically enable AMFs for triple patterns
+with number of matching triples below a given threshold.
+Next to that, we implemented an optional file-based cache to avoid recomputing AMFs
+to make pre-computation of AMFs possible.
 
 ### Experimental Setup
 

@@ -61,19 +61,7 @@ Move granular hypotheses to evaluation section, and just keep the RQs here.
     **Hypotheses:**
     1. {:#hypo-bandwidth-1} HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.
     2. {:#hypo-bandwidth-2} HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.
-5. {:#question-inband}
-    **How is query throughput improved by adding AMF metadata out-of-band of TPF HTTP responses?**
-    <br />
-    <span class="comment" data-author="RT">Pending deletion</span>
-    In previous work, AMF metadata was always included in-band with the TPF response,
-    which increased the size of these responses.
-    This opens the question as to whether moving AMF metadata _out-of-band_
-    behind a link that clients should follow would improve query performance.
-    <br />
-    **Hypotheses:**
-    1. {:#hypo-inband-1} Out-of-band AMF metadata speeds up client-side query evaluation.
-    2. {:#hypo-inband-2} Out-of-band AMF metadata increases the total amount of HTTP requests.
-6. {:#question-probabilities}
+5. {:#question-probabilities}
     **Which AMF _false-positive probabilities_ achieve the best client-side query performance?**
     <br />
     <span class="comment" data-author="RV">Rather something about <q>how low can we go</q>?</span>

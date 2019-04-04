@@ -116,9 +116,7 @@ with each Docker container being limited to a one CPU core.
     We disable the HTTP cache and warmup phase to evaluate a cold-start.
 4. **Network Bandwidths**:
     Different network bandwidths (_256kbps, 512kbps, 2048kbps, 4096kbps_) are evaluated, and their effects or different AMF algorithms (_None, Triple, BGP Combined_) are tested.
-5. **In-band vs. Out-of-band**:
-    For this experiment, we test the effects of different triple count thresholds (_0, 1.000, 10.000, 100.000, 1.000.000_) for exposing AMF metadata in-band or not.
-6. **False-positive Probabilities**:
+5. **False-positive Probabilities**:
     In this final experiment, we compare different AMF false-positive probabilities (_1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2_).
 
 ### Results
@@ -327,32 +325,6 @@ The BGP-level AMF algorithm on the other hand keeps becoming faster with increas
 We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (_p-values: 0.2905, 0.2306_), so we reject [Hypothesis 4.1](#hypo-bandwidth-1).
 For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which accepts [Hypothesis 4.2](#hypo-bandwidth-2).
 
-#### In-band vs. Out-of-band
-{:.display-block}
-
-<figure id="plot_in_vs_out_band">
-<center>
-<img src="img/experiments/in_vs_out_band/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c">
-<img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c">
-</center>
-<figcaption markdown="block">
-Query evaluation times comparing out-of-band and in-band based on different
-AMF triple count threshold show no major differences.
-</figcaption>
-</figure>
-
-<span class="comment" data-author="RT">Pending deletion</span>
-
-[](#plot_in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
-Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
-so we reject [Hypothesis 5.1](#hypo-inband-1).
-
-Furthermore, when analyzing the HTTP logs, we observe only a very decrease (<1%) in the number of requests for in-band AMF metadata.
-As this difference is insignificant (_p-value: 0.406_), we need to reject [Hypothesis 5.2](#hypo-inband-2)
-in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.
-
-<span class="comment" data-author="RV">mja, caching… probably not that interesting. should go.</span>
-
 #### False-positive Probabilities
 {:.display-block}
 
@@ -371,6 +343,6 @@ Extremely low and high probabilities show a negative impact.
 
 [](#plot_probabilities) shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (_p-value: 0.184_).
-This means that we reject [Hypothesis 6.1](#hypo-probabilities-1)
+This means that we reject [Hypothesis 5.1](#hypo-probabilities-1)
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.

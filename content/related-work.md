@@ -109,6 +109,8 @@ for all variables in the requested triple patterns
 [considerably reduced the number of membership requests to a server](cite:cites amf2015).
 Client-side query engines can detect this AMF metadata,
 and use it test the membership of triples.
+In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
+the actual binary AMFs are included out-of-band behind a link in the metadata.
 Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives

@@ -16,13 +16,11 @@ In order to avoid re-inventing the wheel, and for future works in this domain,
 we developed a reusable benchmarking framework for Linked Data Fragments experiments, called _Comunica Bencher_.
 This tool is based on [Docker](https://www.docker.com/), and allows isolated execution of experiments over different containers.
 Experiment configurations are fully _declarative_, and they can exist in standalone repositories.
-In order to achieve deterministic reproducibility,
-a summary of all [used _software versions and their dependencies_ in a Turtle document](cite:cites lsd)
-<span class=comment data-author=RV>but that summary is enough to reproduce? name might be misleading, as a summary leaves out details</span>
+In order to share the conditions under which the experiment was executed,
+a list of all [used _software versions and their dependencies_ in a Turtle document](cite:cites lsd)
 will be generated after each run together with the evaluation results.
-<span class=comment data-author=RV>why not generate once and link to it?</span>
 Comunica Bencher is _open-source_, and is available on GitHub.
-<span class=comment data-author=RV>…thus making it fully reproducible</span>
+With this, our experiments are fully reproducible.
 
 Include link to anonymized source code dump.
 {:.todo}
@@ -70,11 +68,12 @@ and a query count of 5 for the default query templates, leading to a total of 10
 Each experiment includes a warmup phase,
 and averages results over 3 separate runs.
 During this warmup phase, the server caches all generated AMFs.
+For each query, we configured a timeout of 5 minutes.
 Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
 Finally, each experiment uses an NGINX HTTP cache,
 and the client-side query timeout has been set to 5 minutes.
-All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU.
-<span class=comment data-author=RV>specify the number of cores each component can use</span>
+All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
+with each Docker container being limited to a one CPU core.
 
 1. **Client-side AMF Algorithms**:
     First, we compare different client-side algorithms (_None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined_)
@@ -111,14 +110,12 @@ and report on their p-values (_low values indicate non-equal means_).
 <img src="img/experiments/client_algos/plot_c.svg" alt="Client-side AMF Algorithms (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times for the different client-side algorithms for using AMF metadata.
+Query evaluation times for the different client-side algorithms for using AMF metadata, lower is better.
+BGP-based approaches are mostly faster.
 </figcaption>
 </figure>
-<span class=comment data-author=RV>too small to read</span>
 <span class=comment data-author=RV>make text bigger; graphs should be single-color fills, no outlines</span>
 <span class=comment data-author=RV>put some logic in the colors: none can be white-ish, BGPS and BGPC similar shades</span>
-
-<span class=comment data-author=RV>mention timeout</span>
 
 <figure id="plot_skip_bgp_heuristic">
 <center>
@@ -127,20 +124,18 @@ Query evaluation times for the different client-side algorithms for using AMF me
 </center>
 <figcaption markdown="block">
 Query evaluation times when enabling the heuristic in the client-side combined BGP algorithm.
-<span class=comment data-author=RV>don't tell me what is there (the axes should do); tell me what I'm supposed to see. lower is better.</span>
+The heuristic shows a slight improvement in most cases.
 </figcaption>
 </figure>
-
-<span class=comment data-author=RV>need to test 5 kinds if all similar?</span>
 
 <figure id="plot_client_algos_dief">
 <center>
 <img src="img/experiments/client_algos/dief_time.svg" alt="Diefficiency values for Client-side AMF Algorithms" class="plot_non_c">
 </center>
 <figcaption markdown="block">
-Time diefficiency metric values for the different client-side algorithms for using AMF metadata.
-C3 and S7 are excluded as they <ins class=comment>(correctly)</ins> produce no results.
-<span class=comment data-author=RV>never? correct?</span>
+Time diefficiency metric values for the different client-side algorithms for using AMF metadata, higher is better.
+C3 and S7 are excluded as they fail to produce results for BGP-based approaches.
+BGP-based approaches start producing results later.
 </figcaption>
 </figure>
 
@@ -153,21 +148,20 @@ Only for 5 of the 20 queries, evaluation times are worse.
 Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
 By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.
 
-Based on these results, we can confirm that there is _no statistical difference_ between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (_p-value: 0.9318_).
-<span class=comment data-author=RV><q>no statistically _significant_ difference</q>?</span>
+Based on these results, we can confirm that there is _no statistically significant difference_ between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (_p-value: 0.9318_).
 The simple and combined BGP algorithm are significantly faster than not using AMF metadata (_p-values: 0.0062, 0.0026_),
 which confirms [Hypothesis 1.1](#hypo-combine-1).
-Furthermore, the simple and combined BGP algorithm are significantly faster than the triple-based algorithm (_p-values: 0.0090, 0.0041_),
-<span class=comment data-author=RV>how much faster on average?</span>
-which confirms [Hypothesis 1.2](#hypo-combine-2).
+Furthermore, the simple and combined BGP algorithm are on average
+more than twice as fast as the triple-based algorithm,
+which make them significantly faster (_p-values: 0.0090, 0.0041_)
+and confirms [Hypothesis 1.2](#hypo-combine-2).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
 has no statistically significant effect (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
 
 In [](#plot_skip_bgp_heuristic), we show the results where we apply the heuristic
 for dynamically disabling the BGP heuristic based on different parameter values.
 On average, setting the request size parameter value to 2000 has the lowest average evaluation time for this experiment.
-<span class=comment data-author=RV>significant?</span>
-This case only achieves higher evaluation times for 1 of the 20 queries,
+This case achieves lower evaluation times for 19 of the 20 queries,
 which is an improvement compared to not using the heuristic.
 This improvement is however only small, and not statistically significant (_p-value: 0.1842_).
 <span class=comment data-author=RV>thought so; let's not do this?</span>
@@ -180,8 +174,6 @@ For making comparisons possible, we scaled these values per query from 0 to 1.
 The results show that querying without using AMF metadata achieves the highest diefficiency values.
 This means that results start coming in sooner when AMF is not being used,
 even though the time until the last result is produced is typically higher compared to when AMF _is_ used.
-<span class=comment data-author=RV>so AMF is bad for streaming? that is… surprising. do we know why? (I see we have that futher down)</span>
-
 
 <span class=comment data-author=RV>These results might confuse reviewers, so we should consider carefully. although I like the discussion about it further down, it's interesting.</span>
 
@@ -195,6 +187,7 @@ even though the time until the last result is produced is typically higher compa
 </center>
 <figcaption markdown="block">
 Logarithmic query evaluation times comparing server-side HTTP and AMF caching.
+Not caching anything is always slower than caching HTTP responses or AMFs.
 </figcaption>
 </figure>
 
@@ -222,6 +215,7 @@ the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-
 </center>
 <figcaption markdown="block">
 Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is enabled.
+Low result count thresholds slow down query execution.
 </figcaption>
 </figure>
 
@@ -232,6 +226,7 @@ Query evaluation times for different AMF result count thresholds for different A
 </center>
 <figcaption markdown="block">
 Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is disabled.
+High result count thresholds slow down query execution.
 </figcaption>
 </figure>
 
@@ -240,7 +235,8 @@ Query evaluation times for different AMF result count thresholds for different A
 <img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c">
 </center>
 <figcaption markdown="block">
-Average server CPU usage for different AMF result count thresholds when caching is enabled and disabled.
+Average server CPU usage when AMF result count thresholds increase does increases
+when caching is enabled, but not if caching is disabled.
 </figcaption>
 </figure>
 
@@ -267,7 +263,8 @@ there is no correlation between AMF result count threshold and server CPU usage 
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of bandwidth on non-AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times for different bandwidths when AMF is not used.
+Query evaluation times when AMF is not used
+show a speedup with increased bandwidth.
 </figcaption>
 </figure>
 
@@ -277,7 +274,8 @@ Query evaluation times for different bandwidths when AMF is not used.
 <img src="img/experiments/delay/plot_triple_c.svg" alt="Effect of bandwidth on triple AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times for different bandwidths for the triple-based AMF algorithm.
+Query evaluation times for the triple-based AMF algorithm
+show a speedup with increased bandwidth.
 </figcaption>
 </figure>
 
@@ -287,7 +285,8 @@ Query evaluation times for different bandwidths for the triple-based AMF algorit
 <img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of bandwidth on BGP AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times for different bandwidths for the BGP-based AMF algorithm.
+Query evaluation times for the BGP-based AMF algorithm
+show a speedup with increased bandwidth.
 </figcaption>
 </figure>
 
@@ -308,7 +307,8 @@ For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which ac
 <img src="img/experiments/in_vs_out_band/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times comparing out-of-band and in-band based on different AMF triple count threshold.
+Query evaluation times comparing out-of-band and in-band based on different
+AMF triple count threshold show no major differences.
 </figcaption>
 </figure>
 
@@ -318,7 +318,7 @@ Query evaluation times comparing out-of-band and in-band based on different AMF 
 Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
 so we reject [Hypothesis 5.1](#hypo-inband-1).
 
-Furthermore, when analyzing the HTTP logs, we observe only a very <span class="comment phrasing">increase decrease</span> (<1%) in the difference in number of requests.
+Furthermore, when analyzing the HTTP logs, we observe only a very decrease (<1%) in the number of requests for in-band AMF metadata.
 As this difference is insignificant (_p-value: 0.406_), we need to reject [Hypothesis 5.2](#hypo-inband-2)
 in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.
 
@@ -334,6 +334,7 @@ in which we expected the number of HTTP requests to significantly increase when 
 </center>
 <figcaption markdown="block">
 Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
+Extremely low and high probabilities show a negative impact.
 </figcaption>
 </figure>
 
@@ -341,7 +342,7 @@ Query evaluation times comparing different false-positive probabilities for AMFs
 
 [](#plot_probabilities) shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (_p-value: 0.184_).
-This means that we can reject [Hypothesis 6.1](#hypo-probabilities-1)
+This means that we reject [Hypothesis 6.1](#hypo-probabilities-1)
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.
 

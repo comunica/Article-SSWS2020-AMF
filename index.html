@@ -338,14 +338,14 @@ their hypotheses will be tested in <a href="#evaluation">Section 6</a> based on
   </section>
 
   <section id="solution">
-    <h2>Client-side AMF algorithms</h2>
+    <h2>Client-side AMF Algorithms</h2>
 
     <p>In this section, we discuss the existing and new client-side algorithms that use AMF metadata.
 For the sake of completeness, we first discuss the original triple-based AMF algorithm.
 After that, we introduce our new BGP-based AMF algorithm.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.</p>
 
-    <h3 id="triple-based-amf-algorithm">Triple-based AMF algorithm</h3>
+    <h3 id="triple-based-amf-algorithm">Triple-based AMF Algorithm</h3>
 
     <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> introduced an algorithm
 that acts as a cheap pre-processing step for testing the membership of triples.
@@ -377,7 +377,7 @@ as a pre-filtering step for testing the membership of triples.</p>
 
     <p><span class="comment" data-author="RV"><code>super</code> probably doesn’t take an AMF, does it?</span></p>
 
-    <h3 id="bgp-based-amf-algorithm">BGP-based AMF algorithm</h3>
+    <h3 id="bgp-based-amf-algorithm">BGP-based AMF Algorithm</h3>
 
     <p>Following the idea of the triple-based algorithm,
 we introduce an extension that applies this concept for BGPs.
@@ -413,7 +413,7 @@ which will down the line invoke expensive HTTP requests.</p>
 
     <p><span class="comment" data-author="RV"><code>super</code> probably doesn’t take an AMF, does it?</span></p>
 
-    <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for enabling the BGP Algorithm</h3>
+    <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for Enabling the BGP Algorithm</h3>
 
     <p>While our BGP-based algorithm may filter out true negative bindings sooner than the the triple-based algorithm,
 it may lead to larger AMFs being downloaded, possibly incurring a larger HTTP overhead.
@@ -818,7 +818,7 @@ when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href
 On the other hand, if HTTP caching is enabled,
 there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).</p>
 
-    <h4 class="display-block" id="network-bandwidth">Network bandwidth</h4>
+    <h4 class="display-block" id="network-bandwidth">Network Bandwidth</h4>
 
     <figure id="plot_delay_none">
 <center>
@@ -905,7 +905,7 @@ On average, a false-positive probability of 1/64 leads to the lowest overall que
     <h3 id="discussion">Discussion</h3>
     <p><span class="comment" data-author="RV">to conclusion, and make current conclusion subsection <q>Recommendations</q>?</span></p>
 
-    <h4 id="bgp-based-algorithms-improve-query-efficiency">BGP-based algorithms improve query efficiency</h4>
+    <h4 id="bgp-based-algorithms-improve-query-efficiency">BGP-based Algorithms Improve Query Efficiency</h4>
 
     <p>Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (<em><a href="#question-combine">Research Question 1</a></em>).
@@ -915,7 +915,7 @@ but further research is needed to come up with a more general heuristic that wor
 and is not overfitted to these experiments.
 <span class="comment" data-author="RV">do we have evidence for overfitting?</span></p>
 
-    <h4 id="bgp-based-algorithms-postpone-time-to-first-results">BGP-based algorithms postpone time to first results</h4>
+    <h4 id="bgp-based-algorithms-postpone-time-to-first-results">BGP-based Algorithms Postpone Time to First Results</h4>
 
     <p>Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 the diefficiency values are typically also lower, which means that results come in at a lower rate.
@@ -940,7 +940,7 @@ lead to even more performance gains for the BGP-level algorithms (<em><a href="#
       </figcaption>
 </figure>
 
-    <h4 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and caching of AMFs is essential</h4>
+    <h4 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h4>
 
     <p>Our results show that AMF-aware querying only has a positive impact on query evaluation times
 if the server can deliver AMF filters sufficiently fast (<em><a href="#question-cache">Research Question 2</a></em>).
@@ -973,7 +973,7 @@ Triple patterns are sorted by decreasing number of matches.</p>
       </figcaption>
 </figure>
 
-    <h4 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom filters are preferred over GCS with active cache</h4>
+    <h4 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom Filters are Preferred over GCS with Active Cache</h4>
 
     <p>Results show that when AMFs are pre-computed,
 Bloom filters achieve faster query evaluation times than GCS (<em><a href="#question-cache">Research Question 2</a></em>).
@@ -982,7 +982,7 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.</p>
 
-    <h4 id="always-emit-amf-metadata-out-of-band">Always emit AMF metadata out-of-band</h4>
+    <h4 id="always-emit-amf-metadata-out-of-band">Always Emit AMF Metadata Out-of-band</h4>
 
     <p>Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
 on query evaluation times and the total number of HTTP requests (<em><a href="#question-inband">Research Question 5</a></em>).
@@ -990,7 +990,7 @@ However, as there may be clients that do no understand AMF metadata,
 there will be HTTP data transfer overhead when AMF metadata would be included in-band.
 For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.</p>
 
-    <h4 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A good trade-off between false-positive probabilities and AMF size</h4>
+    <h4 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h4>
 
     <p>Lowering the false-positive probability of an AMF increases its size.
 As we have seen that larger AMFs have an impact on query evaluation times,

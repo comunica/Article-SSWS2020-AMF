@@ -3,7 +3,7 @@
 
 Over the recent years, different kinds of [Linked Data Fragments (LDF) interfaces](cite:cites ldf) have been introduced
 as ways to publish Linked Data on the Web,
-with the [Triple Pattern Fragments (TPF) interface](cite:cites ldf) interface 
+with the [Triple Pattern Fragments (TPF) interface](cite:cites ldf)  
 as a trade-off between server load and client-side querying effort.
 The server interface is restricted to triple-pattern queries,
 so that all remaining elements of SPARQL queries have to be evaluated client-side.

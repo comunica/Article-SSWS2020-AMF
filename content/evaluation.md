@@ -158,8 +158,7 @@ Query evaluation times for the different client-side algorithms for using AMF me
 BGP-based approaches are mostly faster.
 </figcaption>
 </figure>
-<span class=comment data-author=RV>make text bigger; graphs should be single-color fills, no outlines</span>
-<span class=comment data-author=RV>put some logic in the colors: none can be white-ish, BGPS and BGPC similar shades</span>
+<span class=comment data-author=RV>graphs should be single-color fills, no outlines</span>
 
 <figure id="plot_client_algos_dief">
 <center>

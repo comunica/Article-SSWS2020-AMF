@@ -437,10 +437,6 @@ and the client-side query timeout was 5 minutes.
 All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
 each Docker container was limited to one CPU core.</p>
 
-    <p><span class="comment" data-author="MVS">
-Refer back to RQ here
-</span></p>
-
     <ol>
       <li><strong>Client-side AMF Algorithms</strong>:
  First, we compare different client-side algorithms (<em>None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined</em>)
@@ -553,6 +549,9 @@ has no statistically significant effect (<em>p-values: 0.9484, 0.6689</em>), whi
 
     <p><a href="#plot_client_algos_dief">Fig. 2</a> shows the <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf">time diefficiency metric</a> <span class="references">[<a href="#ref-21">21</a>]</span>
 values for all queries over all client-side algorithms.
+For the metric’s parameter <code>t</code>,
+we picked the minimum execution time registered for each respective query,
+as exemplified by <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf">Acosta et al</a> <span class="references">[<a href="#ref-21">21</a>]</span>.
 This metric is used to measure the continuous arrival rate of query results,
 where higher values indicate faster result arrival rates.
 For making comparisons possible, we scaled these values per query from 0 to 1.

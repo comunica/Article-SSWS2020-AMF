@@ -225,10 +225,14 @@ We observe that caching HTTP requests reduces query evaluation times _more_ than
 which conforms [Hypothesis 2.1](#hypo-cache-1).
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
 compared to just caching HTTP requests (_p-value: 0.7694_), so we accept [Hypothesis 2.2](#hypo-cache-2).
+This shows that an HTTP cache achieves the best results,
+and additionally caching AMF filters server-side is not worth the effort.
 
 If we compare these results with the results for non-AMF-aware querying,
 we see that if HTTP caching is _disabled_, query evaluation times for non-AMF-aware querying are _significantly lower_ than AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.3](#hypo-cache-3).
 On the other hand, if HTTP caching is _enabled_, query evaluation times for non-AMF-aware querying are _significantly worse_ than with AMF-aware approaches (_p-value: < 0.0001_), which confirms [Hypothesis 2.4](#hypo-cache-4).
+While caching is already very important for TPF-based querying,
+these results show that caching becomes _even more important_ when AMFs are being used.
 
 Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
@@ -274,15 +278,20 @@ lead to higher query evaluation times when HTTP caching is enabled (_p-value: < 
 which confirms [Hypothesis 3.1](#hypo-dynamic-restriction-1).
 [](#plot_server_metadata_enabled_notcached) shows that AMF result count thresholds
 also have an impact on query evaluation times when HTTP caching is disabled (_p-value: 0.0005_),
-but it does not necessarily lower it. For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.
+but it does not necessarily lower it.
+For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.
 
 [](#plot_threshold_serverload) shows that lower AMF result count thresholds lead to lower server loads
 when HTTP caching is disabled (_p-value: 0.0326_), which confirms [Hypothesis 3.2](#hypo-dynamic-restriction-2).
 On the other hand, if HTTP caching is enabled,
 there is no correlation between AMF result count threshold and server CPU usage (_p-value: 0.4577_), which confirms [Hypothesis 3.3](#hypo-dynamic-restriction-3)).
+This shows that if caching is enabled, result count threshold is not significantly important,
+and may therefore be disabled to always expose AMFs.
+
 For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
 Furthermore, when looking at the raw HTTP logs,
-we observe that by always exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
+we observe that by _always_ exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
+As such, AMFs significantly reduce the number of required HTTP requests.
 
 #### Network Bandwidth
 {:.display-block}
@@ -327,6 +336,8 @@ lower bandwidths lead to higher query evaluation times, but higher bandwidths do
 The BGP-level AMF algorithm on the other hand keeps becoming faster with increasing bandwidths.
 We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (_p-values: 0.2905, 0.2306_), so we reject [Hypothesis 4.1](#hypo-bandwidth-1).
 For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which accepts [Hypothesis 4.2](#hypo-bandwidth-2).
+This shows that _if_ BGP-level AMF is used,
+then higher bandwidths can be exploited _more_ for faster query evaluation.
 
 #### False-positive Probabilities
 {:.display-block}

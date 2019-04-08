@@ -97,10 +97,6 @@ and the client-side query timeout was 5 minutes.
 All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
 each Docker container was limited to one CPU core.
 
-<span class=comment data-author=MVS>
-Refer back to RQ here
-</span>
-
 1. **Client-side AMF Algorithms**:
     First, we compare different client-side algorithms (_None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined_)
     for using AMF metadata.

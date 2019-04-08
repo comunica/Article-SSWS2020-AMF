@@ -193,6 +193,9 @@ has no statistically significant effect (_p-values: 0.9484, 0.6689_), which conf
 
 [](#plot_client_algos_dief) shows the [time diefficiency metric](cite:cites diefficiency)
 values for all queries over all client-side algorithms.
+For the metric's parameter `t`,
+we picked the minimum execution time registered for each respective query,
+as exemplified by [Acosta et al](cite:cites diefficiency).
 This metric is used to measure the continuous arrival rate of query results,
 where higher values indicate faster result arrival rates.
 For making comparisons possible, we scaled these values per query from 0 to 1.

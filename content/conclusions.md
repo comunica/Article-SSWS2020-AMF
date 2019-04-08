@@ -28,10 +28,11 @@ can be investigated to solve this problem.
 ### BGP-based Algorithms Postpone Time to First Results
 
 Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
-the diefficiency values are typically also lower.
-The reason for this can be seen when analyzing the times at which each query result arrives, as can be seen with query F3 in [](#plot_query_times_F3),
+we observe that the time-until-first-result is mostly higher.
+The reason for this can be seen when analyzing the times at which each query result arrives,
+as can be seen with query F3 in [](#plot_query_times_F3),
 and is observable for other queries as well.
-This figure shows that the time-until-first-result is higher for BGP-based AMF algorithms.
+This figure shows that the time-until-first-result is the highest for BGP-based AMF algorithms.
 However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
 The reason for this is that the BGP-based algorithms tends to use larger AMFs,
 which introduces a bottleneck when requesting them over HTTP.
@@ -40,7 +41,8 @@ as results come in much faster once the AMFs have been downloaded.
 This figure shows that dynamically switching between different algorithms may be interesting to investigate in future work.
 Our bandwidth experiment results confirm this, and show that higher bandwidths
 lead to even more performance gains for the BGP-level algorithms (_[Research Question 4](#question-bandwidth)_).
-<span class="comment" data-author="RV"><em>very</em> well-made point. Although I now start to doubt the point of the diefficiency metric; it just considers those 0.5 where "None" has some results? That's a very harsh punishment for being a twice as late but two times as fast. Would be very different if all results arrived at second 2, but the curve is still nice. What a silly metric. But weren't there multiple dieff values in the original paper?</span>
+This _continuous efficiency_ can be investigated further in the future
+using metrics such as [_diefficiency_](cite:cites diefficiency).
 
 <figure id="plot_query_times_F3">
 <center>

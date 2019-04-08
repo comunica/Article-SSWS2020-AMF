@@ -160,17 +160,6 @@ BGP-based approaches are mostly faster.
 </figure>
 <span class=comment data-author=RV>graphs should be single-color fills, no outlines</span>
 
-<figure id="plot_client_algos_dief">
-<center>
-<img src="img/experiments/client_algos/dief_time.svg" alt="Diefficiency values for Client-side AMF Algorithms" class="plot_non_c">
-</center>
-<figcaption markdown="block">
-Time diefficiency metric values for the different client-side algorithms for using AMF metadata, higher is better.
-C3 and S7 are excluded as they fail to produce results for BGP-based approaches.
-BGP-based approaches start producing results later.
-</figcaption>
-</figure>
-
 [](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
@@ -189,20 +178,6 @@ which make them significantly faster (_p-values: 0.0090, 0.0041_)
 and confirms [Hypothesis 1.2](#hypo-combine-2).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
 has no statistically significant effect (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
-
-[](#plot_client_algos_dief) shows the [time diefficiency metric](cite:cites diefficiency)
-values for all queries over all client-side algorithms.
-For the metric's parameter `t`,
-we picked the minimum execution time registered for each respective query,
-as exemplified by [Acosta et al](cite:cites diefficiency).
-This metric is used to measure the continuous arrival rate of query results,
-where higher values indicate faster result arrival rates.
-For making comparisons possible, we scaled these values per query from 0 to 1.
-The results show that querying without using AMF metadata achieves the highest diefficiency values.
-This means that results start coming in sooner when AMF is not being used,
-even though the time until the last result is produced is typically higher compared to when AMF _is_ used.
-
-<span class=comment data-author=RV>These results might confuse reviewers, so we should consider carefully. although I like the discussion about it further down, it's interesting.</span>
 
 #### Caching
 {:.display-block}

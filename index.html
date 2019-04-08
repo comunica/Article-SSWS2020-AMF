@@ -579,11 +579,15 @@ Not caching anything is always slower than caching HTTP responses or AMFs.</p>
 We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>),
 which conforms <a href="#hypo-cache-1">Hypothesis 2.1</a>.
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
-compared to just caching HTTP requests (<em>p-value: 0.7694</em>), so we accept <a href="#hypo-cache-2">Hypothesis 2.2</a>.</p>
+compared to just caching HTTP requests (<em>p-value: 0.7694</em>), so we accept <a href="#hypo-cache-2">Hypothesis 2.2</a>.
+This shows that an HTTP cache achieves the best results,
+and additionally caching AMF filters server-side is not worth the effort.</p>
 
     <p>If we compare these results with the results for non-AMF-aware querying,
 we see that if HTTP caching is <em>disabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly lower</em> than AMF-aware approaches (<em>p-value: &lt; 2.2e-16</em>), which confirms <a href="#hypo-cache-3">Hypothesis 2.3</a>.
-On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 2.2e-16</em>), which confirms <a href="#hypo-cache-4">Hypothesis 2.4</a>.</p>
+On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 0.0001</em>), which confirms <a href="#hypo-cache-4">Hypothesis 2.4</a>.
+While caching is already very important for TPF-based querying,
+these results show that caching becomes <em>even more important</em> when AMFs are being used.</p>
 
     <p>Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
@@ -624,19 +628,24 @@ when caching is disabled, but much slower if caching is enabled.</p>
 </figure>
 
     <p><a href="#plot_server_metadata_enabled_cached">Fig. 4</a> shows lower AMF result count thresholds
-lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: 2.11e-07</em>),
+lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: &lt; 0.0001</em>),
 which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
 <a href="#plot_server_metadata_enabled_notcached">Fig. 5</a> shows that AMF result count thresholds
 also have an impact on query evaluation times when HTTP caching is disabled (<em>p-value: 0.0005</em>),
-but it does not necessarily lower it. For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.</p>
+but it does not necessarily lower it.
+For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.</p>
 
     <p><a href="#plot_threshold_serverload">Fig. 6</a> shows that lower AMF result count thresholds lead to lower server loads
 when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>.
 On the other hand, if HTTP caching is enabled,
 there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).
-For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
+This shows that if caching is enabled, result count threshold is not significantly important,
+and may therefore be disabled to always expose AMFs.</p>
+
+    <p>For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
 Furthermore, when looking at the raw HTTP logs,
-we observe that by always exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.</p>
+we observe that by <em>always</em> exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
+As such, AMFs significantly reduce the number of required HTTP requests.</p>
 
     <h4 class="display-block" id="network-bandwidth">Network Bandwidth</h4>
 
@@ -679,7 +688,9 @@ We observe that when not using AMF, or using the triple-level AMF algorithm,
 lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.
 The BGP-level AMF algorithm on the other hand keeps becoming faster with increasing bandwidths.
 We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (<em>p-values: 0.2905, 0.2306</em>), so we reject <a href="#hypo-bandwidth-1">Hypothesis 4.1</a>.
-For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), which accepts <a href="#hypo-bandwidth-2">Hypothesis 4.2</a>.</p>
+For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), which accepts <a href="#hypo-bandwidth-2">Hypothesis 4.2</a>.
+This shows that <em>if</em> BGP-level AMF is used,
+then higher bandwidths can be exploited <em>more</em> for faster query evaluation.</p>
 
     <h4 class="display-block" id="false-positive-probabilities">False-positive Probabilities</h4>
 
@@ -695,7 +706,7 @@ Extremely low and high probabilities show a negative impact.</p>
 </figure>
 
     <p><a href="#plot_probabilities">Fig. 10</a> shows that different false-positive probabilities have some impact on query evaluation times.
-This impact has however only has a weak significance (<em>p-value: 0.184</em>).
+This impact has however only has a weak significance (<em>p-value: 0.1840</em>).
 This means that we reject <a href="#hypo-probabilities-1">Hypothesis 5.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.</p>

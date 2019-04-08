@@ -228,7 +228,7 @@ compared to just caching HTTP requests (_p-value: 0.7694_), so we accept [Hypoth
 
 If we compare these results with the results for non-AMF-aware querying,
 we see that if HTTP caching is _disabled_, query evaluation times for non-AMF-aware querying are _significantly lower_ than AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.3](#hypo-cache-3).
-On the other hand, if HTTP caching is _enabled_, query evaluation times for non-AMF-aware querying are _significantly worse_ than with AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.4](#hypo-cache-4).
+On the other hand, if HTTP caching is _enabled_, query evaluation times for non-AMF-aware querying are _significantly worse_ than with AMF-aware approaches (_p-value: < 0.0001_), which confirms [Hypothesis 2.4](#hypo-cache-4).
 
 Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
@@ -270,7 +270,7 @@ when caching is disabled, but much slower if caching is enabled.
 </figure>
 
 [](#plot_server_metadata_enabled_cached) shows lower AMF result count thresholds
-lead to higher query evaluation times when HTTP caching is enabled (_p-value: 2.11e-07_),
+lead to higher query evaluation times when HTTP caching is enabled (_p-value: < 0.0001_),
 which confirms [Hypothesis 3.1](#hypo-dynamic-restriction-1).
 [](#plot_server_metadata_enabled_notcached) shows that AMF result count thresholds
 also have an impact on query evaluation times when HTTP caching is disabled (_p-value: 0.0005_),
@@ -343,7 +343,7 @@ Extremely low and high probabilities show a negative impact.
 </figure>
 
 [](#plot_probabilities) shows that different false-positive probabilities have some impact on query evaluation times.
-This impact has however only has a weak significance (_p-value: 0.184_).
+This impact has however only has a weak significance (_p-value: 0.1840_).
 This means that we reject [Hypothesis 5.1](#hypo-probabilities-1)
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.

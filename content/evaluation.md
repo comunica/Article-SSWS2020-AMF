@@ -1,9 +1,6 @@
 ## Evaluation
 {:#evaluation}
 
-Include in ZIP: bencher, AMF modules, Server impl, AMF experiments
-{:.todo}
-
 The goal of this section is to answer the research questions from [](#problem-statement).
 We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
 Next, we briefly discuss the implementations of our algorithm.

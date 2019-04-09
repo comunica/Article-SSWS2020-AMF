@@ -31,29 +31,16 @@ can be investigated to solve this problem.
 
 Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 we observe that the time-until-first-result is mostly higher.
-The reason for this can be seen when analyzing the times at which each query result arrives,
-as can be seen with query F3 in [](#plot_query_times_F3),
-and is observable for other queries as well.
-This figure shows that the time-until-first-result is the highest for BGP-based AMF algorithms.
-However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
 The reason for this is that the BGP-based algorithms tends to use larger AMFs,
 which introduces a bottleneck when requesting them over HTTP.
 Even though we have this overhead, the gains we get from this are typically worth it,
 as results come in much faster once the AMFs have been downloaded.
-This figure shows that dynamically switching between different algorithms may be interesting to investigate in future work.
-Our bandwidth experiment results confirm this, and show that higher bandwidths
-lead to even more performance gains for the BGP-level algorithms (_[Research Question 4](#question-bandwidth)_).
+This finding shows that dynamically switching between different algorithms may be interesting to investigate in future work.
+Our bandwidth experiment results confirm this bandwidth bottleneck when downloading large AMFs,
+and show that higher bandwidths lead to even more performance gains
+for the BGP-level algorithms (_[Research Question 4](#question-bandwidth)_).
 This _continuous efficiency_ can be investigated further in the future
 using metrics such as [_diefficiency_](cite:cites diefficiency).
-
-<figure id="plot_query_times_F3">
-<center>
-<img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c">
-</center>
-<figcaption markdown="block">
-Query result arrival times for query F3 for the different client-side algorithms.
-</figcaption>
-</figure>
 
 ### Pre-computation and Caching of AMFs is Essential
 

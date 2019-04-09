@@ -158,15 +158,30 @@ BGP-based approaches are mostly faster.
 </figcaption>
 </figure>
 
+<figure id="plot_query_times_F3">
+<center>
+<img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c">
+</center>
+<figcaption markdown="block">
+Query result arrival times for query F3 for the different client-side algorithms.
+</figcaption>
+</figure>
+
 [](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
-Only for 5 of the 20 queries, evaluation times are worse,
-which is caused by increased download times for large AMFs.
+Only for 5 of the 20 queries, evaluation times are worse.
 Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
 By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.
+
+As an example, [](#plot_query_times_F3) shows the query result arrival times for query F3,
+and is similar to the arrival times for other queries.
+This figure shows that the time-until-first-result is the highest for BGP-based AMF algorithms.
+However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
+This delay for the BGP-based algorithms is caused by the higher download times for large AMFs,
+and explains the higher overall evaluation times for 5 of the 20 queries.
 
 Based on these results, we can confirm that there is _no statistically significant difference_ between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (_p-value: 0.9318_).
 The simple and combined BGP algorithm are significantly faster than not using AMF metadata (_p-values: 0.0062, 0.0026_),

@@ -9,9 +9,10 @@ and mitigate the drawback of increased query execution times.
 We list these as research questions:
 
 1. {:#question-combine}
-    **Can query execution time be lowered by combining triple pattern AMFs client-side on larger BGPs?**
+    **Can query execution time be lowered by combining triple pattern AMFs client-side on larger Basic Graph Patterns (BGPs)?**
     <br />
-    Earlier work focused on using AMF metadata to test the membership of fully materialized triples,
+    Earlier work focused on using AMF metadata from triple pattern queries
+    to test the membership of fully materialized triples,
     while there is potential for exploiting this for other types of patterns in the query as well.
     For instance, combining multiple AMFs at BGP-level
     by applying AMFs on triple patterns with shared variables.
@@ -30,12 +31,12 @@ We list these as research questions:
 4. {:#question-bandwidth}
     **How does network bandwidth impact query performance with AMFs?**
     <br />
-    In experiments from earlier work on AMF, the HTTP bandwidth was set to a realistic 1Mbps.
+    In experiments by Vander Sande et al., the HTTP bandwidth was set to a realistic 1Mbps.
     However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
 5. {:#question-probabilities}
     **How low can AMF false-positive probabilities become to still achieve decent client-side query performance?**
     <br />
-    Based on the results the previous authors have suggested that additional experimentation is needed with regards
+    Based on their results, Vander Sande et al. have suggested that additional experimentation is needed with regards
     to lower _AMF false-positive probabilities_, as higher probabilities did not have a significant effect on query performance.
 
 To come up with an answer to these research questions,

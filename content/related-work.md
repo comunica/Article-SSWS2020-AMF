@@ -23,16 +23,14 @@ as a trade-off between those extremes,
 by restricting the server interface to triple pattern queries,
 and leaving the remainder of SPARQL query evaluation to the client.
 
-By default, this client-side algorithm is greedy,
-<span class="remark" data-author="RV">there is no real default (in the scientific sense);
-perhaps <q>a straightforward algorithm</q></span>
+The client-side algorithm that is often used in implementations is _greedy_,
 and always chooses one pattern based on the lowest estimated number of matches,
 and recursively applies its bindings to the remaining patterns.
 While this achieves decent performance in some cases,
 it can sometimes lead to inefficient query plans.
 Combined with the fact that TPF returns it results in a paginated fashion,
-the number of HTTP requests is forms the primary bottleneck during query evaluation.
-Several enhancements have been proposed to the default TPF implementation
+the number of HTTP requests forms the primary bottleneck during query evaluation.
+Several enhancements have been proposed to this greedy algorithm
 in an attempt to reduce the number of those requests,
 such as different [query algorithms](cite:cites tpfoptimization, acosta_iswc_2015),
 and [restricting the request patterns to intermediary bindings](cite:cites brtpf),
@@ -104,11 +102,11 @@ which indicates that optimizing membership queries can have a positive effect on
 In the spirit of LDF,
 servers can combine multiple interface features
 to assist supporting clients with query evaluation.
-An interface feature with approximate membership metadata
-for all variables in the requested triple patterns
+An interface feature with _approximate membership metadata_
+for all variables in the requested _triple patterns_
 [considerably reduced the number of membership requests to a server](cite:cites amf2015).
 Client-side query engines can detect this AMF metadata,
-and use it test the membership of triples.
+and use it to test the membership of triples.
 In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
 the actual binary AMFs are included out-of-band behind a link in the metadata.
 Clients can skip many membership requests by ruling out true negatives

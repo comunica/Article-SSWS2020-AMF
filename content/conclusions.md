@@ -3,13 +3,13 @@
 
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
-Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
+Thanks to our newly introduced benchmarking framework, our experiments are fully and easily reproducible.
 As results have shown, our client-side algorithms make average query execution more than two times faster
 while only requiring 1/3rd the number of HTTP requests,
 at the cost of less than 10% more server CPU usage.
 
 We offer implementations of these algorithms and server enhancements,
-which means that it can be used by any of the existing data publishers
+which means that they can be used by any of the existing data publishers
 that are exposing their data through a TPF interface,
 or any client that aims to query from them.
 
@@ -45,7 +45,8 @@ using metrics such as [_diefficiency_](cite:cites diefficiency).
 ### Pre-computation and Caching of AMFs is Essential
 
 Our results show that AMF-aware querying only has a positive impact on query evaluation times
-if the server can deliver AMF filters sufficiently fast (_[Research Question 2](#question-cache)_).
+if the server can deliver AMF filters sufficiently fast (_[Research Question 2](#question-cache)_)
+by for example caching them.
 Furthermore, if no cache is active, AMF-aware querying performs _worse_ than non-AMF-aware querying.
 Ideally, all AMFs should be pre-computed, but due to the large number of possible triple patterns in a dataset,
 this is not feasible.
@@ -91,7 +92,7 @@ As we have seen that larger AMFs have an impact on query evaluation times,
 we do not want AMFs to become too large.
 On the other hand, we do not want the false-positive probabilities to become too low,
 as that leads to more unneeded HTTP requests.
-Our results have shown that a probability of 1/64 leads to an optimal trade-off for our experiments (_[Research Question 5](#question-probabilities)_).
+Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (_[Research Question 5](#question-probabilities)_).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.
 
 ### Recommendations
@@ -110,8 +111,8 @@ we offer the following guidelines for publishers that aim to use the AMF feature
 Even though we answered many open questions regarding AMFs,
 there are a couple of new questions.
 First, we need investigation on ways to dynamically switch between different kinds of client-side AMF algorithms.
-Second, dynamically switching between algorithms may improve diefficiency,
-as the BGP-based algorithm postpones time until first result.
+Second, dynamically switching between algorithms may reduce time-until-first-result,
+as our BGP-based algorithm increases as a side-effect.
 Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web,
 investigation of AMFs in the context of federated querying is needed,
 which is not trivial, as filters of multiple sources may need to be combined.

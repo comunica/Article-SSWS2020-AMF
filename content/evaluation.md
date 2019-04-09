@@ -135,6 +135,10 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
     **Hypotheses:**
     1. {:#hypo-probabilities-1} Lower probabilities lead to faster client-side query execution.
 
+<br class='printonly' />
+<br class='printonly' />
+<br class='printonly' />
+
 ### Results
 
 In this section, we present the results for each of our experiments separately.
@@ -250,7 +254,7 @@ High result count thresholds slow down query execution.
 
 <figure id="plot_threshold_serverload">
 <center>
-<img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c">
+<img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c" style="width: 18em !important;">
 </center>
 <figcaption markdown="block">
 Average server CPU usage increases when AMF result count thresholds increase
@@ -277,10 +281,7 @@ and may therefore be disabled to always expose AMFs.
 For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
 Furthermore, when looking at the raw HTTP logs,
 we observe that by _always_ exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
-As such, AMFs significantly reduce the number of required HTTP requests at the cost of a ~10% increase in server load.
-
-#### Network Bandwidth
-{:.display-block}
+As such, AMFs significantly reduce the number of HTTP requests at the cost of ~10% more server load.
 
 <figure id="plot_delay_none">
 <center>
@@ -311,6 +312,9 @@ When the triple-based AMF algorithm is used, query evaluation times decrease wit
 When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.
 </figcaption>
 </figure>
+
+#### Network Bandwidth
+{:.display-block}
 
 [](#plot_delay_none), [](#plot_delay_triple) and [](#plot_delay_bgp) show the effects of different bandwidths
 on query evaluation times over different algorithms.

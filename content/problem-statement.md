@@ -12,7 +12,7 @@ We list these as research questions:
     **Can query execution time be lowered by combining triple pattern AMFs client-side on larger Basic Graph Patterns (BGPs)?**
     <br />
     Earlier work focused on using AMF metadata from triple pattern queries
-    to test the membership of fully materialized triples,
+    to test the membership of materialized triples,
     while there is potential for exploiting this for other types of patterns in the query as well.
     For instance, combining multiple AMFs at BGP-level
     by applying AMFs on triple patterns with shared variables.

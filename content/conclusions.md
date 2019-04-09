@@ -1,6 +1,9 @@
 ## Conclusions
 {:#conclusions}
 
+MVS: showing new results/charts in the conclusion is a big no no. We have move these parts.
+{:.todo}
+
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
 Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.

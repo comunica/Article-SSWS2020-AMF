@@ -23,7 +23,7 @@ Experiment configurations are fully _declarative_, and they can exist in standal
 In order to share the conditions under which the experiment was executed,
 a list of all [used _software versions and their dependencies_ in a Turtle document](cite:cites lsd)
 will be generated after each run together with the evaluation results.
-Comunica Bencher is _open-source_, and is available on [GitHub](https://github.com/comunica/comunica-bencher).
+Comunica Bencher is _open-source_, and will be available on GitHub.
 With this, our experiments are fully reproducible.
 
 Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">workflow</a>:
@@ -59,7 +59,7 @@ we make use of JavaScript-based [Comunica SPARQL querying framework](cite:cites 
 Since Comunica already fully supports the TPF algorithm,
 we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
-and are available open-source on [GitHub](https://github.com/comunica/comunica-feature-amf).
+and will be available open-source on GitHub.
 Concretely, we implemented the original triple-based AMF algorithm,
 our new BGP-based AMF algorithm (_BGP Simple_),
 and a variant of this BGP-based algorithm (_BGP Combined_) that pre-fetches out-of-band AMFs in parallel.
@@ -68,7 +68,7 @@ The original TPF server extension in [the LDF server software](https://github.co
 by [Vander Sande et al.](cite:cites amf2015)
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 To support our experiments, we extended this implementation with new features.
-This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2).
+This implementation will be available on GitHub.
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given result count threshold.
@@ -80,7 +80,7 @@ to make pre-computation of AMFs possible.
 Based on our LDF server and Comunica implementations that were discussed in [](#implementation),
 we defined five experiments, corresponding to our five research questions from [](#problem-statement).
 For each experiment, we introduce hypotheses that will be statistically tested based on our results.
-The declararive configuration files for running these experiments with Comunica Bencher are present on [GitHub](https://github.com/comunica/Experiments-AMF) under an open license,
+The declararive configuration files for running these experiments with Comunica Bencher will be present on GitHub under an open license,
 and can be started from scratch by _executing a single command_.
 Furthermore, all raw results and scripts for analyzing them can be found in this same repository.
 

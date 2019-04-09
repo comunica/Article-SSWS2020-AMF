@@ -84,18 +84,15 @@ The declararive configuration files for running these experiments with Comunica 
 and can be started from scratch by _executing a single command_.
 Furthermore, all raw results and scripts for analyzing them can be found in this same repository.
 
-All of the following experiments have several things in common.
-First, they are all executed using WatDiv with a dataset scale of 100,
+The following experiments execute WatDiv with a dataset scale of 100
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
 Each experiment includes a warmup phase,
 and averages results over 3 separate runs.
 During this warmup phase, the server caches all generated AMFs.
-For each query, we configured a timeout of 5 minutes.
-Furthermore, the default network delay has been configured to 1024Kbps to enforce a realistic Web bandwidth.
-Finally, each experiment uses an NGINX HTTP cache,
-and the client-side query timeout was 5 minutes.
-All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU,
-each Docker container was limited to one CPU core.
+For each query, 
+the client-side timeout was set to 5 minutes and, to enforce a realistic Web bandwidth,
+the network delay was set to 1024Kbps.
+All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU---each Docker container was limited to one CPU core, behind an NGINX HTTP cache.
 
 1. **Client-side AMF Algorithms**:
     First, we compare different client-side algorithms (_None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined_)

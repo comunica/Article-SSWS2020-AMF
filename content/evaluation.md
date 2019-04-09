@@ -71,7 +71,7 @@ To support our experiments, we extended this implementation with new features.
 This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2).
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
-with number of matching triples below a given threshold.
+with number of matching triples below a given result count threshold.
 Next to that, we implemented an optional file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.
 
@@ -126,7 +126,8 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
     2. {:#hypo-dynamic-restriction-2} Without cached AMFs, lower thresholds reduce server load.
     3. {:#hypo-dynamic-restriction-3} With cached AMFs, lower thresholds do not impact server load.
 4. **Network Bandwidths**:
-    Different network bandwidths (_256kbps, 512kbps, 2048kbps, 4096kbps_) are evaluated, and their effects or different AMF algorithms (_None, Triple, BGP Combined_) are tested.
+    Different network bandwidths (_256kbps, 512kbps, 2048kbps, 4096kbps_) are tested for evaluating network speedups,
+    and their effects or different AMF algorithms (_None, Triple, BGP Combined_) are tested.
     <br />
     **Hypotheses:**
     1. {:#hypo-bandwidth-1} HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.
@@ -162,12 +163,10 @@ on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
-Only for 5 of the 20 queries, evaluation times are worse.
+Only for 5 of the 20 queries, evaluation times are worse,
+which is caused by increased download times for large AMFs.
 Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
 By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.
-
-MVS: L1, L3 and C3 Have to be mentioned. Why are they slower? Is it significant? What would be possible solutions?
-{:.todo}
 
 Based on these results, we can confirm that there is _no statistically significant difference_ between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (_p-value: 0.9318_).
 The simple and combined BGP algorithm are significantly faster than not using AMF metadata (_p-values: 0.0062, 0.0026_),
@@ -202,11 +201,7 @@ This shows that an HTTP cache achieves the best results,
 and additionally caching AMF filters server-side is not worth the effort.
 
 If we compare these results with the results for non-AMF-aware querying,
-we see that if HTTP caching is _disabled_, query evaluation times for non-AMF-aware querying are _significantly lower_ than AMF-aware approaches (_p-value: < 2.2e-16_), which confirms [Hypothesis 2.3](#hypo-cache-3).
-
-MVS: also use _p-value: < 0.0001_ here, 2.2e-16 is just an artifact of the floating point system
-{:.todo}
-
+we see that if HTTP caching is _disabled_, query evaluation times for non-AMF-aware querying are _significantly lower_ than AMF-aware approaches (_p-value: < 0.0001_), which confirms [Hypothesis 2.3](#hypo-cache-3).
 On the other hand, if HTTP caching is _enabled_, query evaluation times for non-AMF-aware querying are _significantly worse_ than with AMF-aware approaches (_p-value: < 0.0001_), which confirms [Hypothesis 2.4](#hypo-cache-4).
 While caching is already very important for TPF-based querying,
 these results show that caching becomes _even more important_ when AMFs are being used.
@@ -217,9 +212,6 @@ the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-
 
 #### Dynamically Enabling AMF
 {:.display-block}
-
-MVS: This experiment is not entirely clear: what exactly do count thresholds apply to and what is the effect (can't tell from the text)? Maybe add a bit more explanation in 5.3 (3)? And reprise here?
-{:.todo}
 
 <figure id="plot_server_metadata_enabled_cached">
 <center>
@@ -253,7 +245,7 @@ when caching is disabled, but much slower if caching is enabled.
 </figcaption>
 </figure>
 
-[](#plot_server_metadata_enabled_cached) shows lower AMF result count thresholds
+[](#plot_server_metadata_enabled_cached) shows lower server-side AMF result count thresholds
 lead to higher query evaluation times when HTTP caching is enabled (_p-value: < 0.0001_),
 which confirms [Hypothesis 3.1](#hypo-dynamic-restriction-1).
 [](#plot_server_metadata_enabled_notcached) shows that AMF result count thresholds
@@ -264,24 +256,15 @@ For this experiment, setting the threshold to 10K leads to the lowest overall qu
 [](#plot_threshold_serverload) shows that lower AMF result count thresholds lead to lower server loads
 when HTTP caching is disabled (_p-value: 0.0326_), which confirms [Hypothesis 3.2](#hypo-dynamic-restriction-2).
 On the other hand, if HTTP caching is enabled,
-there is no correlation between AMF result count threshold and server CPU usage (_p-value: 0.4577_), which confirms [Hypothesis 3.3](#hypo-dynamic-restriction-3)).
-
-MVS: I would expect a spearman or pearson here
-{:.todo}
-
-This shows that if caching is enabled, result count threshold is not significantly important,
+there is no correlation (_Pearson_) between AMF result count threshold and server CPU usage (_p-value: 0.4577_), which confirms [Hypothesis 3.3](#hypo-dynamic-restriction-3)).
+This shows that if caching is enabled, dynamically enabling AMFs based on the number of triples
+is not significantly important,
 and may therefore be disabled to always expose AMFs.
-
-MVS: For the understandability, it might help to not use 'result count threshold' here, but simply saying what it implies: "dynamically enabling AMFs based on the number of triples..."
-{:.todo}
 
 For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
 Furthermore, when looking at the raw HTTP logs,
 we observe that by _always_ exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
-As such, AMFs significantly reduce the number of required HTTP requests.
-
-MVS: The last paragraphs kind of dangles...wouldn't it make more senso to mix it with the H testing?
-{:.todo}
+As such, AMFs significantly reduce the number of required HTTP requests at the cost of a ~10% increase in server load.
 
 #### Network Bandwidth
 {:.display-block}
@@ -292,7 +275,7 @@ MVS: The last paragraphs kind of dangles...wouldn't it make more senso to mix it
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of bandwidth on non-AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-When AMF is not used, query evaluation times decrease, while the used bandwidth increases.
+When AMF is not used, query evaluation times decrease with increased bandwidth.
 </figcaption>
 </figure>
 
@@ -302,8 +285,7 @@ When AMF is not used, query evaluation times decrease, while the used bandwidth 
 <img src="img/experiments/delay/plot_triple_c.svg" alt="Effect of bandwidth on triple AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times for the triple-based AMF algorithm
-show a speedup with increased bandwidth.
+When the triple-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.
 </figcaption>
 </figure>
 
@@ -313,27 +295,17 @@ show a speedup with increased bandwidth.
 <img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of bandwidth on BGP AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times for the BGP-based AMF algorithm
-show a speedup with increased bandwidth.
+When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.
 </figcaption>
 </figure>
-
-MVS: Suggestion: review the caption to directly say what is shown. I rewrote Fig 6. to illustrate.
-{:.todo}
 
 [](#plot_delay_none), [](#plot_delay_triple) and [](#plot_delay_bgp) show the effects of different bandwidths
 on query evaluation times over different algorithms.
 We observe that when not using AMF, or using the triple-level AMF algorithm,
-lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.
-
-MVS: sentence above is not clear
-{:.todo}
-
-In contrast, the BGP-level AMF algorithm continiously becomes faster when bandwidth increases.
-
-MVS: only now it became clear that 'different bandwidths' means you are speeding up the network, I'd make it more clear in the beginning.
-{:.todo}
-
+lower bandwidths lead to higher query evaluation times.
+However, when bandwidths become much higher,
+query evaluation times decrease at a lower rate.
+In contrast, the BGP-level AMF algorithm continuously becomes faster when bandwidth increases.
 We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (_p-values: 0.2905, 0.2306_), so we reject [Hypothesis 4.1](#hypo-bandwidth-1).
 For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which accepts [Hypothesis 4.2](#hypo-bandwidth-2).
 This shows that _if_ BGP-level AMF is used,

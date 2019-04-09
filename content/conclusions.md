@@ -1,9 +1,6 @@
 ## Conclusions
 {:#conclusions}
 
-MVS: showing new results/charts in the conclusion is a big no no. We have move these parts.
-{:.todo}
-
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
 Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
@@ -25,6 +22,8 @@ Finally, we present our perspectives on future work.
 Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (_[Research Question 1](#question-combine)_).
 However, the are a few outliers where our new algorithms perform _worse_ than the triple-based algorithm.
+This is because AMFs are sometimes very large,
+which has a significant impact on query execution times when they have to be downloaded from the server.
 In the future, heuristical approaches that calculate the potential effectiveness of the BGP-based algorithm
 can be investigated to solve this problem.
 

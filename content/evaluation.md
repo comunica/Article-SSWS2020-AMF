@@ -134,7 +134,7 @@ each Docker container was limited to one CPU core.
     1. {:#hypo-bandwidth-1} HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.
     2. {:#hypo-bandwidth-2} HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.
 5. **False-positive Probabilities**:
-    In this final experiment, we compare different AMF false-positive probabilities (_1/4096, 1/2048, 1/1024, 1/128, 1/64, 1/8, 1/4, 1/2_).
+    In this final experiment, we compare different AMF false-positive probabilities (_1/4096, 1/1024, 1/64, 1/4, 1/2_).
     <br />
     **Hypotheses:**
     1. {:#hypo-probabilities-1} Lower probabilities lead to faster client-side query execution.
@@ -158,7 +158,6 @@ Query evaluation times for the different client-side algorithms for using AMF me
 BGP-based approaches are mostly faster.
 </figcaption>
 </figure>
-<span class=comment data-author=RV>graphs should be single-color fills, no outlines</span>
 
 [](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.

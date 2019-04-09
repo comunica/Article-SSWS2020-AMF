@@ -13,7 +13,7 @@ and can be used to enhance the query evaluation process.
 This self-descriptiveness allows TPF to be [_composed_ with various _independent building blocks_](cite:cites verborgh_ic_2018)
 by adding new metadata to the interface,
 and allowed the introduction of a variety of [TPF features](cite:cites amf2015, tpfoptimization, vtpf).
-One such feature is [Approximate Membership Filters (AMFs)](cite:cites amf2015) metadata.
+One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata.
 Clients can detect AMFs in the response, and use it to reduce the required number
 of HTTP requests at the cost of increased query execution times.
 
@@ -31,13 +31,14 @@ Furthermore, we evaluate the effects and feasibility of different server-side AM
 Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called _Comunica Bencher_.
 It ensures complete reproducible experimental results by
-having declarative experiment descriptions build on top of the modular [Comunica Linked Data querying framework](cite:cites comunica).
+having declarative experiment descriptions build on top of [Comunica](cite:cites comunica):
+a modular Linked Data querying framework.
 This lowers the barrier for reproducing the experiments of this work,
 and creating similar ones in the future.
 
 In the next section we cover the related work pertaining to this article.
 After that, we introduce our research questions in [](#problem-statement).
-Next, we introduce our client-side algorithms and server-side enhancements in [](#solution).
+Next, we introduce our client-side algorithm in [](#solution).
 In [](#evaluation), we introduce our experimental setup,
 present our results, and test our hypotheses.
 Finally, we draw conclusions in [](#conclusions).

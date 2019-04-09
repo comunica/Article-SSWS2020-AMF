@@ -61,13 +61,13 @@ we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
 and are available open-source on [GitHub](https://github.com/comunica/comunica-feature-amf).
 Concretely, we implemented the original triple-based AMF algorithm,
-our new BGP-based AMF algorithm,
-and a variant of this BGP-based algorithm that pre-fetches out-of-band AMFs in parallel.
+our new BGP-based AMF algorithm (_BGP Simple_),
+and a variant of this BGP-based algorithm (_BGP Combined_) that pre-fetches out-of-band AMFs in parallel.
 
 The original TPF server extension in [the LDF server software](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf)
 by [Vander Sande et al.](cite:cites amf2015)
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
-To support our experiments, we extended this implementation with three new features.
+To support our experiments, we extended this implementation with new features.
 This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2).
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
@@ -86,6 +86,8 @@ Furthermore, all raw results and scripts for analyzing them can be found in this
 
 The following experiments execute WatDiv with a dataset scale of 100
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
+We only report results for Bloom filters for experiments
+where no significant difference was measured with GCS.
 Each experiment includes a warmup phase,
 and averages results over 3 separate runs.
 During this warmup phase, the server caches all generated AMFs.
@@ -95,10 +97,9 @@ the network delay was set to 1024Kbps.
 All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of memory and a 24-core 2.40 GHz CPU---each Docker container was limited to one CPU core, behind an NGINX HTTP cache.
 
 1. **Client-side AMF Algorithms**:
-    First, we compare different client-side algorithms (_None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined_)
+    In this experiment, we compare different client-side algorithms
+    (_None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined_)
     for using AMF metadata.
-    Next, we compare different constants for the BGP actor-skipping heurtistic.
-    Finally, we compare the effects of exposing different AMF filter implementations (_Bloom, GCS_) server-side.
     <br />
     **Hypotheses:**
     1. {:#hypo-combine-1} By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.

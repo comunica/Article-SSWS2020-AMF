@@ -638,8 +638,7 @@ As such, AMFs significantly reduce the number of required HTTP requests.</p>
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of bandwidth on non-AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 6:</span> Query evaluation times when AMF is not used
-show a speedup with increased bandwidth.</p>
+        <p><span class="label">Fig. 6:</span> When AMF is not used, query evaluation times decrease, while the used bandwidth increases.</p>
       </figcaption>
 </figure>
 
@@ -665,12 +664,20 @@ show a speedup with increased bandwidth.</p>
       </figcaption>
 </figure>
 
+    <p class="todo">MVS: Suggestion: review the caption to directly say what is shown. I rewrote Fig 6. to illustrate.</p>
+
     <p><a href="#plot_delay_none">Fig. 6</a>, <a href="#plot_delay_triple">Fig. 7</a> and <a href="#plot_delay_bgp">Fig. 8</a> show the effects of different bandwidths
 on query evaluation times over different algorithms.
 We observe that when not using AMF, or using the triple-level AMF algorithm,
-lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.
-The BGP-level AMF algorithm on the other hand keeps becoming faster with increasing bandwidths.
-We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (<em>p-values: 0.2905, 0.2306</em>), so we reject <a href="#hypo-bandwidth-1">Hypothesis 4.1</a>.
+lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.</p>
+
+    <p class="todo">MVS: sentence above is not clear</p>
+
+    <p>In contrast, the BGP-level AMF algorithm continiously becomes faster when bandwidth increases.</p>
+
+    <p class="todo">MVS: only now it became clear that ‘different bandwidths’ means you are speeding up the network, I’d make it more clear in the beginning.</p>
+
+    <p>We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (<em>p-values: 0.2905, 0.2306</em>), so we reject <a href="#hypo-bandwidth-1">Hypothesis 4.1</a>.
 For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), which accepts <a href="#hypo-bandwidth-2">Hypothesis 4.2</a>.
 This shows that <em>if</em> BGP-level AMF is used,
 then higher bandwidths can be exploited <em>more</em> for faster query evaluation.</p>

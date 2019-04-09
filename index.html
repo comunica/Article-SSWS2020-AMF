@@ -514,15 +514,30 @@ BGP-based approaches are mostly faster.</p>
       </figcaption>
 </figure>
 
+    <figure id="plot_query_times_F3">
+<center>
+<img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c" />
+</center>
+<figcaption>
+        <p><span class="label">Fig. 2:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
+      </figcaption>
+</figure>
+
     <p><a href="#plot_client_algos">Fig. 1</a> shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">first TPF AMF experiments</a> <span class="references">[<a href="#ref-3">3</a>]</span>,
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
-Only for 5 of the 20 queries, evaluation times are worse,
-which is caused by increased download times for large AMFs.
+Only for 5 of the 20 queries, evaluation times are worse.
 Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
 By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.</p>
+
+    <p>As an example, <a href="#plot_query_times_F3">Fig. 2</a> shows the query result arrival times for query F3,
+and is similar to the arrival times for other queries.
+This figure shows that the time-until-first-result is the highest for BGP-based AMF algorithms.
+However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
+This delay for the BGP-based algorithms is caused by the higher download times for large AMFs,
+and explains the higher overall evaluation times for 5 of the 20 queries.</p>
 
     <p>Based on these results, we can confirm that there is <em>no statistically significant difference</em> between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (<em>p-value: 0.9318</em>).
 The simple and combined BGP algorithm are significantly faster than not using AMF metadata (<em>p-values: 0.0062, 0.0026</em>),
@@ -542,12 +557,12 @@ has no statistically significant effect (<em>p-values: 0.9484, 0.6689</em>), whi
 <img src="img/experiments/caching/plot_c.svg" alt="Caching (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 2:</span> Logarithmic query evaluation times comparing server-side HTTP and AMF caching.
+        <p><span class="label">Fig. 3:</span> Logarithmic query evaluation times comparing server-side HTTP and AMF caching.
 Not caching anything is always slower than caching HTTP responses or AMFs.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_caching">Fig. 2</a> shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
+    <p><a href="#plot_caching">Fig. 3</a> shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation (<em>p-value: &lt; 2.2e-16</em>).
 We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>),
 which conforms <a href="#hypo-cache-1">Hypothesis 2.1</a>.
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
@@ -573,7 +588,7 @@ the difference is only small in most cases, so we accept <a href="#hypo-cache-5"
 <img src="img/experiments/server_metadata_enabled/plot_cached_c.svg" alt="Effect of AMF result count thresholds with HTTP cache (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 3:</span> Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is enabled.
+        <p><span class="label">Fig. 4:</span> Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is enabled.
 Low result count thresholds slow down query execution.</p>
       </figcaption>
 </figure>
@@ -584,7 +599,7 @@ Low result count thresholds slow down query execution.</p>
 <img src="img/experiments/server_metadata_enabled/plot_notcached_c.svg" alt="Effect of AMF result count thresholds without HTTP cache (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 4:</span> Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is disabled.
+        <p><span class="label">Fig. 5:</span> Query evaluation times for different AMF result count thresholds for different AMF algorithms when HTTP caching is disabled.
 High result count thresholds slow down query execution.</p>
       </figcaption>
 </figure>
@@ -594,20 +609,20 @@ High result count thresholds slow down query execution.</p>
 <img src="img/experiments/server_metadata_enabled/threshold_serverload.svg" alt="Server CPU usage for AMF result counts" class="plot_non_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 5:</span> Average server CPU usage increases when AMF result count thresholds increase
+        <p><span class="label">Fig. 6:</span> Average server CPU usage increases when AMF result count thresholds increase
 when caching is disabled, but much slower if caching is enabled.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_server_metadata_enabled_cached">Fig. 3</a> shows lower server-side AMF result count thresholds
+    <p><a href="#plot_server_metadata_enabled_cached">Fig. 4</a> shows lower server-side AMF result count thresholds
 lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: &lt; 0.0001</em>),
 which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
-<a href="#plot_server_metadata_enabled_notcached">Fig. 4</a> shows that AMF result count thresholds
+<a href="#plot_server_metadata_enabled_notcached">Fig. 5</a> shows that AMF result count thresholds
 also have an impact on query evaluation times when HTTP caching is disabled (<em>p-value: 0.0005</em>),
 but it does not necessarily lower it.
 For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.</p>
 
-    <p><a href="#plot_threshold_serverload">Fig. 5</a> shows that lower AMF result count thresholds lead to lower server loads
+    <p><a href="#plot_threshold_serverload">Fig. 6</a> shows that lower AMF result count thresholds lead to lower server loads
 when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>.
 On the other hand, if HTTP caching is enabled,
 there is no correlation (<em>Pearson</em>) between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).
@@ -628,7 +643,7 @@ As such, AMFs significantly reduce the number of required HTTP requests at the c
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of bandwidth on non-AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 6:</span> When AMF is not used, query evaluation times decrease with increased bandwidth.</p>
+        <p><span class="label">Fig. 7:</span> When AMF is not used, query evaluation times decrease with increased bandwidth.</p>
       </figcaption>
 </figure>
 
@@ -638,7 +653,7 @@ As such, AMFs significantly reduce the number of required HTTP requests at the c
 <img src="img/experiments/delay/plot_triple_c.svg" alt="Effect of bandwidth on triple AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 7:</span> When the triple-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.</p>
+        <p><span class="label">Fig. 8:</span> When the triple-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.</p>
       </figcaption>
 </figure>
 
@@ -648,11 +663,11 @@ As such, AMFs significantly reduce the number of required HTTP requests at the c
 <img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of bandwidth on BGP AMF (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 8:</span> When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.</p>
+        <p><span class="label">Fig. 9:</span> When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_delay_none">Fig. 6</a>, <a href="#plot_delay_triple">Fig. 7</a> and <a href="#plot_delay_bgp">Fig. 8</a> show the effects of different bandwidths
+    <p><a href="#plot_delay_none">Fig. 7</a>, <a href="#plot_delay_triple">Fig. 8</a> and <a href="#plot_delay_bgp">Fig. 9</a> show the effects of different bandwidths
 on query evaluation times over different algorithms.
 We observe that when not using AMF, or using the triple-level AMF algorithm,
 lower bandwidths lead to higher query evaluation times.
@@ -672,12 +687,12 @@ then higher bandwidths can be exploited <em>more</em> for faster query evaluatio
 <img src="img/experiments/probabilities/plot_c.svg" alt="In-band vs out-band (C)" class="plot_c" />
 </center>
 <figcaption>
-        <p><span class="label">Fig. 9:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
+        <p><span class="label">Fig. 10:</span> Query evaluation times comparing different false-positive probabilities for AMFs that are generated server-side.
 Extremely low and high probabilities show a negative impact.</p>
       </figcaption>
 </figure>
 
-    <p><a href="#plot_probabilities">Fig. 9</a> shows that different false-positive probabilities have some impact on query evaluation times.
+    <p><a href="#plot_probabilities">Fig. 10</a> shows that different false-positive probabilities have some impact on query evaluation times.
 This impact has however only has a weak significance (<em>p-value: 0.1840</em>).
 This means that we reject <a href="#hypo-probabilities-1">Hypothesis 5.1</a>
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
@@ -718,29 +733,16 @@ can be investigated to solve this problem.</p>
 
     <p>Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 we observe that the time-until-first-result is mostly higher.
-The reason for this can be seen when analyzing the times at which each query result arrives,
-as can be seen with query F3 in <a href="#plot_query_times_F3">Fig. 10</a>,
-and is observable for other queries as well.
-This figure shows that the time-until-first-result is the highest for BGP-based AMF algorithms.
-However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
 The reason for this is that the BGP-based algorithms tends to use larger AMFs,
 which introduces a bottleneck when requesting them over HTTP.
 Even though we have this overhead, the gains we get from this are typically worth it,
 as results come in much faster once the AMFs have been downloaded.
-This figure shows that dynamically switching between different algorithms may be interesting to investigate in future work.
-Our bandwidth experiment results confirm this, and show that higher bandwidths
-lead to even more performance gains for the BGP-level algorithms (<em><a href="#question-bandwidth">Research Question 4</a></em>).
+This finding shows that dynamically switching between different algorithms may be interesting to investigate in future work.
+Our bandwidth experiment results confirm this bandwidth bottleneck when downloading large AMFs,
+and show that higher bandwidths lead to even more performance gains
+for the BGP-level algorithms (<em><a href="#question-bandwidth">Research Question 4</a></em>).
 This <em>continuous efficiency</em> can be investigated further in the future
 using metrics such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf"><em>diefficiency</em></a> <span class="references">[<a href="#ref-21">21</a>]</span>.</p>
-
-    <figure id="plot_query_times_F3">
-<center>
-<img src="img/experiments/client_algos/query_times_F3.svg" alt="Query Times for F3 over different Client-side AMF Algorithms" class="plot_non_c" />
-</center>
-<figcaption>
-        <p><span class="label">Fig. 10:</span> Query result arrival times for query F3 for the different client-side algorithms.</p>
-      </figcaption>
-</figure>
 
     <h3 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h3>
 

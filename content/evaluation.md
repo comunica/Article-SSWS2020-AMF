@@ -291,8 +291,7 @@ MVS: The last paragraphs kind of dangles...wouldn't it make more senso to mix it
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of bandwidth on non-AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-Query evaluation times when AMF is not used
-show a speedup with increased bandwidth.
+When AMF is not used, query evaluation times decrease, while the used bandwidth increases.
 </figcaption>
 </figure>
 
@@ -318,11 +317,22 @@ show a speedup with increased bandwidth.
 </figcaption>
 </figure>
 
+MVS: Suggestion: review the caption to directly say what is shown. I rewrote Fig 6. to illustrate.
+{:.todo}
+
 [](#plot_delay_none), [](#plot_delay_triple) and [](#plot_delay_bgp) show the effects of different bandwidths
 on query evaluation times over different algorithms.
 We observe that when not using AMF, or using the triple-level AMF algorithm,
 lower bandwidths lead to higher query evaluation times, but higher bandwidths do not keep reducing evaluation times.
-The BGP-level AMF algorithm on the other hand keeps becoming faster with increasing bandwidths.
+
+MVS: sentence above is not clear
+{:.todo}
+
+In contrast, the BGP-level AMF algorithm continiously becomes faster when bandwidth increases.
+
+MVS: only now it became clear that 'different bandwidths' means you are speeding up the network, I'd make it more clear in the beginning.
+{:.todo}
+
 We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (_p-values: 0.2905, 0.2306_), so we reject [Hypothesis 4.1](#hypo-bandwidth-1).
 For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which accepts [Hypothesis 4.2](#hypo-bandwidth-2).
 This shows that _if_ BGP-level AMF is used,

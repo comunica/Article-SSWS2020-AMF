@@ -521,6 +521,8 @@ Only for 5 of the 20 queries, evaluation times are worse.
 Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
 By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.</p>
 
+    <p class="todo">MVS: L1, L3 and C3 Have to be mentioned. Why are they slower? Is it significant? What would be possible solutions?</p>
+
     <p>Based on these results, we can confirm that there is <em>no statistically significant difference</em> between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (<em>p-value: 0.9318</em>).
 The simple and combined BGP algorithm are significantly faster than not using AMF metadata (<em>p-values: 0.0062, 0.0026</em>),
 which confirms <a href="#hypo-combine-1">Hypothesis 1.1</a>.
@@ -553,8 +555,11 @@ This shows that an HTTP cache achieves the best results,
 and additionally caching AMF filters server-side is not worth the effort.</p>
 
     <p>If we compare these results with the results for non-AMF-aware querying,
-we see that if HTTP caching is <em>disabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly lower</em> than AMF-aware approaches (<em>p-value: &lt; 2.2e-16</em>), which confirms <a href="#hypo-cache-3">Hypothesis 2.3</a>.
-On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 0.0001</em>), which confirms <a href="#hypo-cache-4">Hypothesis 2.4</a>.
+we see that if HTTP caching is <em>disabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly lower</em> than AMF-aware approaches (<em>p-value: &lt; 2.2e-16</em>), which confirms <a href="#hypo-cache-3">Hypothesis 2.3</a>.</p>
+
+    <p class="todo">MVS: also use <em>p-value: &lt; 0.0001</em> here, 2.2e-16 is just an artifact of the floating point system</p>
+
+    <p>On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 0.0001</em>), which confirms <a href="#hypo-cache-4">Hypothesis 2.4</a>.
 While caching is already very important for TPF-based querying,
 these results show that caching becomes <em>even more important</em> when AMFs are being used.</p>
 
@@ -563,6 +568,8 @@ While there are a few outliers where GCS is two to three times slower,
 the difference is only small in most cases, so we accept <a href="#hypo-cache-5">Hypothesis 2.5</a> with a low significance (<em>p-value: 0.1786</em>).</p>
 
     <h4 class="display-block" id="dynamically-enabling-amf">Dynamically Enabling AMF</h4>
+
+    <p class="todo">MVS: This experiment is not entirely clear: what exactly do count thresholds apply to and what is the effect (can’t tell from the text)? Maybe add a bit more explanation in 5.3 (3)? And reprise here?</p>
 
     <figure id="plot_server_metadata_enabled_cached">
 <center>
@@ -607,14 +614,21 @@ For this experiment, setting the threshold to 10K leads to the lowest overall qu
     <p><a href="#plot_threshold_serverload">Fig. 5</a> shows that lower AMF result count thresholds lead to lower server loads
 when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>.
 On the other hand, if HTTP caching is enabled,
-there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).
-This shows that if caching is enabled, result count threshold is not significantly important,
+there is no correlation between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).</p>
+
+    <p class="todo">MVS: I would expect a spearman or pearson here</p>
+
+    <p>This shows that if caching is enabled, result count threshold is not significantly important,
 and may therefore be disabled to always expose AMFs.</p>
+
+    <p class="todo">MVS: For the understandability, it might help to not use ‘result count threshold’ here, but simply saying what it implies: “dynamically enabling AMFs based on the number of triples…”</p>
 
     <p>For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% (all AMF) when caching is enabled.
 Furthermore, when looking at the raw HTTP logs,
 we observe that by <em>always</em> exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
 As such, AMFs significantly reduce the number of required HTTP requests.</p>
+
+    <p class="todo">MVS: The last paragraphs kind of dangles…wouldn’t it make more senso to mix it with the H testing?</p>
 
     <h4 class="display-block" id="network-bandwidth">Network Bandwidth</h4>
 

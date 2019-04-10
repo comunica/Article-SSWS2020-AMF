@@ -62,39 +62,47 @@ to configure AMF metadata on their servers.
 
     <p>Over the recent years, different kinds of <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF) interfaces</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> have been introduced
 as ways to publish Linked Data on the Web,
-with the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span><br />
+with the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>
 as a trade-off between server load and client-side querying effort.
 The server interface is restricted to triple-pattern queries,
 so that all remaining elements of SPARQL queries have to be evaluated client-side.
-TPF is a hypermedia interface that is <em>self-descriptive</em>,
-which enables smart clients that <em>understand</em> these descriptions to detect metadata and controls,
-and can be used to enhance the query evaluation process.
-This self-descriptiveness allows TPF to be <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1109/MIC.2018.032501515"><a href="https://ruben.verborgh.org/articles/web-api-ecosystem/"><em>composed</em> with various <em>independent building blocks</em></a></span> <span class="references">[<a href="#ref-2">2</a>]</span>
-by adding new metadata to the interface,
-and allowed the introduction of a variety of <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">TPF features</a> <span class="references">[<a href="#ref-3">3</a>, <a href="#ref-4">4</a>, <a href="#ref-5">5</a>]</span>.
-One such feature is <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filter (AMF)</a> <span class="references">[<a href="#ref-3">3</a>]</span> metadata.
-Clients can detect AMFs in the response and use them to reduce the required number
+Compared to SPARQL endpoints,
+TPF in general reduces the required server-side capacity and load
+for query evaluation
+at the expense of more bandwidth usage and slower query times.</p>
+
+    <p>With the goal of preserving the benefits of TPF
+while reducing its disadvantages,
+<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">various research efforts examined additional interface features</a> <span class="references">[<a href="#ref-2">2</a>, <a href="#ref-3">3</a>, <a href="#ref-4">4</a>, <a href="#ref-5">5</a>]</span>
+that can be used independently or in conjunction with TPF.
+Through usage of <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1109/MIC.2018.032501515"><a href="https://ruben.verborgh.org/articles/web-api-ecosystem/">self-descriptive hypermedia</a></span> <span class="references">[<a href="#ref-6">6</a>]</span> on the server,
+clients can automatically detect metadata and controls
+and use these additional features to enhance the query evaluation process.
+One such feature is <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filter (AMF)</a> <span class="references">[<a href="#ref-2">2</a>]</span> metadata,
+which supporting clients can use to reduce the required number
 of HTTP requests,
 with only a slight increase in server cost.
-Unfortunately, this currently at the cost of increased query execution times.</p>
+Unfortunately, this currently comes at the cost of increased query execution times,
+because the individual HTTP requests were larger and more expensive to compute.</p>
 
-    <p>This work gains a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
+    <p>This work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
 In particular, 
-we provide solutions to mitigate the excessive overhead from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> and further reduce the gap in query execution time between TPF-based querying and SPARQL endpoints.
+we provide solutions to mitigate the excessive overhead from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span> and further reduce the gap in query execution time between TPF-based querying and SPARQL endpoints.
 Therefore, we introduce a client-side algorithm to exploit AMF metadata
 early in the query evaluation.
-This approach is complimentary to the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">current algorithm</a> <span class="references">[<a href="#ref-3">3</a>]</span> and speeds up query execution.
+This approach is complimentary to the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">existing algorithm</a> <span class="references">[<a href="#ref-2">2</a>]</span>,
+but speeds up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.</p>
 
     <p>Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called <em>Comunica Bencher</em>.
 It ensures complete reproducible experimental results by
-having declarative experiment descriptions build on top of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-6">6</a>]</span>:
+having declarative experiment descriptions build on top of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-7">7</a>]</span>,
 a modular Linked Data querying framework.
-This lowers the barrier for reproducing the experiments of this work,
-and creating similar ones in the future.</p>
+This facilitates the reproduction of the experiments of this work,
+as well as the creation of related experiments in the future.</p>
 
-    <p>In the next section we cover the related work pertaining to this article.
+    <p>In the next section, we cover the related work pertaining to this article.
 After that, we introduce our research questions in <a href="#problem-statement">Section 3</a>.
 Next, we introduce our client-side algorithm in <a href="#solution">Section 4</a>.
 In <a href="#evaluation">Section 5</a>, we introduce our experimental setup,
@@ -136,8 +144,8 @@ Combined with the fact that TPF returns it results in a paginated fashion,
 the number of HTTP requests forms the primary bottleneck during query evaluation.
 Several enhancements have been proposed to this greedy algorithm
 in an attempt to reduce the number of those requests,
-such as different <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/eswc2015.pdf">query algorithms</a> <span class="references">[<a href="#ref-4">4</a>, <a href="#ref-7">7</a>]</span>,
-and <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">restricting the request patterns to intermediary bindings</a></span> <span class="references">[<a href="#ref-8">8</a>]</span>,
+such as different <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/eswc2015.pdf">query algorithms</a> <span class="references">[<a href="#ref-3">3</a>, <a href="#ref-8">8</a>]</span>,
+and <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">restricting the request patterns to intermediary bindings</a></span> <span class="references">[<a href="#ref-4">4</a>]</span>,
 each of those with their own advantages and disadvantages.</p>
 
     <h3 id="approximate-membership-functions">Approximate Membership Functions</h3>
@@ -193,7 +201,7 @@ or it can be used to retrieve as many results as possible.</p>
 
     <h3 id="related-work-amf">Approximate Membership Metadata for TPF</h3>
 
-    <p>Pure TPF query plans typically <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">produce a large number of <em>membership requests</em></a> <span class="references">[<a href="#ref-3">3</a>]</span>,
+    <p>Pure TPF query plans typically <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">produce a large number of <em>membership requests</em></a> <span class="references">[<a href="#ref-2">2</a>]</span>,
 checking whether a specific triple (without variables) is present in a dataset.
 This was illustrated with queries from the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf">WatDiv</a> <span class="references">[<a href="#ref-19">19</a>]</span> benchmark,
 consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
@@ -207,7 +215,7 @@ servers can combine multiple interface features
 to assist supporting clients with query evaluation.
 An interface feature with <em>approximate membership metadata</em>
 for all variables in the requested <em>triple patterns</em>
-<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">considerably reduced the number of membership requests to a server</a> <span class="references">[<a href="#ref-3">3</a>]</span>.
+<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">considerably reduced the number of membership requests to a server</a> <span class="references">[<a href="#ref-2">2</a>]</span>.
 Client-side query engines can detect this AMF metadata,
 and use it to test the membership of triples.
 In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
@@ -231,7 +239,7 @@ In this work, we aim to solve this problem of higher execution times.</p>
 
     <p>With the introduction of the AMF interface feature 
 that can be used in conjunction with TPF,
-<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> introduced a number of follow-up questions.
+<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span> introduced a number of follow-up questions.
 In our work, we aim to answer some of these questions,
 and mitigate the drawback of increased query execution times.
 We list these as research questions:</p>
@@ -278,7 +286,7 @@ followed by an introduction of our new client-side BGP-based AMF algorithm.</p>
 
     <h3 id="triple-based-amf-algorithm">Triple-based AMF Algorithm</h3>
 
-    <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> introduced an algorithm
+    <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span> introduced an algorithm
 that acts as a cheap pre-processing step for <em>testing the membership of triples</em>.
 This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">greedy client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> for evaluating SPARQL queries.
 <a href="#amf-triple-pseudo">Listing 1</a> depicts this algorithm in pseudo-code.</p>
@@ -298,7 +306,7 @@ Once all checks pass, the original HTTP-based membership logic will be invoked.<
 </code><code>  return super.hasTriple(triple, context);
 </code><code>}</code></pre>
 <figcaption>
-        <p><span class="label">Listing 1:</span> Triple-based AMF algorithm by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
+        <p><span class="label">Listing 1:</span> Triple-based AMF algorithm by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span>
 as a pre-filtering step for testing the membership of triples.</p>
       </figcaption>
 </figure>
@@ -380,7 +388,7 @@ With this, our experiments are fully reproducible.</p>
         <p>Setup an <a href="https://www.nginx.com/" class="mandatory" data-link-text="https:/​/​www.nginx.com/​">NGINX HTTP cache</a> with a given configuration in front of the LDF server.</p>
       </li>
 <li id="workflow-comunica" about="#workflow-comunica" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-        <p>Install <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-6">6</a>]</span> under a given configuration, implementing <a href="https://www.w3.org/TR/sparql11-protocol">SPARQL 1.1</a>.</p>
+        <p>Install <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-7">7</a>]</span> under a given configuration, implementing <a href="https://www.w3.org/TR/sparql11-protocol">SPARQL 1.1</a>.</p>
       </li>
 <li id="workflow-comunica-run" about="#workflow-comunica-run" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
         <p>Execute the generated WatDiv queries a given number times on the Comunica client, after doing a warmup run, and record the execution times.</p>
@@ -393,7 +401,7 @@ With this, our experiments are fully reproducible.</p>
     <h3 id="implementation">Implementation</h3>
 
     <p>For implementing the client-side AMF algorithms,
-we make use of JavaScript-based <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica SPARQL querying framework</a> <span class="references">[<a href="#ref-6">6</a>]</span>.
+we make use of JavaScript-based <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica SPARQL querying framework</a> <span class="references">[<a href="#ref-7">7</a>]</span>.
 Since Comunica already fully supports the TPF algorithm,
 we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
@@ -403,7 +411,7 @@ our new BGP-based AMF algorithm (<em>BGP Simple</em>),
 and a variant of this BGP-based algorithm (<em>BGP Combined</em>) that pre-fetches out-of-band AMFs in parallel.</p>
 
     <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf">the LDF server software</a>
-by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span>
+by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-2">2</a>]</span>
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 To support our experiments, we extended this implementation with new features.
 This implementation will be available on GitHub.
@@ -527,7 +535,7 @@ BGP-based approaches are mostly faster.</p>
 
     <p><a href="#plot_client_algos">Fig. 1</a> shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
-In line with what was shown in the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">first TPF AMF experiments</a> <span class="references">[<a href="#ref-3">3</a>]</span>,
+In line with what was shown in the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">first TPF AMF experiments</a> <span class="references">[<a href="#ref-2">2</a>]</span>,
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
 Only for 5 of the 20 queries, evaluation times are not better.
@@ -833,19 +841,19 @@ which is not trivial, as filters of multiple sources may need to be combined.</p
   <dt id="ref-1">[1]</dt>
   <dd resource="https://dx.doi.org/10.1016/j.websem.2016.03.003" typeof="schema:Article">Verborgh, R., Vander Sande, M., Hartig, O., Van Herwegen, J., De Vocht, L., De Meester, B., Haesendonck, G., Colpaert, P.: Triple Pattern Fragments: a Low-cost Knowledge Graph Interface for the Web. Journal of Web Semantics. (2016).</dd>
   <dt id="ref-2">[2]</dt>
-  <dd resource="https://dx.doi.org/10.1109/MIC.2018.032501515" typeof="schema:Article">Verborgh, R., Dumontier, M.: A Web API ecosystem through feature-based reuse. Internet Computing. 22, 29–37 (2018).</dd>
-  <dt id="ref-3">[3]</dt>
   <dd resource="http://linkeddatafragments.org/publications/iswc2015-amf.pdf" typeof="schema:Article">Vander Sande, M., Verborgh, R., Van Herwegen, J., Mannens, E., Van de Walle, R.: Opportunistic Linked Data querying through approximate membership metadata. In: International Semantic Web Conference. pp. 92–110. Springer (2015).</dd>
-  <dt id="ref-4">[4]</dt>
+  <dt id="ref-3">[3]</dt>
   <dd resource="http://linkeddatafragments.org/publications/eswc2015.pdf" typeof="schema:Article">Van Herwegen, J., Verborgh, R., Mannens, E., Van de Walle, R.: Query Execution Optimization for Clients of Triple Pattern Fragments. In: The Semantic Web. Latest Advances and New Domains (2015).</dd>
+  <dt id="ref-4">[4]</dt>
+  <dd resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48" typeof="schema:Article">Hartig, O., Buil-Aranda, C.: Bindings-Restricted Triple Pattern Fragments. In: Proceedings of the 15th International Conference on Ontologies, DataBases, and Applications of Semantics. pp. 762–779 (2016).</dd>
   <dt id="ref-5">[5]</dt>
   <dd resource="http://rubensworks.net/raw/publications/2017/vtpf.pdf" typeof="schema:Article">Taelman, R., Vander Sande, M., Verborgh, R., Mannens, E.: Versioned Triple Pattern Fragments: A Low-cost Linked Data Interface Feature for Web Archives. In: Proceedings of the 3rd Workshop on Managing the Evolution and Preservation of the Data Web (2017).</dd>
   <dt id="ref-6">[6]</dt>
-  <dd resource="https://comunica.github.io/Article-ISWC2018-Resource/" typeof="schema:Article">Taelman, R., Van Herwegen, J., Vander Sande, M., Verborgh, R.: Comunica: a Modular SPARQL Query Engine for the Web. In: Proceedings of the 17th International Semantic Web Conference (2018).</dd>
+  <dd resource="https://dx.doi.org/10.1109/MIC.2018.032501515" typeof="schema:Article">Verborgh, R., Dumontier, M.: A Web API ecosystem through feature-based reuse. Internet Computing. 22, 29–37 (2018).</dd>
   <dt id="ref-7">[7]</dt>
-  <dd resource="http://iswc2015.semanticweb.org/sites/iswc2015.semanticweb.org/files/93660097.pdf" typeof="schema:Article">Acosta, M., Vidal, M.-E.: Networks of Linked Data Eddies: An Adaptive Web Query Processing Engine for RDF Data. In: The Semantic Web – ISWC 2015</dd>
+  <dd resource="https://comunica.github.io/Article-ISWC2018-Resource/" typeof="schema:Article">Taelman, R., Van Herwegen, J., Vander Sande, M., Verborgh, R.: Comunica: a Modular SPARQL Query Engine for the Web. In: Proceedings of the 17th International Semantic Web Conference (2018).</dd>
   <dt id="ref-8">[8]</dt>
-  <dd resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48" typeof="schema:Article">Hartig, O., Buil-Aranda, C.: Bindings-Restricted Triple Pattern Fragments. In: Proceedings of the 15th International Conference on Ontologies, DataBases, and Applications of Semantics. pp. 762–779 (2016).</dd>
+  <dd resource="http://iswc2015.semanticweb.org/sites/iswc2015.semanticweb.org/files/93660097.pdf" typeof="schema:Article">Acosta, M., Vidal, M.-E.: Networks of Linked Data Eddies: An Adaptive Web Query Processing Engine for RDF Data. In: The Semantic Web – ISWC 2015</dd>
   <dt id="ref-9">[9]</dt>
   <dd resource="http://crystal.uta.edu/~mcguigan/cse6350/papers/Bloom.pdf" typeof="schema:Article">Bloom, B.H.: Space/time trade-offs in hash coding with allowable errors. Communications of the ACM. 13, 422–426 (1970).</dd>
   <dt id="ref-10">[10]</dt>

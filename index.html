@@ -74,18 +74,17 @@ This self-descriptiveness allows TPF to be <span property="schema:citation http:
 by adding new metadata to the interface,
 and allowed the introduction of a variety of <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">TPF features</a> <span class="references">[<a href="#ref-3">3</a>, <a href="#ref-4">4</a>, <a href="#ref-5">5</a>]</span>.
 One such feature is <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filter (AMF)</a> <span class="references">[<a href="#ref-3">3</a>]</span> metadata.
-Clients can detect AMFs in the response, and use it to reduce the required number
-of HTTP requests at the cost of increased query execution times.</p>
+Clients can detect AMFs in the response and use them to reduce the required number
+of HTTP requests,
+with only a slight increase in server cost.
+Unfortunately, this currently at the cost of increased query execution times.</p>
 
-    <p>As querying with the server-friendly TPF approach
-is typically much slower than with SPARQL endpoints,
-there is a need to make TPF-based querying faster.
-We claim that AMF offers a way to achieve this
-without becoming too expensive for servers.
-The goal of this work is to gain a better understanding of how AMF interacts with TPF,
-and how its previously discovered increase in query execution times can be mitigated.
-Therefore, we extend the client-side algorithm from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> to exploit AMF metadata
-earlier during query evaluation for speeding up query execution.
+    <p>This work gains a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
+In particular, 
+we provide solutions to mitigate the excessive overhead from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-3">3</a>]</span> and further reduce the gap in query execution time between TPF-based querying and SPARQL endpoints.
+Therefore, we introduce a client-side algorithm to exploit AMF metadata
+early in the query evaluation.
+This approach is complimentary to the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">current algorithm</a> <span class="references">[<a href="#ref-3">3</a>]</span> and speeds up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.</p>
 
     <p>Because of the large number of combinations that are compared in our experiments,

@@ -716,10 +716,10 @@ On average, a false-positive probability of 1/64 leads to the lowest overall que
 
     <p>In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
-Thanks to our newly introduced benchmarking framework, our experiments are fully and easily reproducible.
-As results have shown, our client-side algorithms make average query execution more than two times faster
-while only requiring 1/3rd the number of HTTP requests,
-at the cost of less than 10% more server CPU usage.</p>
+Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
+The results show that our client-side algorithms make average query execution more than two times faster
+while only requiring 1/3 the number of HTTP requests,
+at the cost of less than 10% additional server CPU usage.</p>
 
     <p>We offer implementations of these algorithms and server enhancements,
 which means that they can be used by any of the existing data publishers
@@ -727,10 +727,13 @@ that are exposing their data through a TPF interface,
 or any client that aims to query from them.</p>
 
     <p>In this section, we conclude our findings with respect to our research questions,
-after which we introduce a set of recommendations for data publishers using AMF with TPF.
+based on the <a href="#evaluation">evaluation</a>.
+Then, we introduce a set of recommendations for data publishers using AMF with TPF.
 Finally, we present our perspectives on future work.</p>
 
-    <h3 id="bgp-based-algorithms-improve-query-efficiency">BGP-based Algorithms Improve Query Efficiency</h3>
+    <h3 id="research-findings">Research findings</h3>
+
+    <h4 id="bgp-based-algorithms-improve-query-efficiency">BGP-based Algorithms Improve Query Efficiency</h4>
 
     <p>Results show that our new client-side BGP-based algorithms that use AMF metadata
 significantly reduce query evaluation times  (<em><a href="#question-combine">Research Question 1</a></em>).
@@ -740,7 +743,7 @@ which has a significant impact on query execution times when they have to be dow
 In the future, heuristical approaches that calculate the potential effectiveness of the BGP-based algorithm
 can be investigated to solve this problem.</p>
 
-    <h3 id="bgp-based-algorithms-postpone-time-to-first-results">BGP-based Algorithms Postpone Time to First Results</h3>
+    <h4 id="bgp-based-algorithms-postpone-time-to-first-results">BGP-based Algorithms Postpone Time to First Results</h4>
 
     <p>Even though total query evaluation times for the AMF-aware algorithms are mostly lower,
 we observe that the time-until-first-result is mostly higher.
@@ -755,7 +758,7 @@ for the BGP-level algorithms (<em><a href="#question-bandwidth">Research Questio
 This <em>continuous efficiency</em> can be investigated further in the future
 using metrics such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf"><em>diefficiency</em></a> <span class="references">[<a href="#ref-21">21</a>]</span>.</p>
 
-    <h3 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h3>
+    <h4 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h4>
 
     <p>Our results show that AMF-aware querying only has a positive impact on query evaluation times
 if the server can deliver AMF filters sufficiently fast (<em><a href="#question-cache">Research Question 2</a></em>)
@@ -767,14 +770,15 @@ On the other hand, our results have shown that server-side on the fly creation o
 only starts to have a significant impact for sizes larger than 10.000 (<em><a href="#question-dynamic-restriction">Research Question 3</a></em>).</p>
 
     <p>On a low-end machine (2,7 GHz Intel Core i5, 8GB RAM), creation of AMFs takes 0.0125 msec per triple,
-which means that AMF creation of size 10.000 takes only 0.125 seconds.
-As such, AMFs of size 10.000 or less can be created with acceptable durations for Web servers,
-after which they can still be cached.</p>
+or 0.125 seconds for AMF creation of size 10.000.
+As such, AMFs of size 10.000 or less can be created on the fly with acceptable durations for Web servers
+(after which they can still be cached).</p>
 
     <p><a href="#plot_triple_pattern_counts">Fig. 11</a> shows that there is only a very small number of triple patterns with a very large number of matches.
 When setting the WatDiv dataset to a size of 10M triples, there are only 90 triple patterns with a size larger than 10.000.
 Setting that size to 100M triples, this number increases to 255, so this is not a linear increase.
-Due to this low number of very large patterns, we can easily pre-compute these offline before dataset publication time.
+Due to this low number of very large patterns,
+servers can easily pre-compute these offline before dataset publication time.
 Since the WatDiv dataset achieves a high diversity of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=1989340"><em>structuredness</em>, it is similar to real-world RDF datasets</a> <span class="references">[<a href="#ref-22">22</a>]</span>.
 As such, this behavior can be generalized to other datasets with a similar structuredness.</p>
 
@@ -789,7 +793,7 @@ Triple patterns are sorted by decreasing number of matches.</p>
       </figcaption>
 </figure>
 
-    <h3 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom Filters are Preferred over GCS with Active Cache</h3>
+    <h4 id="bloom-filters-are-preferred-over-gcs-with-active-cache">Bloom Filters are Preferred over GCS with Active Cache</h4>
 
     <p>Results show that when AMFs are pre-computed,
 Bloom filters achieve faster query evaluation times than GCS (<em><a href="#question-cache">Research Question 2</a></em>).
@@ -798,7 +802,7 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.</p>
 
-    <h3 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h3>
+    <h4 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h4>
 
     <p>Lowering the false-positive probability of an AMF increases its size.
 As we have seen that larger AMFs have an impact on query evaluation times,
@@ -808,19 +812,19 @@ as that leads to more unneeded HTTP requests.
 Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (<em><a href="#question-probabilities">Research Question 5</a></em>).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.</p>
 
-    <h3 id="recommendations">Recommendations</h3>
+    <h3 id="recommendations">Recommendations for Publishers</h3>
 
     <p>Based on the conclusions of our experimental results,
 we offer the following guidelines for publishers that aim to use the AMF feature:</p>
 
     <ul>
       <li>Enable <strong>HTTP caching</strong> with a tool such as <a href="https://www.nginx.com/">NGINX</a>.</li>
-      <li><strong>Pre-compute AMFs</strong>, or at least cache, AMFs of size 10.000 or higher.</li>
+      <li><strong>Pre-compute AMFs</strong> (or at least cache) AMFs of size 10.000 or higher.</li>
       <li>If AMFs can be cached, prefer <strong>Bloom filters</strong> over GCS.</li>
       <li>Use a false-positive <strong>probability of 1/64</strong>.</li>
     </ul>
 
-    <h3 id="future-work">Future work</h3>
+    <h3 id="future-work">Future Work</h3>
 
     <p>Even though we answered many open questions regarding AMFs,
 there are a couple of new questions.

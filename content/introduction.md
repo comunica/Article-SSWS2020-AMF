@@ -14,18 +14,17 @@ This self-descriptiveness allows TPF to be [_composed_ with various _independent
 by adding new metadata to the interface,
 and allowed the introduction of a variety of [TPF features](cite:cites amf2015, tpfoptimization, vtpf).
 One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata.
-Clients can detect AMFs in the response, and use it to reduce the required number
-of HTTP requests at the cost of increased query execution times.
+Clients can detect AMFs in the response and use them to reduce the required number
+of HTTP requests,
+with only a slight increase in server cost.
+Unfortunately, this currently at the cost of increased query execution times.
 
-As querying with the server-friendly TPF approach
-is typically much slower than with SPARQL endpoints,
-there is a need to make TPF-based querying faster.
-We claim that AMF offers a way to achieve this
-without becoming too expensive for servers.
-The goal of this work is to gain a better understanding of how AMF interacts with TPF,
-and how its previously discovered increase in query execution times can be mitigated.
-Therefore, we extend the client-side algorithm from [Vander Sande et al.](cite:cites amf2015) to exploit AMF metadata
-earlier during query evaluation for speeding up query execution.
+This work gains a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
+In particular, 
+we provide solutions to mitigate the excessive overhead from [Vander Sande et al.](cite:cites amf2015) and further reduce the gap in query execution time between TPF-based querying and SPARQL endpoints.
+Therefore, we introduce a client-side algorithm to exploit AMF metadata
+early in the query evaluation.
+This approach is complimentary to the [current algorithm](cite:cites amf2015) and speeds up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.
 
 Because of the large number of combinations that are compared in our experiments,

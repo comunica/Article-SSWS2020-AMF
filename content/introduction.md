@@ -3,39 +3,47 @@
 
 Over the recent years, different kinds of [Linked Data Fragments (LDF) interfaces](cite:cites ldf) have been introduced
 as ways to publish Linked Data on the Web,
-with the [Triple Pattern Fragments (TPF) interface](cite:cites ldf)  
+with the [Triple Pattern Fragments (TPF) interface](cite:cites ldf)
 as a trade-off between server load and client-side querying effort.
 The server interface is restricted to triple-pattern queries,
 so that all remaining elements of SPARQL queries have to be evaluated client-side.
-TPF is a hypermedia interface that is _self-descriptive_,
-which enables smart clients that _understand_ these descriptions to detect metadata and controls,
-and can be used to enhance the query evaluation process.
-This self-descriptiveness allows TPF to be [_composed_ with various _independent building blocks_](cite:cites verborgh_ic_2018)
-by adding new metadata to the interface,
-and allowed the introduction of a variety of [TPF features](cite:cites amf2015, tpfoptimization, vtpf).
-One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata.
-Clients can detect AMFs in the response and use them to reduce the required number
+Compared to SPARQL endpoints,
+TPF in general reduces the required server-side capacity and load
+for query evaluation
+at the expense of more bandwidth usage and slower query times.
+
+With the goal of preserving the benefits of TPF
+while reducing its disadvantages,
+[various research efforts examined additional interface features](cite:cites amf2015, tpfoptimization, brtpf, vtpf)
+that can be used independently or in conjunction with TPF.
+Through usage of [self-descriptive hypermedia](cite:cites verborgh_ic_2018) on the server,
+clients can automatically detect metadata and controls
+and use these additional features to enhance the query evaluation process.
+One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata,
+which supporting clients can use to reduce the required number
 of HTTP requests,
 with only a slight increase in server cost.
-Unfortunately, this currently at the cost of increased query execution times.
+Unfortunately, this currently comes at the cost of increased query execution times,
+because the individual HTTP requests were larger and more expensive to compute.
 
-This work gains a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
+This work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
 In particular, 
 we provide solutions to mitigate the excessive overhead from [Vander Sande et al.](cite:cites amf2015) and further reduce the gap in query execution time between TPF-based querying and SPARQL endpoints.
 Therefore, we introduce a client-side algorithm to exploit AMF metadata
 early in the query evaluation.
-This approach is complimentary to the [current algorithm](cite:cites amf2015) and speeds up query execution.
+This approach is complimentary to the [existing algorithm](cite:cites amf2015),
+but speeds up query execution.
 Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.
 
 Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called _Comunica Bencher_.
 It ensures complete reproducible experimental results by
-having declarative experiment descriptions build on top of [Comunica](cite:cites comunica):
+having declarative experiment descriptions build on top of [Comunica](cite:cites comunica),
 a modular Linked Data querying framework.
-This lowers the barrier for reproducing the experiments of this work,
-and creating similar ones in the future.
+This facilitates the reproduction of the experiments of this work,
+as well as the creation of related experiments in the future.
 
-In the next section we cover the related work pertaining to this article.
+In the next section, we cover the related work pertaining to this article.
 After that, we introduce our research questions in [](#problem-statement).
 Next, we introduce our client-side algorithm in [](#solution).
 In [](#evaluation), we introduce our experimental setup,

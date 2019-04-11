@@ -137,10 +137,6 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
     **Hypotheses:**
     1. {:#hypo-probabilities-1} Lower probabilities lead to faster client-side query execution.
 
-<br class='printonly' />
-<br class='printonly' />
-<br class='printonly' />
-
 ### Results
 
 In this section, we present the results for each of our experiments separately.

@@ -13,23 +13,23 @@ and their use for the TPF interface.
 [Linked Data Fragments (LDF)](cite:cites ldf)
 is a conceptual framework to study
 interfaces for publishing Linked Data,
-typically by comparing server and client effort.
+by comparing server and client effort.
 Some LDFs may require a low server effort,
 at the cost of increased client-side querying effort (_e.g. data dumps_).
 while others require a high server effort,
 at the cost of minimal client-side effort (_e.g. SPARQL endpoint_).
-The [Triple Pattern Fragments (TPF) interface](cite:cites ldf) interface was introduced
+The [Triple Pattern Fragments (TPF) interface](cite:cites ldf) was introduced
 as a trade-off between those extremes,
 by restricting the server interface to triple pattern queries,
-and leaving the remainder of SPARQL query evaluation to the client.
+and leaving the remainder of query evaluation to the client.
 
 The client-side algorithm that is often used in implementations is _greedy_,
 and always chooses one pattern based on the lowest estimated number of matches,
 and recursively applies its bindings to the remaining patterns.
 While this achieves decent performance in some cases,
 it can sometimes lead to inefficient query plans.
-Combined with the fact that TPF returns it results in a paginated fashion,
-the number of HTTP requests forms the primary bottleneck during query evaluation.
+Combined with the fact that TPF returns results paginated,
+the number of HTTP requests forms the primary bottleneck during querying.
 Several enhancements have been proposed to this greedy algorithm
 in an attempt to reduce the number of those requests,
 such as different [query algorithms](cite:cites tpfoptimization, acosta_iswc_2015),
@@ -108,15 +108,14 @@ for all variables in the requested _triple patterns_
 Client-side query engines can detect this AMF metadata,
 and use it to test the membership of triples.
 In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
-the actual binary AMFs are included out-of-band behind a link in the metadata.
+the actual binary AMFs are included out-of-band behind a metadata link.
 Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives
 (because of the <100% precision).
-The results of this work show that there is a significant decrease in the number of HTTP requests when AMFs are used,
+The results of this work show that there is a significant decrease in HTTP requests when AMFs are used,
 at the cost of only a small increase in server load.
-However,
-even though the _number_ of HTTP requests was lower,
+Even though the _number_ of HTTP requests was lower,
 the _total execution time increased_ for most queries,
 because of the long server delays when generating AMFs.
 In this work, we aim to solve this problem of higher execution times.

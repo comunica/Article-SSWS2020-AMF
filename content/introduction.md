@@ -20,10 +20,9 @@ Through usage of [self-descriptive hypermedia](cite:cites verborgh_ic_2018) on t
 clients can automatically detect metadata and controls
 and use these additional features to enhance the query evaluation process.
 One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata,
-which supporting clients can use to reduce the required number
-of HTTP requests,
+which supporting clients can use to reduce the number of HTTP requests,
 with only a slight increase in server cost.
-Unfortunately, this currently comes at the cost of increased query execution times,
+Unfortunately, this currently comes at the cost of slower query execution,
 because the individual HTTP requests were larger and more expensive to compute.
 
 This work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.

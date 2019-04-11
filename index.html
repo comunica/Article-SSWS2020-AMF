@@ -79,10 +79,9 @@ Through usage of <span property="schema:citation http://purl.org/spar/cito/cites
 clients can automatically detect metadata and controls
 and use these additional features to enhance the query evaluation process.
 One such feature is <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filter (AMF)</a> <span class="references">[<a href="#ref-2">2</a>]</span> metadata,
-which supporting clients can use to reduce the required number
-of HTTP requests,
+which supporting clients can use to reduce the number of HTTP requests,
 with only a slight increase in server cost.
-Unfortunately, this currently comes at the cost of increased query execution times,
+Unfortunately, this currently comes at the cost of slower query execution,
 because the individual HTTP requests were larger and more expensive to compute.</p>
 
     <p>This work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
@@ -125,23 +124,23 @@ and their use for the TPF interface.</p>
     <p><span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF)</a></span> <span class="references">[<a href="#ref-1">1</a>]</span>
 is a conceptual framework to study
 interfaces for publishing Linked Data,
-typically by comparing server and client effort.
+by comparing server and client effort.
 Some LDFs may require a low server effort,
 at the cost of increased client-side querying effort (<em>e.g. data dumps</em>).
 while others require a high server effort,
 at the cost of minimal client-side effort (<em>e.g. SPARQL endpoint</em>).
-The <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> interface was introduced
+The <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-1">1</a>]</span> was introduced
 as a trade-off between those extremes,
 by restricting the server interface to triple pattern queries,
-and leaving the remainder of SPARQL query evaluation to the client.</p>
+and leaving the remainder of query evaluation to the client.</p>
 
     <p>The client-side algorithm that is often used in implementations is <em>greedy</em>,
 and always chooses one pattern based on the lowest estimated number of matches,
 and recursively applies its bindings to the remaining patterns.
 While this achieves decent performance in some cases,
 it can sometimes lead to inefficient query plans.
-Combined with the fact that TPF returns it results in a paginated fashion,
-the number of HTTP requests forms the primary bottleneck during query evaluation.
+Combined with the fact that TPF returns results paginated,
+the number of HTTP requests forms the primary bottleneck during querying.
 Several enhancements have been proposed to this greedy algorithm
 in an attempt to reduce the number of those requests,
 such as different <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/eswc2015.pdf">query algorithms</a> <span class="references">[<a href="#ref-3">3</a>, <a href="#ref-8">8</a>]</span>,
@@ -219,15 +218,14 @@ for all variables in the requested <em>triple patterns</em>
 Client-side query engines can detect this AMF metadata,
 and use it to test the membership of triples.
 In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
-the actual binary AMFs are included out-of-band behind a link in the metadata.
+the actual binary AMFs are included out-of-band behind a metadata link.
 Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives
 (because of the &lt;100% precision).
-The results of this work show that there is a significant decrease in the number of HTTP requests when AMFs are used,
+The results of this work show that there is a significant decrease in HTTP requests when AMFs are used,
 at the cost of only a small increase in server load.
-However,
-even though the <em>number</em> of HTTP requests was lower,
+Even though the <em>number</em> of HTTP requests was lower,
 the <em>total execution time increased</em> for most queries,
 because of the long server delays when generating AMFs.
 In this work, we aim to solve this problem of higher execution times.</p>
@@ -500,10 +498,6 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
         </ol>
       </li>
     </ol>
-
-    <p><br class="printonly" />
-<br class="printonly" />
-<br class="printonly" /></p>
 
     <h3 id="results">Results</h3>
 

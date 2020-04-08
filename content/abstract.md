@@ -27,3 +27,11 @@ We conclude that server-side caching and (partial) AMF pre-computation is essent
 and translate these findings into concrete guidelines for data publishers
 to configure AMF metadata on their servers.
 <!-- Perspectives -->
+
+<span id="keywords" rel="schema:about"><span class="title">Keywords</span>
+<a href="https://en.wikipedia.org/wiki/Linked_Data" resource="http://dbpedia.org/resource/Linked_Data">Linked Data</a>;
+<a href="https://en.wikipedia.org/wiki/Resource_Description_Framework" resource="http://dbpedia.org/resource/Resource_Description_Framework">RDF</a>;
+<a href="https://en.wikipedia.org/wiki/SPARQL" resource="http://dbpedia.org/resource/SPARQL">SPARQL</a>;
+<a href="https://linkeddatafragments.org/concept/" resource="https://linkeddatafragments.org/concept/">Triple Pattern Fragments</a>;
+<a href="https://en.wikipedia.org/wiki/Query" resource="http://dbpedia.org/resource/Query">Querying</a>
+</span>

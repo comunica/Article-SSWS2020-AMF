@@ -1,4 +1,4 @@
-@import "lncs.scss";
+@import "acm.scss";
 @import "shared.scss";
 @import "shared_override.scss";
 
@@ -11,4 +11,14 @@ header {
 .display-block {
     display: block;
     float: none;
+}
+
+img.plot_non_c {
+  width: 22em !important;
+  height: auto !important;
+}
+
+img.plot_c {
+  width: 5em !important;
+  height: auto !important;
 }

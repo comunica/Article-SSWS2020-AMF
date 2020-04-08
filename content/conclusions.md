@@ -89,6 +89,14 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.
 
+### Always Emit AMF Metadata Out-of-band
+
+Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
+on query evaluation times and the total number of HTTP requests (_[Research Question 5](#question-inband)_).
+However, as there may be clients that do no understand AMF metadata,
+there will be HTTP data transfer overhead when AMF metadata would be included in-band.
+For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.
+
 #### A Good Trade-off Between False-positive Probabilities and AMF Size
 
 Lowering the false-positive probability of an AMF increases its size.
@@ -96,7 +104,7 @@ As we have seen that larger AMFs have an impact on query evaluation times,
 we do not want AMFs to become too large.
 On the other hand, we do not want the false-positive probabilities to become too low,
 as that leads to more unneeded HTTP requests.
-Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (_[Research Question 5](#question-probabilities)_).
+Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (_[Research Question 6](#question-probabilities)_).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.
 
 ### Recommendations for Publishers
@@ -108,6 +116,7 @@ we offer the following guidelines for publishers that aim to use the AMF feature
 * Enable **HTTP caching** with a tool such as [NGINX](https://www.nginx.com/).
 * **Pre-compute AMFs** (or at least cache) AMFs of size 10.000 or higher.
 * If AMFs can be cached, prefer **Bloom filters** over GCS.
+* Emit AMF metadata **out-of-band**.
 * Use a false-positive **probability of 1/64**.
 
 ### Future Work

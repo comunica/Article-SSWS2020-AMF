@@ -105,6 +105,8 @@ to assist supporting clients with query evaluation.
 An interface feature with _approximate membership metadata_
 for all variables in the requested _triple patterns_
 [considerably reduced the number of membership requests to a server](cite:cites amf2015).
+In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
+the actual binary AMFs are included out-of-band behind a link in the metadata.
 Client-side query engines can detect this AMF metadata,
 and use it to test the membership of triples.
 In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,

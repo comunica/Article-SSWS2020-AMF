@@ -1,20 +1,28 @@
 ## Introduction
 {:#introduction}
 
-Over the recent years, different kinds of [Linked Data Fragments (LDF) interfaces](cite:cites ldf) have been introduced
-as ways to publish Linked Data on the Web,
-with the [Triple Pattern Fragments (TPF) interface](cite:cites ldf)
-as a trade-off between server load and client-side querying effort.
-The server interface is restricted to triple-pattern queries,
-so that all remaining elements of SPARQL queries have to be evaluated client-side.
-Compared to SPARQL endpoints,
-TPF in general reduces the required server-side capacity and load
-for query evaluation
-at the expense of more bandwidth usage and slower query times.
+While [SPARQL endpoints](cite:cites spec:sparqlprot) are typically chosen as interface to expose Linked Data on the Web,
+such endpoints tend to [suffer from availability issues](cite:cites sparqlreadyforaction).
+These problems are caused by SPARQL endpoints requiring high-end computational resources
+due the high complexity of [SPARQL queries](cite:cites spec:sparqllang)
+and the unbounded number of concurrent clients requesting query execution.
+In order to cope with this problem,
+the [Linked Data Fragments (LDF) effort](cite:cites ldf)
+has been initiated to investigate alternative query interfaces to publish Linked Datasets,
+by redistributing query effort between server and client.
+
+Over the recent years, different kinds of these LDF interfaces have been introduced,
+such as [Triple Pattern Fragments (TPF)](cite:cites ldf),
+[Bindings-Restricted Triple Pattern Fragments](cite:cites brtpf),
+[SaGe](cite:cites sage),
+and [Smart-KG](cite:cites smartkg).
+Each of these types of interfaces introduce their own trade-offs in terms of server and client effort.
+Since TPF is [quickly gaining adoption among publishers](cite:cites tpfusage),
+we focus on improving its performance in this work.
 
 With the goal of preserving the benefits of TPF
 while reducing its disadvantages,
-[various research efforts examined additional interface features](cite:cites amf2015, tpfoptimization, brtpf, vtpf)
+[various research efforts examined additional interface features](cite:cites amf2015, tpfoptimization, vtpf)
 that can be used independently or in conjunction with TPF.
 Through usage of [self-descriptive hypermedia](cite:cites verborgh_ic_2018) on the server,
 clients can automatically detect metadata and controls
@@ -25,14 +33,18 @@ with only a slight increase in server cost.
 Unfortunately, this currently comes at the cost of slower query execution,
 because the individual HTTP requests were larger and more expensive to compute.
 
-This work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces.
-In particular, 
-we provide solutions to mitigate the excessive overhead from [Vander Sande et al.](cite:cites amf2015) and further reduce the gap in query execution time between TPF-based querying and SPARQL endpoints.
-Therefore, we introduce a client-side algorithm to exploit AMF metadata
-early in the query evaluation.
-This approach is complimentary to the [existing algorithm](cite:cites amf2015),
-but speeds up query execution.
-Furthermore, we evaluate the effects and feasibility of different server-side AMF features and configurations.
+Even though the work on extending TPF with AMFs showed excessive overhead,
+we claim that these problems can be resolved,
+and that AMFs can be used to lower overall query execution times without significantly increasing server load.
+As such, the goal of our work is to investigate
+what changes are required server-side and client-side
+to optimize AMFs for TPF.
+Concretely, we introduce six dimensions through which the AMF approach from [Vander Sande et al.](cite:cites amf2015) can be improved.
+One of these dimensions involves the introduction of a new client-side algorithm to handle AMFs.
+The other dimensions are related to the server-side handling of AMFs.
+The effects and feasibility of each of these dimensions are evaluated and analyzed in detail.
+In summary, our work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces,
+so that Linked Data publishers can expose their Linked Datasets in a more efficient manner through TPF interfaces.
 
 Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called _Comunica Bencher_.

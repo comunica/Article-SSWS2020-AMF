@@ -22,6 +22,10 @@ The [Triple Pattern Fragments (TPF) interface](cite:cites ldf) was introduced
 as a trade-off between those extremes,
 by restricting the server interface to triple pattern queries,
 and leaving the remainder of query evaluation to the client.
+Compared to SPARQL endpoints,
+TPF in general reduces the required server-side capacity and load
+for query evaluation
+at the expense of more bandwidth usage and slower query times.
 
 The client-side algorithm that is often used in implementations is _greedy_,
 and always chooses one pattern based on the lowest estimated number of matches,

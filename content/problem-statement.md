@@ -1,12 +1,16 @@
 ## Problem Statement
 {:#problem-statement}
 
-With the introduction of the AMF interface feature 
-that can be used in conjunction with TPF,
-[Vander Sande et al.](cite:cites amf2015) introduced a number of follow-up questions.
-In our work, we aim to answer some of these questions,
-and mitigate the drawback of increased query execution times.
-We list these as research questions:
+The goal of our work is to investigate how query execution over TPF interfaces can be optimized using AMFs.
+We thereby build upon the work from [Vander Sande et al.](cite:cites amf2015),
+where the authors allowed the number of HTTP requests to be reduced
+at the cost of slower query execution.
+Our goal is to mitigate this major drawback, while retaining its advantages.
+
+Vander Sande et al. introduced a number of follow-up questions
+that we use as a basis for defining our research questions.
+Concretely, in order to mitigate the earlier mentioned drawbacks,
+our research questions are defined as follows:
 
 1. {:#question-combine}
     **Can query execution time be lowered by combining triple pattern AMFs client-side on larger Basic Graph Patterns (BGPs)?**

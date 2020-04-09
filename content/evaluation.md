@@ -110,7 +110,8 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
     2. {:#hypo-combine-2} By combining AMFs client-side at BGP-level, query execution time is lower compared to using AMFs at triple-level.
     3. {:#hypo-combine-3} Using AMFs at both BGP _and_ triple-level does not reduce query execution time compared to only using AMFs at BGP-level.
 2. **Caching**:
-    In this experiment, we evaluate the effects of caching all HTTP requests combined with caching AMF filters server-side.
+    In this experiment, we evaluate the effects of caching all HTTP requests combined with caching AMF filters server-side,
+    both following the LRU cache replacement strategy.
     We also compare the effects of using AMF metadata client-side or not.
     Finally, we test the effects of warm and cold caches.
     <br />

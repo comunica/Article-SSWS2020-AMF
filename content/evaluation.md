@@ -202,6 +202,21 @@ Query result arrival times for query F3 for the different client-side algorithms
 </figcaption>
 </figure>
 
+<figure id="http_requests_cache" markdown="1">
+
+| Approach    | Requests  | Cache hits | Cache hit rate |
+| ----------- | ---------:| ----------:| --------------:|
+| None        | 1,911,845 | 1,686,889  | 88.23%         |
+| Triple      | 1,837,886 | 1,626,611  | 88.50%         |
+| BGPSimple   | 191,764   | 173,617    | 90.53%         |
+| BGPCombined | 191,768   | 173,621    | 90.53%         |
+| TripleBGP   | 191,773   | 173,626    | 90.53%         |
+
+<figcaption markdown="block">
+Number of HTTP requests, number of cache hits and cache hit rate for the different client-side algorithms.
+</figcaption>
+</figure>
+
 [](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
@@ -217,6 +232,11 @@ This figure shows that the time-until-first-result is the highest for BGP-based 
 However, once this first results comes in, the arrival rate becomes much higher compared to the other algorithms.
 This delay for the BGP-based algorithms is caused by the higher download times for large AMFs,
 and explains the higher or equal evaluation times for 5 of the 20 queries.
+
+[](#http_requests_cache) shows the BGP-based algorithms significantly lower the number of required HTTP requests,
+which explains the significant reduction in query execution times.
+This allows the NGINX cache hit rate to slightly increase compared to the regular and triple-based TPF algorithms,
+since fewer requests are made, which lowers the number of required cache evictions.
 
 Based on these results, we confirm that there is _no statistically significant difference_
 between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (_p-value: 0.9318_).

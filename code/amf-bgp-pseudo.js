@@ -4,5 +4,5 @@ function getBindings(triplePatterns, context) {
       if ((!triplePattern[position].isVariable()
           && !amf[position].contains(triplePattern.subject))
         return new EmptyStream();
-  return super.getBindings(bgpPatterns, context);
+  return super.getBindings(triplePatterns, context);
 }

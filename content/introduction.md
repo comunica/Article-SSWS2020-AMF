@@ -54,6 +54,16 @@ a modular Linked Data querying framework.
 This facilitates the reproduction of the experiments of this work,
 as well as the creation of related experiments in the future.
 
+Concretely, the contributions of this work are the following:
+
+* BGP-based AMF algorithm to optimize client-side query execution over TPF.
+* Analysis of HTTP caching and server-side AMF filter caching.
+* Threshold-based mechanism for exposing AMFs by size in TPF servers.
+* Analysis of network bandwidth in combination with different client-side AMF algorithms.
+* Server-side and client-side support for in-band HTTP AMF responses.
+* Analysis of different AMF false-positive probabilities.
+* A reusable benchmarking framework _Comunica Bencher_, using which the contributions above are evaluated extensively.
+
 In the next section, we cover the related work pertaining to this article.
 After that, we introduce our research questions in [](#problem-statement).
 Next, we introduce our client-side algorithm in [](#solution).

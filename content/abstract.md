@@ -24,6 +24,9 @@ and the proposed server configurations significantly reduce
 both the number of HTTP requests and the query execution times
 with only a small increase in server load,
 thereby mitigating the major drawback of using AMFs within TPF.
+Compared to regular TPF, average query execution is more than 2 times faster
+and requires only 1/3 the number of HTTP requests,
+at the cost of at most a 10% increase in server load.
 <!-- Conclusion   -->
 Finally, we summarize our findings in a set of concrete guidelines for data publishers
 on how to configure AMF metadata on their servers.

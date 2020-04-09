@@ -73,6 +73,8 @@ we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given result count threshold.
 Next to that, we implemented an optional file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.
+Finally, we added support for exposing AMFs in-band with HTTP responses,
+instead of including them behind a followable link into these responses.
 
 ### Experimental Setup
 

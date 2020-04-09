@@ -4,7 +4,7 @@
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
 Thanks to the newly introduced benchmarking framework, our experiments are fully and easily reproducible.
-The results show that our client-side algorithms make average query execution more than two times faster
+The results show that our client-side algorithms make average query execution more than two times faster than with regular TPF
 while only requiring 1/3 the number of HTTP requests,
 at the cost of less than 10% additional server CPU usage.
 

@@ -135,8 +135,8 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
     For this experiment, we test the effects of different triple count thresholds (_0, 1.000, 10.000, 100.000, 1.000.000_) for exposing AMF metadata in-band or not.
     <br />
     **Hypotheses:**
-    1. {:#hypo-inband-1} Out-of-band AMF metadata speeds up client-side query evaluation.
-    2. {:#hypo-inband-2} Out-of-band AMF metadata increases the total amount of HTTP requests.
+    1. {:#hypo-inband-1} In-band AMF metadata speeds up client-side query evaluation.
+    2. {:#hypo-inband-2} In-band AMF metadata reduces the total amount of HTTP requests.
 6. **False-positive Probabilities**:
     In this final experiment, we compare different AMF false-positive probabilities (_1/4096, 1/1024, 1/64, 1/4, 1/2_).
     <br />

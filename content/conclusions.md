@@ -89,7 +89,7 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.
 
-### Always Emit AMF Metadata Out-of-band
+#### Always Emit AMF Metadata Out-of-band
 
 Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
 on query evaluation times and the total number of HTTP requests (_[Research Question 5](#question-inband)_).

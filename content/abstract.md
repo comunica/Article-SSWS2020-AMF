@@ -9,23 +9,24 @@ such as Triple Pattern Fragments (TPF) with additional metadata
 can positively impact the client and/or server in terms of performance.
 <!-- Need         -->
 Specifically, Approximate Membership Filters (AMFs)—filters that are small
-and probabilistic—were shown to reduce the number of HTTP requests,
+and probabilistic— in the context of TPF were shown to reduce the number of HTTP requests,
 at the expense of increasing query execution times.
 <!-- Task         -->
-In order to mitigate this drawback,
+In order to mitigate this significant drawback,
 we investigated unexplored aspects of AMFs as metadata on TPF interfaces.
 <!-- Object       -->
 In this article, we introduce and extensively evaluate alternative approaches
-for server-side publication and client-side consumption of AMFs
-to reach lower query execution times, while keeping the server cost sufficiently low.
+for server-side publication and client-side consumption of AMFs within TPF
+to achieve faster query execution, while keeping the server cost sufficiently low.
 <!-- Findings     -->
-Our results show that our alternative client-side algorithm significantly reduces
+Our results show that our alternative client-side algorithm
+and the proposed server configurations significantly reduce
 both the number of HTTP requests and the query execution times
-with only a small increase in server load.
+with only a small increase in server load,
+thereby mitigating the major drawback of using AMFs within TPF.
 <!-- Conclusion   -->
-We conclude that server-side caching and (partial) AMF pre-computation is essential,
-and translate these findings into concrete guidelines for data publishers
-to configure AMF metadata on their servers.
+Finally, we summarize our findings in a set of concrete guidelines for data publishers
+on how to configure AMF metadata on their servers.
 <!-- Perspectives -->
 
 <span id="keywords" rel="schema:about"><span class="title">Keywords</span>

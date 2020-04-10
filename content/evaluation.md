@@ -75,6 +75,16 @@ Next to that, we implemented an optional file-based cache to avoid recomputing A
 to make pre-computation of AMFs possible.
 Finally, we added support for exposing AMFs in-band with HTTP responses,
 instead of including them behind a followable link into these responses.
+An example of this in-band metadata can be seen in [](#amf-metadata-inband),
+which is equivalent to the out-of-band metadata from [](#amf-metadata-outband).
+
+<figure id="amf-metadata-inband" class="listing">
+````/code/amf-metadata-inband.trig````
+<figcaption markdown="block">
+Self-descriptive in-band AMF metadata in a TPF response for `ex:mysubject ?p ?o`,
+which allows intelligent clients to detect, interpret and make use it.
+</figcaption>
+</figure>
 
 ### Experimental Setup
 

@@ -27,6 +27,15 @@ TPF in general reduces the required server-side capacity and load
 for query evaluation
 at the expense of more bandwidth usage and slower query times.
 
+TPF follows the REST architectural style,
+and aims to be a fully self-descriptive API.
+TPF achieves this by including _metadata_ and _controls_ in all of its RDF responses next to the main data.
+The metadata can contain anything that may be useful for clients during query execution,
+such as cardinality estimates.
+The controls are described in a declarative manner using the [Hydra Core vocabulary](cite:cites hydra),
+and allow clients to detect how queries can be executed against the API.
+In the case of TPF, these controls describe a form with _subject_, _predicate_ and _object_ parameters.
+
 The client-side algorithm that is often used in implementations is _greedy_,
 and always chooses one pattern based on the lowest estimated number of matches,
 and recursively applies its bindings to the remaining patterns.
@@ -96,6 +105,8 @@ or it can be used to retrieve as many results as possible.
 
 Pure TPF query plans typically [produce a large number of _membership requests_](cite:cites amf2015),
 checking whether a specific triple (without variables) is present in a dataset.
+Due to the significant number of HTTP requests that these membership requests require,
+these can cause unacceptably high query execution times.
 This was illustrated with queries from the [WatDiv](cite:cites watdiv) benchmark,
 consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
 Of the 20 queries, two (L2, L4) required 50% membership requests,
@@ -119,9 +130,57 @@ Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives
 (because of the <100% precision).
+
+The way Vander Sande et al. make use of AMFs involves exposing an AMF, such as a Bloom filter,
+for each variable triple component in a TPF response.
+For example, if the query `ex:mysubject ?p ?o` is sent to a TPF server,
+then the response could contain a Bloom filter for `?p` and one `?o`.
+The Bloom filter for `?p` contains all predicates that have `ex:mysubject` as subject,
+and the Bloom filter for `?o` similarly contains all objects that have this same subject.
+Each Bloom filter is populated with RDF terms using server-defined hashing parameters,
+so that the end result is a binary blob.
+The server shares these parameters in the AMF metadata so that clients can apply the same hashing function
+on the RDF terms they want to check membership for.
+When a client receives the TPF response for `ex:mysubject ?p ?o`,
+it will be able to detect and download these two Bloom filters.
+If during query execution the client needs to do a membership check against this pattern,
+for example for `ex:mysubject rdf:type foaf:Person`,
+the client can first do a pre-filtering step by looking for `rdf:type` in the first AMF,
+and `foaf:Person` in the second AMF.
+If any of these checks fail, this means that this triple definitely does _not_ exist in the dataset,
+and the actual membership HTTP request can be skipped.
+
+[](#amf-metadata-outband) shows an example of what this AMF metadata can look like in a TPF response for the query `ex:mysubject ?p ?o`.
+Concretely, the AMF metadata resides in the `<#metadata>` graph of the TPF HTTP response,
+which can contain other non-AMF-related elements such as `void:triples`.
+The available AMFs for a given response are defined via the predicate `ms:membershipFilter`,
+and the triple pattern component they apply to is indicated via `ms:variable`.
+As the approach from Vander Sande et al. does not include AMFs in-band,
+clients must _dereference_ the IRI of the AMF to get its binary contents.
+For example, the dereferenced contents of the predicate AMF from [](#amf-metadata-outband) can be seen in [](#amf-metadata-outband-link).
+Next to the binary contents of the AMF in n base64-encoded form (`ms:filter`), the type of the AMF is indicated `ms:BloomFilter`,
+and Bloom-filter-specific parameters are included such as `ms:hashes` and `ms:bits`.
+
+<figure id="amf-metadata-outband" class="listing">
+````/code/amf-metadata-outband.trig````
+<figcaption markdown="block">
+Self-descriptive AMF metadata in a TPF response for `ex:mysubject ?p ?o`,
+which allows intelligent clients to detect, interpret and make use it.
+</figcaption>
+</figure>
+
+<figure id="amf-metadata-outband-link" class="listing">
+````/code/amf-metadata-outband-link.trig````
+<figcaption markdown="block">
+Out-of-band AMF details for the AMF of the predicate component in [](#amf-metadata-outband),
+which exists in the document `</amf/my-dataset?query=...#predicate>` that can be followed by clients through dereferencing.
+</figcaption>
+</figure>
+
+
 The results of this work show that there is a significant decrease in HTTP requests when AMFs are used,
 at the cost of only a small increase in server load.
-Even though the _number_ of HTTP requests was lower,
+Even though the _number_ of HTTP requests was lower (reduction of 33%),
 the _total execution time increased_ for most queries,
 because of the long server delays when generating AMFs.
 In this work, we aim to solve this problem of higher execution times.

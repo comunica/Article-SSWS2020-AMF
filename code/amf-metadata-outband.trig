@@ -1,0 +1,11 @@
+@prefix ms: <http://semweb.mmlab.be/ns/membership#>.
+@prefix void: <http://rdfs.org/ns/void#>.
+
+<#metadata> foaf:primaryTopic <#fragment>.
+<#metadata> {
+  <#fragment> void:triples 96300;
+              ms:membershipFilter </amf/my-dataset?query=...#predicate>,
+                                  </amf/my-dataset?query=...#object>.
+  </amf/my-dataset?query=...#predicate> ms:variable rdf:predicate.
+  </amf/my-dataset?query=...#object> ms:variable rdf:object.
+}

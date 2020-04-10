@@ -1,0 +1,5 @@
+</amf/my-dataset?query=...#predicate> a ms:BloomFilter;
+  ms:variable rdf:predicate;
+  ms:filter "QmF...ZTY"^^xsd:base64Binary;
+  ms:hashes "10"^^xsd:integer;
+  ms:bits "3451"^^xsd:integer.

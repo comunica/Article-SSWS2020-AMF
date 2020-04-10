@@ -1,0 +1,17 @@
+<#metadata> foaf:primaryTopic <#fragment>.
+<#metadata> {
+  <#fragment> void:triples 96300;
+      ms:membershipFilter [
+        a ms:BloomFilter;
+        ms:variable rdf:predicate;
+        ms:filter "QmF...ZTY"^^xsd:base64Binary;
+        ms:hashes "10"^^xsd:integer;
+        ms:bits "3451"^^xsd:integer.
+      ], [
+        a ms:BloomFilter;
+        ms:variable rdf:object;
+        ms:filter "Axe...Utr"^^xsd:base64Binary;
+        ms:hashes "10"^^xsd:integer;
+        ms:bits "3386"^^xsd:integer.
+      ]
+}

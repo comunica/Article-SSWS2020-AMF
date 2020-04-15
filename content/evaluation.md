@@ -227,6 +227,17 @@ Number of HTTP requests, number of HTTP requests relative to not using AMFs, num
 </figcaption>
 </figure>
 
+<figure id="plot_skip_bgp_heuristic">
+<center>
+<img src="img/experiments/skip_bgp_heuristic/plot_no_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (non-C)" class="plot_non_c">
+<img src="img/experiments/skip_bgp_heuristic/plot_c.svg" alt="Client-side AMF Algorithms with BGP skipping heuristic (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+Query evaluation times when enabling the heuristic in the client-side combined BGP algorithm.
+The heuristic shows a slight improvement in most cases.
+</figcaption>
+</figure>
+
 [](#plot_client_algos) shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
@@ -258,6 +269,13 @@ which make them significantly faster (_p-values: 0.0090, 0.0041_)
 and confirms [Hypothesis 1.2](#hypo-combine-2).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
 shows no further statistically significant improvement (_p-values: 0.9484, 0.6689_), which confirms [Hypothesis 1.3](#hypo-combine-3).
+
+In [](#plot_skip_bgp_heuristic), we show the results where we apply the heuristic
+for dynamically disabling the BGP heuristic based on different parameter values.
+On average, setting the request size parameter value to 2000 has the lowest average evaluation time for this experiment.
+This case achieves lower evaluation times for 19 of the 20 queries,
+which is an improvement compared to not using the heuristic.
+This improvement by itself however only small, and not statistically significant (_p-value: 0.1842_).
 
 #### Caching
 {:.display-block}

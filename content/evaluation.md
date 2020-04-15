@@ -214,16 +214,16 @@ Query result arrival times for query F3 for the different client-side algorithms
 
 <figure id="http_requests_cache" markdown="1">
 
-| Approach    | Requests  | Cache hits | Cache hit rate |
-| ----------- | ---------:| ----------:| --------------:|
-| None        | 1,911,845 | 1,686,889  | 88.23%         |
-| Triple      | 1,837,886 | 1,626,611  | 88.50%         |
-| BGPSimple   | 191,764   | 173,617    | 90.53%         |
-| BGPCombined | 191,768   | 173,621    | 90.53%         |
-| TripleBGP   | 191,773   | 173,626    | 90.53%         |
+| Approach    | Requests  | Relative requests | Cache hits | Cache hit rate |
+| ----------- | ---------:| -----------------:| ----------:| --------------:|
+| None        | 1,911,845 |           100.00% | 1,686,889  | 88.23%         |
+| Triple      | 1,837,886 |            96.13% | 1,626,611  | 88.50%         |
+| BGPSimple   | 191,764   |            10.03% | 173,617    | 90.53%         |
+| BGPCombined | 191,768   |            10.03% | 173,621    | 90.53%         |
+| TripleBGP   | 191,773   |            10.03% | 173,626    | 90.53%         |
 
 <figcaption markdown="block">
-Number of HTTP requests, number of cache hits and cache hit rate for the different client-side algorithms.
+Number of HTTP requests, number of HTTP requests relative to not using AMFs, number of cache hits and cache hit rate for the different client-side algorithms.
 </figcaption>
 </figure>
 

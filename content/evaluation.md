@@ -232,7 +232,7 @@ on the different client-side algorithms for using AMF metadata.
 In line with what was shown in the [first TPF AMF experiments](cite:cites amf2015),
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
-Only for 5 of the 20 queries, evaluation times are not better.
+Only for 5 of the 20 queries, evaluation times are higher or equal.
 Our combined BGP algorithm is slightly faster than the simple BGP algorithm.
 By using both the combined BGP-based and the triple-based algorithms, we can reduce evaluation times slightly further.
 

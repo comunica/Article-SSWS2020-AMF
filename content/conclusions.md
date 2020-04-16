@@ -123,9 +123,29 @@ we offer the following guidelines for publishers that aim to use the AMF feature
 
 Even though we answered many open questions regarding AMFs,
 there are a couple of new questions.
-First, we need further investigation on heuristics for dynamically disabling the BGP-based AMF algorithm.
-Second, dynamically switching between algorithms may reduce time-until-first-result,
-as our BGP-based algorithm increases as a side-effect.
-Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web,
+
+First, we need further investigation on heuristics for dynamically disabling the BGP-based AMF algorithm,
+as our current heuristic produced the optimal approach in only 19 of the 20 queries,
+where queries from other benchmarks could even result in different ratios.
+
+Secondly, since our BGP-based algorithm increases time-until-first-result due to longer download times of AMFs
+compared to the triple-based algorithm,
+it is valuable to investigate techniques to dynamically switch between these algorithms.
+Concretely, a query engine could start by following the triple-level algorithm,
+but in the meantime the relevant AMFs could be downloaded asynchronously.
+As soon as these AMFs have been downloaded, the query engine could switch over to the more efficient BGP-based algorithm.
+For this, techniques will be required to predict if the overhead of algorithm switching
+will not be higher than the performance gain by the BGP-based algorithm.
+
+Third, we call for more research in the area of _opportunistic_ query results as discussed by Vander Sande et al.
+The positive tests in AMF still require an HTTP request before it can be confirmed whether it is a true or false positive.
+A query engine could _opportunistically_ continue processing this intermediary result
+as if it was a true positive, and retract it later on if it was a false positive.
+Vander Sande et al merely discuss this feature of AMFs,
+but they do not provide any implementation or experiments on top of this.
+As such, further research in this area is required,
+especially considering the more beneficial impact of AMFs that was proven by our work.
+
+Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web where data is spread over a large number of sources,
 investigation of AMFs in the context of federated querying is needed,
 which is not trivial, as filters of multiple sources may need to be combined.

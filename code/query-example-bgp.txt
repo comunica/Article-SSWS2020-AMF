@@ -1,0 +1,6 @@
+SELECT ?p ?s ?m WHERE {
+  ?p dbo:almaMater ?s.           # tp1
+  ?s dbo:motto ?m.               # tp2
+  ?p dbo:birthPlace dbr:York.    # tp3
+  ?p dbo:occupation ?occupation. # tp4
+}

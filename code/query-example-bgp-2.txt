@@ -1,0 +1,5 @@
+SELECT ?p ?s ?m WHERE {
+  dbr:Peter_John_Allan dbo:almaMater ?s.           # tp'1
+  ?s dbo:motto ?m.                                 # tp'2
+  dbr:Peter_John_Allan dbo:occupation ?occupation. # tp'3
+}

@@ -115,6 +115,12 @@ that were detected during the last TPF response for that pattern.
 It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
 Once all checks pass, the original HTTP-based membership logic will be invoked.
 
+Performance-wise, the overhead of this algorithm is negligible,
+since for each membership query triple, just three AMF tests have to be done.
+For example, for Bloom filters this test just involves a simple hash operation and a binary or,
+which adds little overhead to the query execution process,
+especially considering that these will in some cases avoid much more expensive HTTP requests.
+
 <figure id="amf-triple-pseudo" class="listing">
 ````/code/amf-triple-pseudo.js````
 <figcaption markdown="block">
@@ -140,6 +146,11 @@ and for each triple component that is not a variable, it will run it through its
 Once a true negative is found, it will immediately return an empty stream to indicate that this BGP definitely contains no results.
 If all checks on the other hand pass, the original BGP logic will be invoked,
 which will down the line invoke more expensive HTTP requests.
+
+Performance-wise, the overhead of this algorithm is also negligible.
+The complexity of this algorithm is `O(n)`, with `n` the number of triple patterns.
+Like before, since the AMF tests are inexpensive,
+the computational impact of this algorithm is very low.
 
 <figure id="amf-bgp-pseudo" class="listing">
 ````/code/amf-bgp-pseudo.js````

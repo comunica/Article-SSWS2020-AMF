@@ -1,0 +1,9 @@
+prefix dbo: <http://dbpedia.org/ontology/>
+prefix dbr: <http://dbpedia.org/resource/York>
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?p ?c WHERE {
+  ?p a dbo:Artist.         # tp1
+  ?p dbo:birthPlace ?c.    # tp2
+  ?c rdfs:label "York"@en. # tp3
+}

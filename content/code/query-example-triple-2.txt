@@ -1,0 +1,4 @@
+SELECT ?p WHERE {
+  ?p a dbo:Artist.            # tp'1
+  ?p dbo:birthPlace dbr:York. # tp'2
+}

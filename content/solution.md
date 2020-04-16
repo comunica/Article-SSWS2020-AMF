@@ -1,9 +1,105 @@
 ## Client-side AMF Algorithms
 {:#solution}
 
-In this section, we discuss the original client-side triple-based AMF algorithm,
+In this section, we start by illustrating how AMFs can be used during SPARQL query execution over TPF interfaces
+following the approach by Vander Sande et al., and we show where it lacks.
+Following that, we discuss the original client-side triple-based AMF algorithm in more detail,
 followed by an introduction of our new client-side BGP-based AMF algorithm.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.
+
+### AMFs during SPARQL query execution
+
+In this section, we explain how AMFs can be effective
+during client-side SPARQL query execution against a TPF interface,
+following the example from [Vander Sande et al](cite:cites amf2015).
+
+<figure id="query-example-triple" class="listing">
+````/code/query-example-triple.txt````
+<figcaption markdown="block">
+SPARQL query that finds all artists born in cities with the name "York".
+</figcaption>
+</figure>
+
+Using the [default TPF algorithm](cite:cites ldf), the query from [](#query-example-triple)
+will be executed by recursively identifying the triple pattern with the lowest estimated cardinality,
+and applying its bindings to the remaining triple patterns.
+In this case, it will start by fetching the cardinalities of the four patterns,
+which are exposed by the TPF server.
+In this case, these are `{(tp1, 96300), (tp2, 625811), (tp3, 2)}`.
+Since `tp3` has the lowest cardinality estimate, its 2 bindings are applied to the remaining triple patterns,
+and the resulting queries are handled recursively.
+For example, for `?p = dbr:York` the resulting query can be found in [](#query-example-triple-2).
+
+<figure id="query-example-triple-2" class="listing">
+````/code/query-example-triple-2.txt````
+<figcaption markdown="block">
+The SPARQL query from [](#query-example-triple) instantiated with `?p = dbr:York`.
+</figcaption>
+</figure>
+
+The same process will repeat for each of these queries.
+For example, for the query in [](#query-example-triple-2),
+we may get `{(tp'1, 96300), (tp'2, 207)}`,
+so we continue with `tp'2`.
+For example, for the first binding of `?p`, we may find `dbp:Adam_Thomas`,
+which results in the query with the single fully-materialized triple pattern `dbp:Adam_Thomas a dbo:Artist`.
+Each of these 207 queries are so-called _membership queries_,
+as they check the presence of this triple in the dataset.
+Since TPF works over HTTP, this large amount of membership queries requires an equal amount of HTTP requests,
+which forms the main bottleneck of the execution process.
+
+The way Vander Sande et al. solve this problem,
+is by exposing AMFs for each of these triple patterns for which membership queries will be tested,
+such as `?p a dbo:Artist`.
+This is done by including an AMF —such as a Bloom filter— in the metadata of the TPF response for `?p a dbo:Artist`.
+Before sending the 207 membership queries as HTTP requests,
+each binding for `?p` will be first run through the AMF.
+If it produces a true negative, then the HTTP request will _not_ be executed.
+The lower the error rate of the Bloom filter, the more true negatives can be filtered out this way.
+
+Unfortunately, the algorithm by Vander Sande et al.
+does not fully exploit the potential of AMFs during query execution over TPF interfaces,
+as it only considers fully materialized triples,
+and does not consider earlier filtering higher up in the query plan.
+For example, let us consider the query from [](#query-example-bgp).
+
+<figure id="query-example-bgp" class="listing">
+````/code/query-example-bgp.txt````
+<figcaption markdown="block">
+SPARQL query that finds the occupation of all people born in York,
+together with the motto of their alma mater.
+</figcaption>
+</figure>
+
+For this query, the cardinality estimates are `{(tp1, 121707), (tp2, 41172), (tp3, 236), (tp4, 330413)}`.
+Since `tp3` has the lowest cardinality,
+its 236 bindings are applied to the remaining patterns.
+For example, for `?p = dbr:Peter_John_Allan` the resulting query can be found in [](#query-example-bgp-2).
+
+<figure id="query-example-bgp-2" class="listing">
+````/code/query-example-bgp-2.txt````
+<figcaption markdown="block">
+The SPARQL query from [](#query-example-bgp) instantiated with `?p = dbr:Peter_John_Allan`.
+</figcaption>
+</figure>
+
+Of these 236 queries, only 18 will actually find a result,
+since most people do not have values for `dbo:almaMater` and `dbo:occupation`.
+And if people have a value for these two patterns, the number of results is typically not more than one.
+These two patterns resemble membership queries, but with non-fully-materialized triple patterns.
+As such, these are not considered by the algorithm from Vander Sande et al.
+
+One of the goals of this work is to introduce an extension to this algorithm
+so that these cases are also considered by making use of AMFs.
+Concretely, before sending the 236 sub-queries,
+we propose to make use of the AMFs from `tp1` and `tp4`,
+and filter out each `?p` binding that results in a true negative.
+Since these 236 queries would normally result in even more recursive sub-queries and HTTP requests,
+the impact of filtering at this higher level in the query plan
+can become very significant in some cases.
+As such, we propose to make use of AMFs at a higher level in the query plan
+in the scope of the whole BGP,
+instead of just for low-level triples.
 
 ### Triple-based AMF Algorithm
 

@@ -111,7 +111,7 @@ However, further research is needed to investigate this trade-off for other type
 {:#recommendations}
 
 Based on the conclusions of our experimental results,
-we offer the following guidelines for publishers that aim to use the AMF feature:
+we derived the following guidelines for publishers who aim to use the AMF feature:
 
 * Enable **HTTP caching** with a tool such as [NGINX](https://www.nginx.com/).
 * **Pre-compute AMFs** (or at least cache) AMFs of size 10.000 or higher.

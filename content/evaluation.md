@@ -192,6 +192,8 @@ and report on their p-values (_low values indicate non-equal means_).
 #### Client-side AMF Algorithms
 {:.display-block}
 
+<span class="comment" data-author="RV">Let's not forget to interpret every figure. Say what the reader should see, not what they see. Most figures do, but not all.</span>
+
 <figure id="plot_client_algos">
 <center>
 <img src="img/experiments/client_algos/plot_no_c.svg" alt="Client-side AMF Algorithms (non-C)" class="plot_non_c">
@@ -364,6 +366,8 @@ For this experiment, average CPU usage increased from 31.65% (no AMF) to 40.56% 
 Furthermore, when looking at the raw HTTP logs,
 we observe that by _always_ exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
 As such, AMFs significantly reduce the number of HTTP requests at the cost of ~10% more server load.
+
+<span class="comment" data-author="RV">Three identical captions ahead; can we be more specific and comparative?</span>
 
 <figure id="plot_delay_none">
 <center>

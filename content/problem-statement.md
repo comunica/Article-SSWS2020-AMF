@@ -21,7 +21,7 @@ our research questions are defined as follows:
     For instance, combining multiple AMFs at BGP-level
     by applying AMFs on triple patterns with shared variables.
 2. {:#question-cache}
-    **To what extent does HTTP caching and AMFs speed up query execution?**
+    **To what extent do HTTP caching and AMFs speed up query execution?**
     <br />
     As Vander Sande et al. suggest that caching of AMFs
     reduce server delays, we investigate the impact of caching HTTP requests and/or AMFs.
@@ -38,9 +38,9 @@ our research questions are defined as follows:
     In experiments by Vander Sande et al., the HTTP bandwidth was set to a realistic 1Mbps.
     However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
 5. {:#question-inband}
-    **How is query throughput improved by adding AMF metadata in-band of TPF HTTP responses?**
+    **How is query throughput improved by adding AMF metadata in-band to TPF HTTP responses?**
     <br />
-    In previous work, AMF metadata was always included out-of-band to TPF response,
+    In previous work, AMF metadata was always included out-of-band of TPF responses,
     behind a link that clients should follow.
     This opens the question as to whether moving AMF metadata _in-band_
     and increasing the size of these responses
@@ -50,6 +50,10 @@ our research questions are defined as follows:
     <br />
     Based on their results, Vander Sande et al. have suggested that additional experimentation is needed with regards
     to lower _AMF false-positive probabilities_, as higher probabilities did not have a significant effect on query performance.
+    Note that query correctness is never affected,
+    but rather the number of requests to the server,
+    since every positive match require a request
+    to verify whether it is a true or false positive.
 
 To come up with an answer to these research questions,
 we will introduce statistical hypotheses in [](#evaluation)

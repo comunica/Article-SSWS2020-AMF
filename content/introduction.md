@@ -1,17 +1,24 @@
 ## Introduction
 {:#introduction}
 
-While [SPARQL endpoints](cite:cites spec:sparqlprot) are typically chosen as interface to expose Linked Data on the Web,
-such endpoints tend to [suffer from availability issues](cite:cites sparqlreadyforaction).
-These problems are caused by SPARQL endpoints requiring high-end computational resources
+[SPARQL endpoints](cite:cites spec:sparqlprot),
+which expose Linked Data on the Web through a query-based interface,
+tend to [suffer from availability issues](cite:cites sparqlreadyforaction).
+In comparison to most other HTTP servers,
+SPARQL endpoints require high-end computational resources
 due the high complexity of [SPARQL queries](cite:cites spec:sparqllang)
-and the unbounded number of concurrent clients requesting query execution.
+and can thus be difficult to sustain
+when a number of concurrent clients request query execution.
 In order to cope with this problem,
 the [Linked Data Fragments (LDF) effort](cite:cites ldf)
 has been initiated to investigate alternative query interfaces to publish Linked Datasets,
-by redistributing query effort between server and client.
+by redistributing the effort of query evaluation between servers and clients.
 
-Over the recent years, different kinds of these LDF interfaces have been introduced,
+<span class="comment" data-author="RV">In this entire section, I wonder whether we want to go a bit more high level still. Talking about how parts of a query are performed on the server, some on the client. (So adding a high-level sentence like that to the next para.) Then making a point how people noticed that many queries ultimately decomposed to a series of yes/no questions of whether a certain fact exist. Instead of asking such questions individually, the server can send a pre-filter to the client, eliminating a lot of those questions. Cue AMF.</span>
+<span class="comment" data-author="RV">By doing this, the intro (and thus the entire article) becomes instantly accessible to a wider audience.</span>
+
+<span class="comment" data-author="RV">Perhaps a little bit about what LDF is? A conceptual framework for defining different kind of interfaces to Linked Data?</span>
+In recent years, different kinds of these LDF interfaces have been introduced,
 such as [Triple Pattern Fragments (TPF)](cite:cites ldf),
 [Bindings-Restricted Triple Pattern Fragments](cite:cites brtpf),
 [SaGe](cite:cites sage),
@@ -19,6 +26,7 @@ and [Smart-KG](cite:cites smartkg).
 Each of these types of interfaces introduce their own trade-offs in terms of server and client effort.
 Since TPF is [quickly gaining adoption among publishers](cite:cites tpfusage),
 we focus on improving its performance in this work.
+<span class="comment" data-author="RV">Actually, that might not be entirely correct. We maybe really want to spend some effort explaining how LDF interfaces can be built out of different features, which can be combined. One of these features is AMF. However, since TPF is the one gaining adoption, we will test AMF with TPF. But could as well test it with all of the others!</span>
 
 With the goal of preserving the benefits of TPF
 while reducing its disadvantages,
@@ -27,6 +35,7 @@ that can be used independently or in conjunction with TPF.
 Through usage of [self-descriptive hypermedia](cite:cites verborgh_ic_2018) on the server,
 clients can automatically detect metadata and controls
 and use these additional features to enhance the query evaluation process.
+<span class="comment" data-author="RV">OK, fair enough, the features are here. Then I think it's just a matter of tying the previous paragraph and this one together fully correctly.</span>
 One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata,
 which supporting clients can use to reduce the number of HTTP requests,
 with only a slight increase in server cost.
@@ -48,21 +57,23 @@ so that Linked Data publishers can expose their Linked Datasets in a more effici
 
 Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called _Comunica Bencher_.
+<span class="comment" data-author="RV">Claim in abstract?</span>
+<span class="comment" data-author="RV">Claim in conclusion!!!</span>
 It ensures complete reproducible experimental results by
 having declarative experiment descriptions build on top of [Comunica](cite:cites comunica),
 a modular Linked Data querying framework.
 This facilitates the reproduction of the experiments of this work,
 as well as the creation of related experiments in the future.
 
-Concretely, the contributions of this work are the following:
+The contributions of this work are the following:
 
-* BGP-based AMF algorithm to optimize client-side query execution over TPF.
-* Analysis of HTTP caching and server-side AMF filter caching.
-* Threshold-based mechanism for exposing AMFs by size in TPF servers.
-* Analysis of network bandwidth in combination with different client-side AMF algorithms.
-* Server-side and client-side support for in-band HTTP AMF responses.
-* Analysis of different AMF false-positive probabilities.
-* A reusable benchmarking framework _Comunica Bencher_, using which the contributions above are evaluated extensively.
+* a BGP-based AMF algorithm to optimize client-side query execution over TPF;
+* an analysis of HTTP caching and server-side AMF filter caching;
+* a threshold-based mechanism for exposing AMFs by size in TPF servers;
+* an analysis of network bandwidth in combination with different client-side AMF algorithms;
+* server-side and client-side support for in-band HTTP AMF responses;
+* an analysis of different AMF false-positive probabilities;
+* a reusable benchmarking framework _Comunica Bencher_, using which the contributions above are evaluated extensively.
 
 In the next section, we cover the related work pertaining to this article.
 After that, we introduce our research questions in [](#problem-statement).

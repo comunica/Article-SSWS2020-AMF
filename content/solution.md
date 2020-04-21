@@ -45,17 +45,22 @@ For example, for the first binding of `?p`, we may find `dbp:Adam_Thomas`,
 which results in the query with the single fully-materialized triple pattern `dbp:Adam_Thomas a dbo:Artist`.
 Each of these 207 queries are so-called _membership queries_,
 as they check the presence of this triple in the dataset.
-Since TPF works over HTTP, this large amount of membership queries requires an equal amount of HTTP requests,
+Since TPF works over HTTP, this large number of membership queries requires an equal number of HTTP requests,
 which forms the main bottleneck of the execution process.
 
 The way Vander Sande et al. solve this problem,
 is by exposing AMFs for each of these triple patterns for which membership queries will be tested,
 such as `?p a dbo:Artist`.
-This is done by including an AMF —such as a Bloom filter— in the metadata of the TPF response for `?p a dbo:Artist`.
+This is done by including an AMF—such as a Bloom filter—in the metadata of the TPF response for `?p a dbo:Artist`.
 Before sending the 207 membership queries as HTTP requests,
 each binding for `?p` will be first run through the AMF.
 If it produces a true negative, then the HTTP request will _not_ be executed.
 The lower the error rate of the Bloom filter, the more true negatives can be filtered out this way.
+<span class="comment" data-author="RV">Something about negatives, how they can be true or false, so a request is _always_ required?</span>
+<span class="comment" data-author="RV">Reiterate perhaps that, because of this, correctness is never affected</span>
+
+<span class="comment" data-author="RV">Perhaps the paragraph below should be its own section after 4.2?</span>
+<span class="comment" data-author="RV">And perhaps the remaining 4.1 and 4.2 can then be joined together, so we have clear past and new?</span>
 
 Unfortunately, the algorithm by Vander Sande et al.
 does not fully exploit the potential of AMFs during query execution over TPF interfaces,
@@ -182,7 +187,7 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
 Heuristic for checking if the BGP-based AMF algorithm should be executed,
 where `bindingsCount` is the number of intermediary bindings for the current BGP,
 and `triplePatternsCardinality` is an array of cardinality estimates for each triple pattern in the BGP.
-`AMF_TRIPLE_SIZE` is a parameter indicating the amount of bytes required to represent a triple inside an AMF,
+`AMF_TRIPLE_SIZE` is a parameter indicating the number of bytes required to represent a triple inside an AMF,
 and `TPF_BINDING_SIZE` is the size in bytes of a single TPF response.
 </figcaption>
 </figure>

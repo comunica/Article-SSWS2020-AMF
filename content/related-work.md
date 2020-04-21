@@ -15,6 +15,7 @@ is a conceptual framework to study
 interfaces for publishing Linked Data,
 by comparing server and client effort.
 Some LDFs may require a low server effort,
+<span class="comment" data-author="RV">to do what?</span>
 at the cost of increased client-side querying effort (_e.g. data dumps_).
 while others require a high server effort,
 at the cost of minimal client-side effort (_e.g. SPARQL endpoint_).
@@ -180,7 +181,8 @@ which exists in the document `</amf/my-dataset?query=...#predicate>` that can be
 
 The results of this work show that there is a significant decrease in HTTP requests when AMFs are used,
 at the cost of only a small increase in server load.
-Even though the _number_ of HTTP requests was lower (reduction of 33%),
+However,
+even though the _number_ of HTTP requests was lower (reduction of 33%),
 the _total execution time increased_ for most queries,
 because of the long server delays when generating AMFs.
 In this work, we aim to solve this problem of higher execution times.

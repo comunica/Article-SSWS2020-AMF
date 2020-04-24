@@ -192,8 +192,6 @@ and report on their p-values (_low values indicate non-equal means_).
 #### Client-side AMF Algorithms
 {:.display-block}
 
-<span class="comment" data-author="RV">Let's not forget to interpret every figure. Say what the reader should see, not what they see. Most figures do, but not all.</span>
-
 <figure id="plot_client_algos">
 <center>
 <img src="img/experiments/client_algos/plot_no_c.svg" alt="Client-side AMF Algorithms (non-C)" class="plot_non_c">
@@ -211,6 +209,7 @@ BGP-based approaches are mostly faster.
 </center>
 <figcaption markdown="block">
 Query result arrival times for query F3 for the different client-side algorithms.
+BGP-based algorithms introduce a delay until first result, but produce results at a higher rate after this delay.
 </figcaption>
 </figure>
 
@@ -226,6 +225,7 @@ Query result arrival times for query F3 for the different client-side algorithms
 
 <figcaption markdown="block">
 Number of HTTP requests, number of HTTP requests relative to not using AMFs, number of cache hits and cache hit rate for the different client-side algorithms.
+BGP-based algorithms require significantly fewer HTTP requests.
 </figcaption>
 </figure>
 
@@ -367,7 +367,8 @@ Furthermore, when looking at the raw HTTP logs,
 we observe that by _always_ exposing AMFs, we use 28.66% of the total number of HTTP requests compared to not exposing AMFs.
 As such, AMFs significantly reduce the number of HTTP requests at the cost of ~10% more server load.
 
-<span class="comment" data-author="RV">Three identical captions ahead; can we be more specific and comparative?</span>
+#### Network Bandwidth
+{:.display-block}
 
 <figure id="plot_delay_none">
 <center>
@@ -375,7 +376,7 @@ As such, AMFs significantly reduce the number of HTTP requests at the cost of ~1
 <img src="img/experiments/delay/plot_none_c.svg" alt="Effect of bandwidth on non-AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-When AMF is not used, query evaluation times decrease with increased bandwidth.
+When AMF is not used, query evaluation times decrease with increased bandwidth up until 2048kbps.
 </figcaption>
 </figure>
 
@@ -385,7 +386,7 @@ When AMF is not used, query evaluation times decrease with increased bandwidth.
 <img src="img/experiments/delay/plot_triple_c.svg" alt="Effect of bandwidth on triple AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-When the triple-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.
+When the triple-based AMF algorithm is used, query evaluation times also decrease with increased bandwidth up until 2048kbps.
 </figcaption>
 </figure>
 
@@ -395,12 +396,10 @@ When the triple-based AMF algorithm is used, query evaluation times decrease wit
 <img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of bandwidth on BGP AMF (C)" class="plot_c">
 </center>
 <figcaption markdown="block">
-When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth.
+When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth, even for more than 2048kbps,
+showing that this algorithm can make better use of higher bandwidths.
 </figcaption>
 </figure>
-
-#### Network Bandwidth
-{:.display-block}
 
 [](#plot_delay_none), [](#plot_delay_triple) and [](#plot_delay_bgp) show the effects of different bandwidths
 on query evaluation times over different algorithms.

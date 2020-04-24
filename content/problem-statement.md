@@ -52,7 +52,7 @@ our research questions are defined as follows:
     to lower _AMF false-positive probabilities_, as higher probabilities did not have a significant effect on query performance.
     Note that query correctness is never affected,
     but rather the number of requests to the server,
-    since every positive match require a request
+    since every positive match requires a request
     to verify whether it is a true or false positive.
 
 To come up with an answer to these research questions,

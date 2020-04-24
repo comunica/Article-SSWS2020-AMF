@@ -54,10 +54,10 @@ such as `?p a dbo:Artist`.
 This is done by including an AMF—such as a Bloom filter—in the metadata of the TPF response for `?p a dbo:Artist`.
 Before sending the 207 membership queries as HTTP requests,
 each binding for `?p` will be first run through the AMF.
-If it produces a true negative, then the HTTP request will _not_ be executed.
+If it produces a true negative, then the HTTP request will _not_ be executed,
+otherwise an HTTP request is required to check if it is a true or false positive.
 The lower the error rate of the Bloom filter, the more true negatives can be filtered out this way.
-<span class="comment" data-author="RV">Something about negatives, how they can be true or false, so a request is _always_ required?</span>
-<span class="comment" data-author="RV">Reiterate perhaps that, because of this, correctness is never affected</span>
+Since false negatives are not possible, and positives still require an HTTP request, query result correctness is not affected.
 
 <span class="comment" data-author="RV">Perhaps the paragraph below should be its own section after 4.2?</span>
 <span class="comment" data-author="RV">And perhaps the remaining 4.1 and 4.2 can then be joined together, so we have clear past and new?</span>

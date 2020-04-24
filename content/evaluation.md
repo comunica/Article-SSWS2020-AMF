@@ -314,8 +314,6 @@ the difference is only small in most cases, so we accept [Hypothesis 2.5](#hypo-
 #### Dynamically Enabling AMF
 {:.display-block}
 
-<span class="comment" data-author="RV">Shall we try identical scales for identical-looking pictures?</span>
-
 <figure id="plot_server_metadata_enabled_cached">
 <center>
 <img src="img/experiments/server_metadata_enabled/plot_cached_no_c.svg" alt="Effect of AMF result count thresholds with HTTP cache (non-C)" class="plot_non_c">
@@ -370,8 +368,6 @@ we observe that by _always_ exposing AMFs, we use 28.66% of the total number of 
 As such, AMFs significantly reduce the number of HTTP requests at the cost of ~10% more server load.
 
 <span class="comment" data-author="RV">Three identical captions ahead; can we be more specific and comparative?</span>
-
-<span class="comment" data-author="RV">Shall we try identical scales for identical-looking pictures?</span>
 
 <figure id="plot_delay_none">
 <center>

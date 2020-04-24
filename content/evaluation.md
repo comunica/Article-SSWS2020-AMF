@@ -413,9 +413,6 @@ For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_), which ac
 This shows that _if_ BGP-level AMF is used,
 then higher bandwidths can be exploited _more_ for faster query evaluation.
 
-#### In-band vs. Out-of-band
-{:.display-block}
-
 <figure id="plot_in_vs_out_band">
 <center>
 <img src="img/experiments/in_vs_out_band/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c">
@@ -426,6 +423,9 @@ Query evaluation times comparing out-of-band and in-band based on different
 AMF triple count threshold show no major differences.
 </figcaption>
 </figure>
+
+#### In-band vs. Out-of-band
+{:.display-block}
 
 [](#plot_in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
 Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),

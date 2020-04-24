@@ -14,8 +14,7 @@ and their use for the TPF interface.
 is a conceptual framework to study
 interfaces for publishing Linked Data,
 by comparing server and client effort.
-Some LDFs may require a low server effort,
-<span class="comment" data-author="RV">to do what?</span>
+During query execution, some LDFs may require a low server effort,
 at the cost of increased client-side querying effort (_e.g. data dumps_).
 while others require a high server effort,
 at the cost of minimal client-side effort (_e.g. SPARQL endpoint_).

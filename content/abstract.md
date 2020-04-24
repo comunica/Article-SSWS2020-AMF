@@ -19,6 +19,8 @@ we have investigated unexplored aspects of AMFs as metadata on TPF interfaces.
 In this article, we introduce and evaluate alternative approaches
 for server-side publication and client-side consumption of AMFs within TPF
 to achieve faster query execution, while maintaining low server-side effort.
+To facilitate the reproduction of our experiments and the creation of related experiments in future work,
+we additionally introduce a reusable benchmarking framework.
 <!-- Findings     -->
 Our alternative client-side algorithm
 and the proposed server configurations significantly reduce

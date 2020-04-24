@@ -11,36 +11,37 @@ and can thus be difficult to sustain
 when a number of concurrent clients request query execution.
 In order to cope with this problem,
 the [Linked Data Fragments (LDF) effort](cite:cites ldf)
-has been initiated to investigate alternative query interfaces to publish Linked Datasets,
+has been initiated as a conceptual framework to investigate alternative query interfaces to publish Linked Datasets,
 by redistributing the effort of query evaluation between servers and clients.
 
-<span class="comment" data-author="RV">In this entire section, I wonder whether we want to go a bit more high level still. Talking about how parts of a query are performed on the server, some on the client. (So adding a high-level sentence like that to the next para.) Then making a point how people noticed that many queries ultimately decomposed to a series of yes/no questions of whether a certain fact exist. Instead of asking such questions individually, the server can send a pre-filter to the client, eliminating a lot of those questions. Cue AMF.</span>
-<span class="comment" data-author="RV">By doing this, the intro (and thus the entire article) becomes instantly accessible to a wider audience.</span>
+LDF interfaces allow some parts of the query to be performed on the server, and some on the client,
+which leads to a redistribution of effort between server and client.
+This redistribution requires queries to be decomposed into multiple smaller queries,
+which typically leads to slower query execution due to the HTTP overhead of these roundtrips,
+compared to fully server-side query execution.
+In order to reduce this number of smaller queries,
+servers could send a pre-filter to the client,
+which could potentially eliminate many of these queries.
+The focus of this work is investigating such pre-filters.
 
-<span class="comment" data-author="RV">Perhaps a little bit about what LDF is? A conceptual framework for defining different kind of interfaces to Linked Data?</span>
 In recent years, different kinds of these LDF interfaces have been introduced,
 such as [Triple Pattern Fragments (TPF)](cite:cites ldf),
 [Bindings-Restricted Triple Pattern Fragments](cite:cites brtpf),
 [SaGe](cite:cites sage),
 and [Smart-KG](cite:cites smartkg).
 Each of these types of interfaces introduce their own trade-offs in terms of server and client effort.
-Since TPF is [quickly gaining adoption among publishers](cite:cites tpfusage),
-we focus on improving its performance in this work.
-<span class="comment" data-author="RV">Actually, that might not be entirely correct. We maybe really want to spend some effort explaining how LDF interfaces can be built out of different features, which can be combined. One of these features is AMF. However, since TPF is the one gaining adoption, we will test AMF with TPF. But could as well test it with all of the others!</span>
-
-With the goal of preserving the benefits of TPF
-while reducing its disadvantages,
-[various research efforts examined additional interface features](cite:cites amf2015, tpfoptimization, vtpf)
-that can be used independently or in conjunction with TPF.
-Through usage of [self-descriptive hypermedia](cite:cites verborgh_ic_2018) on the server,
-clients can automatically detect metadata and controls
-and use these additional features to enhance the query evaluation process.
-<span class="comment" data-author="RV">OK, fair enough, the features are here. Then I think it's just a matter of tying the previous paragraph and this one together fully correctly.</span>
+Additionally, LDF interfaces can enable feature-based extensibility,
+which allows servers to optionally expose certain features as metadata through usage of [self-descriptive hypermedia](cite:cites verborgh_ic_2018),
+which can then be detected automatically by supporting clients to enhance the query evaluation process.
+Due to the extensibility of TPF, [several interface features have already been proposed for TPF](cite:cites amf2015, tpfoptimization, vtpf).
 One such feature is [Approximate Membership Filter (AMF)](cite:cites amf2015) metadata,
 which supporting clients can use to reduce the number of HTTP requests,
 with only a slight increase in server cost.
 Unfortunately, this currently comes at the cost of slower query execution,
 because the individual HTTP requests were larger and more expensive to compute.
+Since TPF is [quickly gaining adoption among publishers](cite:cites tpfusage),
+we focus on improving the performance of AMF with TPF in this work.
+AMF could also be useful for other types of LDF interfaces, but we consider this out of scope for this work.
 
 Even though the work on extending TPF with AMFs showed excessive overhead,
 we claim that these problems can be resolved,
@@ -57,10 +58,8 @@ so that Linked Data publishers can expose their Linked Datasets in a more effici
 
 Because of the large number of combinations that are compared in our experiments,
 we introduce a reusable benchmarking framework, called _Comunica Bencher_.
-<span class="comment" data-author="RV">Claim in abstract?</span>
-<span class="comment" data-author="RV">Claim in conclusion!!!</span>
 It ensures complete reproducible experimental results by
-having declarative experiment descriptions build on top of [Comunica](cite:cites comunica),
+having declarative experiment descriptions built on top of [Comunica](cite:cites comunica),
 a modular Linked Data querying framework.
 This facilitates the reproduction of the experiments of this work,
 as well as the creation of related experiments in the future.

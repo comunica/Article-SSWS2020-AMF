@@ -1,17 +1,18 @@
 ## Client-side AMF Algorithms
 {:#solution}
 
-In this section, we start by illustrating how AMFs can be used during SPARQL query execution over TPF interfaces
-following the approach by Vander Sande et al., and we show where it lacks.
-Following that, we discuss the original client-side triple-based AMF algorithm in more detail,
-followed by an introduction of our new client-side BGP-based AMF algorithm.
+In this section, we explain the existing triple-based AMF algorithm introduced by Vander Sande et al, and we show where it lacks.
+Following that, we introduce a new client-side BGP-based AMF algorithm that solves these problems.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.
 
-### AMFs during SPARQL query execution
+### Triple-based AMF Algorithm
 
-In this section, we explain how AMFs can be effective
+Hereafter, we explain how AMFs can be effective
 during client-side SPARQL query execution against a TPF interface,
 following the example from [Vander Sande et al](cite:cites amf2015).
+After that, we explain the algorithm introduced by [Vander Sande et al](cite:cites amf2015).
+
+#### Motivation
 
 <figure id="query-example-triple" class="listing">
 ````/code/query-example-triple.txt````
@@ -59,8 +60,41 @@ otherwise an HTTP request is required to check if it is a true or false positive
 The lower the error rate of the Bloom filter, the more true negatives can be filtered out this way.
 Since false negatives are not possible, and positives still require an HTTP request, query result correctness is not affected.
 
-<span class="comment" data-author="RV">Perhaps the paragraph below should be its own section after 4.2?</span>
-<span class="comment" data-author="RV">And perhaps the remaining 4.1 and 4.2 can then be joined together, so we have clear past and new?</span>
+#### Algorithm
+
+[Vander Sande et al.](cite:cites amf2015) introduced an algorithm
+that acts as a cheap pre-processing step for _testing the membership of triples_.
+This algorithm was used in combination with the streaming [greedy client-side TPF algorithm](cite:cites ldf) for evaluating SPARQL queries.
+[](#amf-triple-pseudo) depicts this algorithm in pseudo-code.
+
+Concretely, every triple pattern that has all of its variables resolved to constants
+is run through this function right before more a expensive HTTP request would be performed.
+This function takes a triple and a query context containing the AMFs
+that were detected during the last TPF response for that pattern.
+It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
+Once all checks pass, the original HTTP-based membership logic will be invoked.
+
+Performance-wise, the overhead of this algorithm is negligible,
+since for each membership query triple, just three AMF tests have to be done.
+For example, for Bloom filters this test just involves a simple hash operation and a binary or,
+which adds little overhead to the query execution process,
+especially considering that these will in some cases avoid much more expensive HTTP requests.
+
+<figure id="amf-triple-pseudo" class="listing">
+````/code/amf-triple-pseudo.js````
+<figcaption markdown="block">
+Triple-based AMF algorithm by [Vander Sande et al.](cite:cites amf2015)
+as a pre-filtering step for testing the membership of triples.
+</figcaption>
+</figure>
+
+### BGP-based AMF Algorithm
+
+In this section, we explain where the algorithm from [Vander Sande et al](cite:cites amf2015)
+lacks during client-side SPARQL query execution against a TPF interface using an example.
+Afterwards, we introduce an improved algorithm that solves these problems.
+
+#### Motivation
 
 Unfortunately, the algorithm by Vander Sande et al.
 does not fully exploit the potential of AMFs during query execution over TPF interfaces,
@@ -101,40 +135,12 @@ we propose to make use of the AMFs from `tp1` and `tp4`,
 and filter out each `?p` binding that results in a true negative.
 Since these 236 queries would normally result in even more recursive sub-queries and HTTP requests,
 the impact of filtering at this higher level in the query plan
-can become very significant in some cases.
+can become very significant.
 As such, we propose to make use of AMFs at a higher level in the query plan
 in the scope of the whole BGP,
 instead of just for low-level triples.
 
-### Triple-based AMF Algorithm
-
-[Vander Sande et al.](cite:cites amf2015) introduced an algorithm
-that acts as a cheap pre-processing step for _testing the membership of triples_.
-This algorithm was used in combination with the streaming [greedy client-side TPF algorithm](cite:cites ldf) for evaluating SPARQL queries.
-[](#amf-triple-pseudo) depicts this algorithm in pseudo-code.
-
-Concretely, every triple pattern that has all of its variables resolved to constants
-is run through this function right before more a expensive HTTP request would be performed.
-This function takes a triple and a query context containing the AMFs
-that were detected during the last TPF response for that pattern.
-It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
-Once all checks pass, the original HTTP-based membership logic will be invoked.
-
-Performance-wise, the overhead of this algorithm is negligible,
-since for each membership query triple, just three AMF tests have to be done.
-For example, for Bloom filters this test just involves a simple hash operation and a binary or,
-which adds little overhead to the query execution process,
-especially considering that these will in some cases avoid much more expensive HTTP requests.
-
-<figure id="amf-triple-pseudo" class="listing">
-````/code/amf-triple-pseudo.js````
-<figcaption markdown="block">
-Triple-based AMF algorithm by [Vander Sande et al.](cite:cites amf2015)
-as a pre-filtering step for testing the membership of triples.
-</figcaption>
-</figure>
-
-### BGP-based AMF Algorithm
+#### Algorithm
 
 Following the idea of the _triple-based_ algorithm,
 we introduce an extension that applies this concept for _BGPs_.

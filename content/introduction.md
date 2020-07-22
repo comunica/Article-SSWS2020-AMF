@@ -59,6 +59,5 @@ so that Linked Data publishers can expose their Linked Datasets in a more effici
 In the next section, we cover the related work pertaining to this article.
 After that, we introduce our research questions in [](#problem-statement).
 Next, we introduce our client-side algorithm in [](#solution).
-In [](#evaluation), we introduce our experimental setup,
-present our results, and test our hypotheses.
+In [](#evaluation), we introduce our experimental setup and present our results.
 Finally, we draw conclusions in [](#conclusions).

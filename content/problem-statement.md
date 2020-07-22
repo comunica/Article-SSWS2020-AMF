@@ -47,6 +47,4 @@ our research questions are defined as follows:
     since every positive match requires a request
     to verify whether it is a true or false positive.
 
-To come up with an answer to these research questions,
-we will introduce statistical hypotheses in [](#evaluation)
-that will be tested based on our experimental results.
+An answer to these research questions will be formed using the experiments from [](#evaluation).

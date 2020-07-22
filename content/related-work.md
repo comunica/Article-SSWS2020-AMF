@@ -130,53 +130,7 @@ Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives
 (because of the <100% precision).
-
-The way Vander Sande et al. make use of AMFs involves exposing an AMF, such as a Bloom filter,
-for each variable triple component in a TPF response.
-For example, if the query `ex:mysubject ?p ?o` is sent to a TPF server,
-then the response could contain a Bloom filter for `?p` and one `?o`.
-The Bloom filter for `?p` contains all predicates that have `ex:mysubject` as subject,
-and the Bloom filter for `?o` similarly contains all objects that have this same subject.
-Each Bloom filter is populated with RDF terms using server-defined hashing parameters,
-so that the end result is a binary blob.
-The server shares these parameters in the AMF metadata so that clients can apply the same hashing function
-on the RDF terms they want to check membership for.
-When a client receives the TPF response for `ex:mysubject ?p ?o`,
-it will be able to detect and download these two Bloom filters.
-If during query execution the client needs to do a membership check against this pattern,
-for example for `ex:mysubject rdf:type foaf:Person`,
-the client can first do a pre-filtering step by looking for `rdf:type` in the first AMF,
-and `foaf:Person` in the second AMF.
-If any of these checks fail, this means that this triple definitely does _not_ exist in the dataset,
-and the actual membership HTTP request can be skipped.
-
-[](#amf-metadata-outband) shows an example of what this AMF metadata can look like in a TPF response for the query `ex:mysubject ?p ?o`.
-Concretely, the AMF metadata resides in the `<#metadata>` graph of the TPF HTTP response,
-which can contain other non-AMF-related elements such as `void:triples`.
-The available AMFs for a given response are defined via the predicate `ms:membershipFilter`,
-and the triple pattern component they apply to is indicated via `ms:variable`.
-As the approach from Vander Sande et al. does not include AMFs in-band,
-clients must _dereference_ the IRI of the AMF to get its binary contents.
-For example, the dereferenced contents of the predicate AMF from [](#amf-metadata-outband) can be seen in [](#amf-metadata-outband-link).
-Next to the binary contents of the AMF in n base64-encoded form (`ms:filter`), the type of the AMF is indicated `ms:BloomFilter`,
-and Bloom-filter-specific parameters are included such as `ms:hashes` and `ms:bits`.
-
-<figure id="amf-metadata-outband" class="listing">
-````/code/amf-metadata-outband.trig````
-<figcaption markdown="block">
-Self-descriptive AMF metadata in a TPF response for `ex:mysubject ?p ?o`,
-which allows intelligent clients to detect, interpret and make use it.
-</figcaption>
-</figure>
-
-<figure id="amf-metadata-outband-link" class="listing">
-````/code/amf-metadata-outband-link.trig````
-<figcaption markdown="block">
-Out-of-band AMF details for the AMF of the predicate component in [](#amf-metadata-outband),
-which exists in the document `</amf/my-dataset?query=...#predicate>` that can be followed by clients through dereferencing.
-</figcaption>
-</figure>
-
+More details on the exact representation of this AMF metadata can be found on [https://github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-metadata](https://github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-metadata).
 
 The results of this work show that there is a significant decrease in HTTP requests when AMFs are used,
 at the cost of only a small increase in server load.

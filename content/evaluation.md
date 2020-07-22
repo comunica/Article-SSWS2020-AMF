@@ -7,7 +7,7 @@ Next, we briefly discuss the implementations of our algorithm.
 After that, we present our experimental setup and our statistical hypotheses.
 Finally, we present our results and testing of our hypotheses.
 
-Anonymized code and results results can be found at <a href="https://www.dropbox.com/s/nuj7l72wglpzx4p/data.zip">https://www.dropbox.com/s/nuj7l72wglpzx4p/data.zip</a>.
+All code and results results can be found on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
 
 ### Reusable Benchmarking Framework
 

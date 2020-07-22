@@ -14,10 +14,9 @@ which means that they can be used by any of the existing data publishers
 that are exposing their data through a TPF interface,
 or any client that aims to query from them.
 
-In this section, we conclude our findings with respect to our research questions,
-based on the [evaluation](#evaluation).
-Then, we introduce a set of recommendations for data publishers using AMF with TPF.
-Finally, we present our perspectives on future work.
+Hereafter, we conclude our findings with respect to our research questions,
+based on the [evaluation](#evaluation),
+and we introduce a set of recommendations for data publishers using AMF with TPF.
 
 ### Research findings
 
@@ -110,34 +109,3 @@ we derived the following guidelines for publishers who aim to use the AMF featur
 * **Pre-compute AMFs** (or at least cache) AMFs of size 10.000 or higher.
 * If AMFs can be cached, prefer **Bloom filters** over GCS.
 * Use a false-positive **probability of 1/64**.
-
-### Future Work
-
-Even though we answered many open questions regarding AMFs,
-there are a couple of new questions.
-
-First, we need further investigation on heuristics for dynamically disabling the BGP-based AMF algorithm,
-as our current heuristic produced the optimal approach in only 19 of the 20 queries,
-where queries from other benchmarks could even result in different ratios.
-
-Secondly, since our BGP-based algorithm increases time-until-first-result due to longer download times of AMFs
-compared to the triple-based algorithm,
-it is valuable to investigate techniques to dynamically switch between these algorithms.
-Concretely, a query engine could start by following the triple-level algorithm,
-but in the meantime the relevant AMFs could be downloaded asynchronously.
-As soon as these AMFs have been downloaded, the query engine could switch over to the more efficient BGP-based algorithm.
-For this, techniques will be required to predict if the overhead of algorithm switching
-will not be higher than the performance gain by the BGP-based algorithm.
-
-Third, we call for more research in the area of _opportunistic_ query results as discussed by Vander Sande et al.
-The positive tests in AMF still require an HTTP request before it can be confirmed whether it is a true or false positive.
-A query engine could _opportunistically_ continue processing this intermediary result
-as if it was a true positive, and retract it later on if it was a false positive.
-Vander Sande et al merely discuss this feature of AMFs,
-but they do not provide any implementation or experiments on top of this.
-As such, further research in this area is required,
-especially considering the more beneficial impact of AMFs that was proven by our work.
-
-Finally, as approaches such as [Solid](cite:cites solid) are pushing towards a more _decentralized_ Web where data is spread over a large number of sources,
-investigation of AMFs in the context of federated querying is needed,
-which is not trivial, as filters of multiple sources may need to be combined.

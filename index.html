@@ -12,21 +12,20 @@
   <header>
   <h1 id="optimizing-approximate-membership-metadatabr-in-triple-pattern-fragments-for-clients-and-servers">Optimizing Approximate Membership Metadata<br />in Triple Pattern Fragments for Clients and Servers</h1>
 
-  <!-- <a rev="lsc:participatesIn" property="foaf:maker schema:creator schema:author schema:publisher" href="http://www.example.org/" typeof="foaf:Person schema:Person" resource="http://www.example.org/#me">John Doe</a>
+  <ul id="authors">
+    <li><a rev="lsc:participatesIn" property="foaf:maker schema:creator schema:author schema:publisher" href="http://www.rubensworks.net/" typeof="foaf:Person schema:Person" resource="https://www.rubensworks.net/#me">Ruben Taelman</a></li>
+    <li><a rev="lsc:participatesIn" property="foaf:maker schema:creator schema:author schema:publisher" href="#" typeof="foaf:Person schema:Person" resource="https://data.verborgh.org/people/joachim_van_herwegen">Joachim Van Herwegen</a></li>
+    <li><a rev="lsc:participatesIn" property="foaf:maker schema:creator schema:author schema:publisher" href="#" typeof="foaf:Person schema:Person" resource="https://data.verborgh.org/people/miel_vander_sande">Miel Vander Sande</a></li>
+    <li><a rev="lsc:participatesIn" property="foaf:maker schema:creator schema:author schema:publisher" href="https://ruben.verborgh.org/" typeof="foaf:Person schema:Person" resource="https://ruben.verborgh.org/profile/#me">Ruben Verborgh</a></li>
+  </ul>
 
-{:#affiliations}
-- {:#idlab} IDLab,
-            Department of Electronics and Information Systems,
-            Ghent University – imec
- -->
+  <ul id="affiliations">
+    <li id="idlab">IDLab,
+          Department of Electronics and Information Systems,
+          Ghent University – imec</li>
+  </ul>
+
 </header>
-
-<!-- Hack to make our custom fonts load in print-mode -->
-<!-- https://stackoverflow.com/questions/39364259/chrome-print-preview-doesnt-load-media-only-print-font-face -->
-<p><span class="printfont1"> </span>
-<span class="printfont2"> </span>
-<span class="printfont3"> </span>
-<span class="printfont4"> </span></p>
 
 <div class="double-column">
     
@@ -53,8 +52,6 @@ we have investigated unexplored aspects of AMFs as metadata on TPF interfaces.
 In this article, we introduce and evaluate alternative approaches
 for server-side publication and client-side consumption of AMFs within TPF
 to achieve faster query execution, while maintaining low server-side effort.
-To facilitate the reproduction of our experiments and the creation of related experiments in future work,
-we additionally introduce a reusable benchmarking framework.
 <!-- Findings     -->
 Our alternative client-side algorithm
 and the proposed server configurations significantly reduce
@@ -70,14 +67,6 @@ a set of concrete guidelines for data publishers
 on how to configure AMF metadata on their servers.
 <!-- Perspectives --></p>
 
-      <p><span id="keywords" rel="schema:about"><span class="title">Keywords</span>
-<a href="https://en.wikipedia.org/wiki/Linked_Data" resource="http://dbpedia.org/resource/Linked_Data">Linked Data</a>;
-<a href="https://en.wikipedia.org/wiki/Resource_Description_Framework" resource="http://dbpedia.org/resource/Resource_Description_Framework">RDF</a>;
-<a href="https://en.wikipedia.org/wiki/SPARQL" resource="http://dbpedia.org/resource/SPARQL">SPARQL</a>;
-<a href="https://linkeddatafragments.org/concept/" resource="https://linkeddatafragments.org/concept/">Triple Pattern Fragments</a>;
-<a href="https://en.wikipedia.org/wiki/Query" resource="http://dbpedia.org/resource/Query">Querying</a>
-</span></p>
-
     </div>
 </section>
 
@@ -88,16 +77,16 @@ on how to configure AMF metadata on their servers.
 <div datatype="rdf:HTML" property="schema:description">
         <h2 property="schema:name">Introduction</h2>
 
-        <p><a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/">SPARQL endpoints</a> <span class="references">[<a href="#ref-1">1</a>]</span>,
-which expose Linked Data on the Web through a query-based interface,
-tend to <a property="schema:citation http://purl.org/spar/cito/cites" href="http://link.springer.com/chapter/10.1007/978-3-642-41338-4_18">suffer from availability issues</a> <span class="references">[<a href="#ref-2">2</a>]</span>.
+        <p>SPARQL endpoints,
+that expose Linked Data on the Web through a query-based interface,
+tend to <a property="schema:citation http://purl.org/spar/cito/cites" href="http://link.springer.com/chapter/10.1007/978-3-642-41338-4_18">suffer from availability issues</a> <span class="references">[<a href="#ref-1">1</a>]</span>.
 In comparison to most other HTTP servers,
 SPARQL endpoints require high-end computational resources
-due the high complexity of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.w3.org/TR/2013/REC-sparql11-query-20130321/">SPARQL queries</a> <span class="references">[<a href="#ref-3">3</a>]</span>
+due the high complexity of SPARQL queries
 and can thus be difficult to sustain
 when a number of concurrent clients request query execution.
 In order to cope with this problem,
-the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF) effort</a></span> <span class="references">[<a href="#ref-4">4</a>]</span>
+the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF) effort</a></span> <span class="references">[<a href="#ref-2">2</a>]</span>
 has been initiated as a conceptual framework to investigate alternative query interfaces to publish Linked Datasets,
 by redistributing the effort of query evaluation between servers and clients.</p>
 
@@ -112,21 +101,21 @@ which could potentially eliminate many of these queries.
 The focus of this work is investigating such pre-filters.</p>
 
         <p>In recent years, different kinds of these LDF interfaces have been introduced,
-such as <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF)</a></span> <span class="references">[<a href="#ref-4">4</a>]</span>,
-<span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">Bindings-Restricted Triple Pattern Fragments</a></span> <span class="references">[<a href="#ref-5">5</a>]</span>,
-SaGe <span class="references">[<a href="#ref-6">6</a>]</span>,
-and Smart-KG <span class="references">[<a href="#ref-7">7</a>]</span>.
+such as <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF)</a></span> <span class="references">[<a href="#ref-2">2</a>]</span>,
+<span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">Bindings-Restricted Triple Pattern Fragments</a></span> <span class="references">[<a href="#ref-3">3</a>]</span>,
+SaGe <span class="references">[<a href="#ref-4">4</a>]</span>,
+and Smart-KG <span class="references">[<a href="#ref-5">5</a>]</span>.
 Each of these types of interfaces introduce their own trade-offs in terms of server and client effort.
 Additionally, LDF interfaces can enable feature-based extensibility,
-which allows servers to optionally expose certain features as metadata through usage of <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1109/MIC.2018.032501515"><a href="https://ruben.verborgh.org/articles/web-api-ecosystem/">self-descriptive hypermedia</a></span> <span class="references">[<a href="#ref-8">8</a>]</span>,
+which allows servers to optionally expose certain features as metadata through usage of <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1109/MIC.2018.032501515"><a href="https://ruben.verborgh.org/articles/web-api-ecosystem/">self-descriptive hypermedia</a></span> <span class="references">[<a href="#ref-6">6</a>]</span>,
 which can then be detected automatically by supporting clients to enhance the query evaluation process.
-Due to the extensibility of TPF, <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">several interface features have already been proposed for TPF</a> <span class="references">[<a href="#ref-9">9</a>, <a href="#ref-10">10</a>, <a href="#ref-11">11</a>]</span>.
-One such feature is <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filter (AMF)</a> <span class="references">[<a href="#ref-9">9</a>]</span> metadata,
+Due to the extensibility of TPF, <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">several interface features have already been proposed for TPF</a> <span class="references">[<a href="#ref-7">7</a>, <a href="#ref-8">8</a>, <a href="#ref-9">9</a>]</span>.
+One such feature is <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Approximate Membership Filter (AMF)</a> <span class="references">[<a href="#ref-7">7</a>]</span> metadata,
 which supporting clients can use to reduce the number of HTTP requests,
 with only a slight increase in server cost.
 Unfortunately, this currently comes at the cost of slower query execution,
 because the individual HTTP requests were larger and more expensive to compute.
-Since TPF is quickly gaining adoption among publishers <span class="references">[<a href="#ref-12">12</a>]</span>,
+Since TPF is quickly gaining adoption among publishers <span class="references">[<a href="#ref-10">10</a>]</span>,
 we focus on improving the performance of AMF with TPF in this work.
 AMF could also be useful for other types of LDF interfaces, but we consider this out of scope for this work.</p>
 
@@ -136,39 +125,12 @@ and that AMFs can be used to lower overall query execution times without signifi
 As such, the goal of our work is to investigate
 what changes are required server-side and client-side
 to optimize AMFs for TPF.
-Concretely, we introduce six dimensions through which the AMF approach from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-9">9</a>]</span> can be improved.
+Concretely, we introduce six dimensions through which the AMF approach from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-7">7</a>]</span> can be improved.
 One of these dimensions involves the introduction of a new client-side algorithm to handle AMFs.
 The other dimensions are related to the server-side handling of AMFs.
 The effects and feasibility of each of these dimensions are evaluated and analyzed in detail.
 In summary, our work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces,
 so that Linked Data publishers can expose their Linked Datasets in a more efficient manner through TPF interfaces.</p>
-
-        <p>Because of the large number of combinations that are compared in our experiments,
-we introduce a reusable benchmarking framework, called <em>Comunica Bencher</em>.
-It ensures complete reproducible experimental results by
-having declarative experiment descriptions built on top of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-13">13</a>]</span>,
-a modular Linked Data querying framework.
-This facilitates the reproduction of the experiments of this work,
-as well as the creation of related experiments in the future.</p>
-
-        <p>The contributions of this work are the following:</p>
-
-        <ul>
-          <li>a BGP-based AMF algorithm to optimize client-side query execution over TPF;</li>
-          <li>an analysis of HTTP caching and server-side AMF filter caching;</li>
-          <li>a threshold-based mechanism for exposing AMFs by size in TPF servers;</li>
-          <li>an analysis of network bandwidth in combination with different client-side AMF algorithms;</li>
-          <li>server-side and client-side support for in-band HTTP AMF responses;</li>
-          <li>an analysis of different AMF false-positive probabilities;</li>
-          <li>a reusable benchmarking framework <em>Comunica Bencher</em>, using which the contributions above are evaluated extensively.</li>
-        </ul>
-
-        <p>In the next section, we cover the related work pertaining to this article.
-After that, we introduce our research questions in <a href="#problem-statement">Section 3</a>.
-Next, we introduce our client-side algorithm in <a href="#solution">Section 4</a>.
-In <a href="#evaluation">Section 5</a>, we introduce our experimental setup,
-present our results, and test our hypotheses.
-Finally, we draw conclusions in <a href="#conclusions">Section 6</a>.</p>
 
       </div>
 </section>
@@ -185,7 +147,7 @@ and their use for the TPF interface.</p>
 
         <h3 id="related-work-ldf">Triple Pattern Fragments</h3>
 
-        <p><span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF)</a></span> <span class="references">[<a href="#ref-4">4</a>]</span>
+        <p><span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Linked Data Fragments (LDF)</a></span> <span class="references">[<a href="#ref-2">2</a>]</span>
 is a conceptual framework to study
 interfaces for publishing Linked Data,
 by comparing server and client effort.
@@ -193,36 +155,21 @@ During query execution, some LDFs may require a low server effort,
 at the cost of increased client-side querying effort (<em>e.g. data dumps</em>).
 while others require a high server effort,
 at the cost of minimal client-side effort (<em>e.g. SPARQL endpoint</em>).
-The <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-4">4</a>]</span> was introduced
+The <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">Triple Pattern Fragments (TPF) interface</a></span> <span class="references">[<a href="#ref-2">2</a>]</span> was introduced
 as a trade-off between those extremes,
 by restricting the server interface to triple pattern queries,
 and leaving the remainder of query evaluation to the client.
 Compared to SPARQL endpoints,
 TPF in general reduces the required server-side capacity and load
 for query evaluation
-at the expense of more bandwidth usage and slower query times.</p>
+at the expense of more bandwidth usage and slower query times.
+Results show that the number of HTTP requests forms the primary bottleneck during querying.</p>
 
         <p>TPF follows the REST architectural style,
 and aims to be a fully self-descriptive API.
-TPF achieves this by including <em>metadata</em> and <em>controls</em> in all of its RDF responses next to the main data.
+TPF achieves this by including <em>metadata</em> and declarative <em>controls</em> in all of its RDF responses next to the main data.
 The metadata can contain anything that may be useful for clients during query execution,
-such as cardinality estimates.
-The controls are described in a declarative manner using the Hydra Core vocabulary <span class="references">[<a href="#ref-14">14</a>]</span>,
-and allow clients to detect how queries can be executed against the API.
-In the case of TPF, these controls describe a form with <em>subject</em>, <em>predicate</em> and <em>object</em> parameters.</p>
-
-        <p>The client-side algorithm that is often used in implementations is <em>greedy</em>,
-and always chooses one pattern based on the lowest estimated number of matches,
-and recursively applies its bindings to the remaining patterns.
-While this achieves decent performance in some cases,
-it can sometimes lead to inefficient query plans.
-Combined with the fact that TPF returns results paginated,
-the number of HTTP requests forms the primary bottleneck during querying.
-Several enhancements have been proposed to this greedy algorithm
-in an attempt to reduce the number of those requests,
-such as different <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/eswc2015.pdf">query algorithms</a> <span class="references">[<a href="#ref-10">10</a>, <a href="#ref-15">15</a>]</span>,
-and <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48"><a href="https://arxiv.org/pdf/1608.08148.pdf">restricting the request patterns to intermediary bindings</a></span> <span class="references">[<a href="#ref-5">5</a>]</span>,
-each of those with their own advantages and disadvantages.</p>
+such as cardinality estimates.</p>
 
         <h3 id="approximate-membership-functions">Approximate Membership Functions</h3>
 
@@ -235,7 +182,7 @@ When selecting among different AMF techniques,
 we need to take into account
 trade-offs between filter size and false-positive rate.</p>
 
-        <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://crystal.uta.edu/~mcguigan/cse6350/papers/Bloom.pdf"><em>Bloom filters</em></a> <span class="references">[<a href="#ref-16">16</a>]</span> and <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.cs.amherst.edu/~ccmcgeoch/cs34/papers/cacheefficientbloomfilters-jea.pdf"><em>Golomb-coded sets</em> (GCS)</a> <span class="references">[<a href="#ref-17">17</a>]</span>
+        <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://crystal.uta.edu/~mcguigan/cse6350/papers/Bloom.pdf"><em>Bloom filters</em></a> <span class="references">[<a href="#ref-11">11</a>]</span> and <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.cs.amherst.edu/~ccmcgeoch/cs34/papers/cacheefficientbloomfilters-jea.pdf"><em>Golomb-coded sets</em> (GCS)</a> <span class="references">[<a href="#ref-12">12</a>]</span>
 are examples of AMF techniques.
 Both approaches guarantee a 100% recall, but not a 100% precision.
 A Bloom filter is essentially a bitmap filled with the range of a predefined number of hash functions.
@@ -246,46 +193,34 @@ and performing a bit-wise <code>AND</code> to see if all results are <em>possibl
 GCS were introduced as an improvement to Bloom filters
 by using only a single hash function.
 Furthermore, the range of the hash function is always a uniformly distributed list instead of a bitmap,
-which allows for more <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ieeexplore.ieee.org/abstract/document/1055357/">efficiency compression using geometric distributions</a> <span class="references">[<a href="#ref-18">18</a>]</span>.
+which allows for more <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ieeexplore.ieee.org/abstract/document/1055357/">efficiency compression using geometric distributions</a> <span class="references">[<a href="#ref-13">13</a>]</span>.
 Compared to Bloom filters, GCS achieve a higher compression rate, at the cost of slower decompression.</p>
 
         <h3 id="approximate-membership-for-query-evaluation">Approximate Membership for Query Evaluation</h3>
 
         <p>AMFs find their use in many areas related to RDF querying,
-such as storage, join optimization, source selection.</p>
+such as join optimization and source selection.</p>
 
-        <p>In the area of databases for <em>RDF storage</em>,
-Bloom filters can be used to <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?doid=2063576.2063988">reduce the number of expensive I/O operations</a> <span class="references">[<a href="#ref-19">19</a>]</span>
-as a pre-filtering step during triple pattern query evaluation.
-There is also an approach that uses Bloom filters internally
-as a way to <a property="schema:citation http://purl.org/spar/cito/cites" href="https://event.cwi.nl/grades2013/14-gubichev.pdf">efficiently encode reachability information between triple patterns</a> <span class="references">[<a href="#ref-20">20</a>]</span>.
-More recently, a combination of multiple Bloom filters were also being used
-as a way to <a property="schema:citation http://purl.org/spar/cito/cites" href="https://arxiv.org/pdf/1506.01333.pdf">compactly store a vector-based filtering index</a> <span class="references">[<a href="#ref-21">21</a>]</span>.</p>
-
-        <p>Next to that, AMFs are also a useful tool for improving the performance of <em>graph pattern joins</em>.
+        <p>AMFs have been proven to be a useful tool for improving the performance of <em>graph pattern joins</em>.
 Bloom filters can therefore be used to
-<a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=2063784">efficiently group connected triple patterns by frequency</a> <span class="references">[<a href="#ref-22">22</a>]</span>,
-to improve the efficiency of merge joins <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.researchgate.net/profile/Thomas_Neumann2/publication/47863714_Scalable_Join_Processing_on_Very_Large_RDF_Graphs/links/00b7d51d1687cae740000000.pdf">as a way of representing equivalent classes</a> <span class="references">[<a href="#ref-23">23</a>]</span>,
-and for <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674">joining distributed and stored streams</a> <span class="references">[<a href="#ref-24">24</a>]</span>.</p>
+<a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=2063784">efficiently group connected triple patterns by frequency</a> <span class="references">[<a href="#ref-14">14</a>]</span>,
+to improve the efficiency of merge joins <a property="schema:citation http://purl.org/spar/cito/cites" href="https://www.researchgate.net/profile/Thomas_Neumann2/publication/47863714_Scalable_Join_Processing_on_Very_Large_RDF_Graphs/links/00b7d51d1687cae740000000.pdf">as a way of representing equivalent classes</a> <span class="references">[<a href="#ref-15">15</a>]</span>,
+and for <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674">joining distributed and stored streams</a> <span class="references">[<a href="#ref-16">16</a>]</span>.</p>
 
         <p>Furthermore, Bloom filters are also used in the domain of federated querying to
 optimize the process of <em>source selection</em>.
-Concretely, <a property="schema:citation http://purl.org/spar/cito/cites" href="https://domino.mpi-inf.mpg.de/intranet/ag5/ag5publ.nsf/0/DAAD136B50B0C0ECC12579E6004D6582/$file/p2-hose.pdf">SPARQL’s boolean ASK response can be enhanced with Bloom filters as a way of sharing a concise summary of the matching results</a> <span class="references">[<a href="#ref-25">25</a>]</span>.
+Concretely, <a property="schema:citation http://purl.org/spar/cito/cites" href="https://domino.mpi-inf.mpg.de/intranet/ag5/ag5publ.nsf/0/DAAD136B50B0C0ECC12579E6004D6582/$file/p2-hose.pdf">SPARQL’s boolean ASK response can be enhanced with Bloom filters as a way of sharing a concise summary of the matching results</a> <span class="references">[<a href="#ref-17">17</a>]</span>.
 This allows source selection algorithms to identify overlap between different sources,
 and can either minimize the required number of requests,
 or it can be used to retrieve as many results as possible.</p>
 
         <h3 id="related-work-amf">Approximate Membership Metadata for TPF</h3>
 
-        <p>Pure TPF query plans typically <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">produce a large number of <em>membership requests</em></a> <span class="references">[<a href="#ref-9">9</a>]</span>,
+        <p>Pure TPF query plans typically <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">produce a large number of <em>membership requests</em></a> <span class="references">[<a href="#ref-7">7</a>]</span>,
 checking whether a specific triple (without variables) is present in a dataset.
 Due to the significant number of HTTP requests that these membership requests require,
 these can cause unacceptably high query execution times.
-This was illustrated with queries from the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf">WatDiv</a> <span class="references">[<a href="#ref-26">26</a>]</span> benchmark,
-consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
-Of the 20 queries, two (L2, L4) required 50% membership requests,
-one (F3) required 73%, and 4 (S5, F5, C1, C2) required more than 95%.
-More than 1 in 3 queries are thus significantly impacted by the number of membership requests,
+The authors have shown 50% of all requests are membership requests for 1 in 3 queries,
 which indicates that optimizing membership queries can have a positive effect on query evaluation.</p>
 
         <p>In the spirit of LDF,
@@ -293,78 +228,16 @@ servers can combine multiple interface features
 to assist supporting clients with query evaluation.
 An interface feature with <em>approximate membership metadata</em>
 for all variables in the requested <em>triple patterns</em>
-<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">considerably reduced the number of membership requests to a server</a> <span class="references">[<a href="#ref-9">9</a>]</span>.
+<a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">considerably reduced the number of membership requests to a server</a> <span class="references">[<a href="#ref-7">7</a>]</span>.
 In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
 the actual binary AMFs are included out-of-band behind a link in the metadata.
 Client-side query engines can detect this AMF metadata,
 and use it to test the membership of triples.
-In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
-the actual binary AMFs are included out-of-band behind a metadata link.
 Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives
-(because of the &lt;100% precision).</p>
-
-        <p>The way Vander Sande et al. make use of AMFs involves exposing an AMF, such as a Bloom filter,
-for each variable triple component in a TPF response.
-For example, if the query <code>ex:mysubject ?p ?o</code> is sent to a TPF server,
-then the response could contain a Bloom filter for <code>?p</code> and one <code>?o</code>.
-The Bloom filter for <code>?p</code> contains all predicates that have <code>ex:mysubject</code> as subject,
-and the Bloom filter for <code>?o</code> similarly contains all objects that have this same subject.
-Each Bloom filter is populated with RDF terms using server-defined hashing parameters,
-so that the end result is a binary blob.
-The server shares these parameters in the AMF metadata so that clients can apply the same hashing function
-on the RDF terms they want to check membership for.
-When a client receives the TPF response for <code>ex:mysubject ?p ?o</code>,
-it will be able to detect and download these two Bloom filters.
-If during query execution the client needs to do a membership check against this pattern,
-for example for <code>ex:mysubject rdf:type foaf:Person</code>,
-the client can first do a pre-filtering step by looking for <code>rdf:type</code> in the first AMF,
-and <code>foaf:Person</code> in the second AMF.
-If any of these checks fail, this means that this triple definitely does <em>not</em> exist in the dataset,
-and the actual membership HTTP request can be skipped.</p>
-
-        <p><a href="#amf-metadata-outband">Listing 1</a> shows an example of what this AMF metadata can look like in a TPF response for the query <code>ex:mysubject ?p ?o</code>.
-Concretely, the AMF metadata resides in the <code>&lt;#metadata&gt;</code> graph of the TPF HTTP response,
-which can contain other non-AMF-related elements such as <code>void:triples</code>.
-The available AMFs for a given response are defined via the predicate <code>ms:membershipFilter</code>,
-and the triple pattern component they apply to is indicated via <code>ms:variable</code>.
-As the approach from Vander Sande et al. does not include AMFs in-band,
-clients must <em>dereference</em> the IRI of the AMF to get its binary contents.
-For example, the dereferenced contents of the predicate AMF from <a href="#amf-metadata-outband">Listing 1</a> can be seen in <a href="#amf-metadata-outband-link">Listing 2</a>.
-Next to the binary contents of the AMF in n base64-encoded form (<code>ms:filter</code>), the type of the AMF is indicated <code>ms:BloomFilter</code>,
-and Bloom-filter-specific parameters are included such as <code>ms:hashes</code> and <code>ms:bits</code>.</p>
-
-        <figure id="amf-metadata-outband" class="listing">
-<pre><code>@prefix ms: &lt;http://semweb.mmlab.be/ns/membership#&gt;.
-</code><code>@prefix void: &lt;http://rdfs.org/ns/void#&gt;.
-</code><code>
-</code><code>&lt;#metadata&gt; foaf:primaryTopic &lt;#fragment&gt;.
-</code><code>&lt;#metadata&gt; {
-</code><code>  &lt;#fragment&gt; void:triples 96300;
-</code><code>              ms:membershipFilter &lt;/amf/my-dataset?query=...#predicate&gt;,
-</code><code>                                  &lt;/amf/my-dataset?query=...#object&gt;.
-</code><code>  &lt;/amf/my-dataset?query=...#predicate&gt; ms:variable rdf:predicate.
-</code><code>  &lt;/amf/my-dataset?query=...#object&gt; ms:variable rdf:object.
-</code><code>}</code></pre>
-<figcaption>
-            <p><span class="label">Listing 1:</span> Self-descriptive AMF metadata in a TPF response for <code>ex:mysubject ?p ?o</code>,
-which allows intelligent clients to detect, interpret and make use it.</p>
-          </figcaption>
-</figure>
-
-        <figure id="amf-metadata-outband-link" class="listing">
-<pre><code>&lt;/amf/my-dataset?query=...#predicate&gt; a ms:BloomFilter;
-</code><code>  ms:variable rdf:predicate;
-</code><code>  ms:filter &quot;QmF...ZTY&quot;^^xsd:base64Binary;
-</code><code>  ms:hashes &quot;10&quot;^^xsd:integer;
-</code><code>  ms:bits &quot;3451&quot;^^xsd:integer.
-</code></pre>
-<figcaption>
-            <p><span class="label">Listing 2:</span> Out-of-band AMF details for the AMF of the predicate component in <a href="#amf-metadata-outband">Listing 1</a>,
-which exists in the document <code>&lt;/amf/my-dataset?query=...#predicate&gt;</code> that can be followed by clients through dereferencing.</p>
-          </figcaption>
-</figure>
+(because of the &lt;100% precision).
+More details on the exact representation of this AMF metadata can be found on <a href="https://github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-metadata">https:/​/​github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-metadata</a>.</p>
 
         <p>The results of this work show that there is a significant decrease in HTTP requests when AMFs are used,
 at the cost of only a small increase in server load.
@@ -381,8 +254,8 @@ In this work, we aim to solve this problem of higher execution times.</p>
 <div datatype="rdf:HTML" property="schema:description">
         <h2 property="schema:name">Problem Statement</h2>
 
-        <p>The goal of our work is to investigate how query execution over TPF interfaces can be optimized using AMFs.
-We thereby build upon the work from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-9">9</a>]</span>,
+        <p>The goal of our work is to optimize query execution over TPF interfaces using AMFs.
+We build upon the work from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-7">7</a>]</span>,
 where the authors allowed the number of HTTP requests to be reduced
 at the cost of slower query execution.
 Our goal is to mitigate this major drawback, while retaining its advantages.</p>
@@ -414,13 +287,6 @@ that have a result count lower than a certain threshold.</li>
 <br />
 In experiments by Vander Sande et al., the HTTP bandwidth was set to a realistic 1Mbps.
 However, there is still an open question as to what extent different rates have an impact on the importance of AMF.</li>
-          <li id="question-inband"><strong>How is query throughput improved by adding AMF metadata in-band to TPF HTTP responses?</strong>
-<br />
-In previous work, AMF metadata was always included out-of-band of TPF responses,
-behind a link that clients should follow.
-This opens the question as to whether moving AMF metadata <em>in-band</em>
-and increasing the size of these responses
-would improve query performance.</li>
           <li id="question-probabilities"><strong>How low can AMF false-positive probabilities become to still achieve decent client-side query performance?</strong>
 <br />
 Based on their results, Vander Sande et al. have suggested that additional experimentation is needed with regards
@@ -431,9 +297,7 @@ since every positive match requires a request
 to verify whether it is a true or false positive.</li>
         </ol>
 
-        <p>To come up with an answer to these research questions,
-we will introduce statistical hypotheses in <a href="#evaluation">Section 5</a>
-that will be tested based on our experimental results.</p>
+        <p>An answer to these research questions will be formed using the experiments from <a href="#evaluation">Section 5</a>.</p>
 
       </div>
 </section>
@@ -442,97 +306,12 @@ that will be tested based on our experimental results.</p>
 <div datatype="rdf:HTML" property="schema:description">
         <h2 property="schema:name">Client-side AMF Algorithms</h2>
 
-        <p>In this section, we explain the existing triple-based AMF algorithm introduced by Vander Sande et al, and we show where it lacks.
+        <p>In this section, we explain the existing triple-based AMF algorithm, and we show where it lacks.
 Following that, we introduce a new client-side BGP-based AMF algorithm that solves these problems.
+For the reader’s convenience, detailed examples of how these two algorithms work can be found on <a href="https://github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-algorithm-examples">https:/​/​github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-algorithm-examples</a>.
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.</p>
 
         <h3 id="triple-based-amf-algorithm">Triple-based AMF Algorithm</h3>
-
-        <p>Hereafter, we explain how AMFs can be effective
-during client-side SPARQL query execution against a TPF interface,
-following the example from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al</a> <span class="references">[<a href="#ref-9">9</a>]</span>.
-After that, we explain the algorithm introduced by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al</a> <span class="references">[<a href="#ref-9">9</a>]</span>.</p>
-
-        <h4 id="motivation">Motivation</h4>
-
-        <figure id="query-example-triple" class="listing">
-<pre><code>prefix dbo: &lt;http://dbpedia.org/ontology/&gt;
-</code><code>prefix dbr: &lt;http://dbpedia.org/resource/York&gt;
-</code><code>prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;
-</code><code>
-</code><code>SELECT ?p ?c WHERE {
-</code><code>  ?p a dbo:Artist.         # tp1
-</code><code>  ?p dbo:birthPlace ?c.    # tp2
-</code><code>  ?c rdfs:label &quot;York&quot;@en. # tp3
-</code><code>}
-</code></pre>
-<figcaption>
-            <p><span class="label">Listing 3:</span> SPARQL query that finds all artists born in cities with the name “York”.</p>
-          </figcaption>
-</figure>
-
-        <p>Using the <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">default TPF algorithm</a></span> <span class="references">[<a href="#ref-4">4</a>]</span>, the query from <a href="#query-example-triple">Listing 3</a>
-will be executed by recursively identifying the triple pattern with the lowest estimated cardinality,
-and applying its bindings to the remaining triple patterns.
-In this case, it will start by fetching the cardinalities of the four patterns,
-which are exposed by the TPF server.
-In this case, these are <code>{(tp1, 96300), (tp2, 625811), (tp3, 2)}</code>.
-Since <code>tp3</code> has the lowest cardinality estimate, its 2 bindings are applied to the remaining triple patterns,
-and the resulting queries are handled recursively.
-For example, for <code>?p = dbr:York</code> the resulting query can be found in <a href="#query-example-triple-2">Listing 4</a>.</p>
-
-        <figure id="query-example-triple-2" class="listing">
-<pre><code>SELECT ?p WHERE {
-</code><code>  ?p a dbo:Artist.            # tp&#39;1
-</code><code>  ?p dbo:birthPlace dbr:York. # tp&#39;2
-</code><code>}
-</code></pre>
-<figcaption>
-            <p><span class="label">Listing 4:</span> The SPARQL query from <a href="#query-example-triple">Listing 3</a> instantiated with <code>?p = dbr:York</code>.</p>
-          </figcaption>
-</figure>
-
-        <p>The same process will repeat for each of these queries.
-For example, for the query in <a href="#query-example-triple-2">Listing 4</a>,
-we may get <code>{(tp'1, 96300), (tp'2, 207)}</code>,
-so we continue with <code>tp'2</code>.
-For example, for the first binding of <code>?p</code>, we may find <code>dbp:Adam_Thomas</code>,
-which results in the query with the single fully-materialized triple pattern <code>dbp:Adam_Thomas a dbo:Artist</code>.
-Each of these 207 queries are so-called <em>membership queries</em>,
-as they check the presence of this triple in the dataset.
-Since TPF works over HTTP, this large number of membership queries requires an equal number of HTTP requests,
-which forms the main bottleneck of the execution process.</p>
-
-        <p>The way Vander Sande et al. solve this problem,
-is by exposing AMFs for each of these triple patterns for which membership queries will be tested,
-such as <code>?p a dbo:Artist</code>.
-This is done by including an AMF—such as a Bloom filter—in the metadata of the TPF response for <code>?p a dbo:Artist</code>.
-Before sending the 207 membership queries as HTTP requests,
-each binding for <code>?p</code> will be first run through the AMF.
-If it produces a true negative, then the HTTP request will <em>not</em> be executed,
-otherwise an HTTP request is required to check if it is a true or false positive.
-The lower the error rate of the Bloom filter, the more true negatives can be filtered out this way.
-Since false negatives are not possible, and positives still require an HTTP request, query result correctness is not affected.</p>
-
-        <h4 id="algorithm">Algorithm</h4>
-
-        <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-9">9</a>]</span> introduced an algorithm
-that acts as a cheap pre-processing step for <em>testing the membership of triples</em>.
-This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">greedy client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-4">4</a>]</span> for evaluating SPARQL queries.
-<a href="#amf-triple-pseudo">Listing 5</a> depicts this algorithm in pseudo-code.</p>
-
-        <p>Concretely, every triple pattern that has all of its variables resolved to constants
-is run through this function right before more a expensive HTTP request would be performed.
-This function takes a triple and a query context containing the AMFs
-that were detected during the last TPF response for that pattern.
-It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
-Once all checks pass, the original HTTP-based membership logic will be invoked.</p>
-
-        <p>Performance-wise, the overhead of this algorithm is negligible,
-since for each membership query triple, just three AMF tests have to be done.
-For example, for Bloom filters this test just involves a simple hash operation and a binary or,
-which adds little overhead to the query execution process,
-especially considering that these will in some cases avoid much more expensive HTTP requests.</p>
 
         <figure id="amf-triple-pseudo" class="listing">
 <pre><code>function hasTriple(triple, context) {
@@ -542,96 +321,30 @@ especially considering that these will in some cases avoid much more expensive H
 </code><code>  return super.hasTriple(triple, context);
 </code><code>}</code></pre>
 <figcaption>
-            <p><span class="label">Listing 5:</span> Triple-based AMF algorithm by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-9">9</a>]</span>
+            <p><span class="label">Listing 1:</span> Triple-based AMF algorithm by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-7">7</a>]</span>
 as a pre-filtering step for testing the membership of triples.</p>
           </figcaption>
 </figure>
 
+        <p><a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-7">7</a>]</span> introduced an algorithm
+that acts as a cheap pre-processing step for <em>testing the membership of triples</em>.
+This algorithm was used in combination with the streaming <span property="schema:citation http://purl.org/spar/cito/cites" resource="https://dx.doi.org/10.1016/j.websem.2016.03.003"><a href="http://linkeddatafragments.org/publications/jws2016.pdf">greedy client-side TPF algorithm</a></span> <span class="references">[<a href="#ref-2">2</a>]</span> for evaluating SPARQL queries.
+<a href="#amf-triple-pseudo">Listing 1</a> depicts this algorithm in pseudo-code.</p>
+
+        <p>Concretely, every triple pattern that has all of its variables resolved to constants
+is run through this function right before more a expensive HTTP request would be performed.
+This function takes a triple and a query context containing the AMFs
+that were detected during the last TPF response for that pattern.
+It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
+Once all checks pass, the original HTTP-based membership logic will be invoked.</p>
+
         <h3 id="bgp-based-amf-algorithm">BGP-based AMF Algorithm</h3>
-
-        <p>In this section, we explain where the algorithm from <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al</a> <span class="references">[<a href="#ref-9">9</a>]</span>
-lacks during client-side SPARQL query execution against a TPF interface using an example.
-Afterwards, we introduce an improved algorithm that solves these problems.</p>
-
-        <h4 id="motivation-1">Motivation</h4>
-
-        <p>Unfortunately, the algorithm by Vander Sande et al.
-does not fully exploit the potential of AMFs during query execution over TPF interfaces,
-as it only considers fully materialized triples,
-and does not consider earlier filtering higher up in the query plan.
-For example, let us consider the query from <a href="#query-example-bgp">Listing 6</a>.</p>
-
-        <figure id="query-example-bgp" class="listing">
-<pre><code>SELECT ?p ?s ?m WHERE {
-</code><code>  ?p dbo:almaMater ?s.           # tp1
-</code><code>  ?s dbo:motto ?m.               # tp2
-</code><code>  ?p dbo:birthPlace dbr:York.    # tp3
-</code><code>  ?p dbo:occupation ?occupation. # tp4
-</code><code>}
-</code></pre>
-<figcaption>
-            <p><span class="label">Listing 6:</span> SPARQL query that finds the occupation of all people born in York,
-together with the motto of their alma mater.</p>
-          </figcaption>
-</figure>
-
-        <p>For this query, the cardinality estimates are <code>{(tp1, 121707), (tp2, 41172), (tp3, 236), (tp4, 330413)}</code>.
-Since <code>tp3</code> has the lowest cardinality,
-its 236 bindings are applied to the remaining patterns.
-For example, for <code>?p = dbr:Peter_John_Allan</code> the resulting query can be found in <a href="#query-example-bgp-2">Listing 7</a>.</p>
-
-        <figure id="query-example-bgp-2" class="listing">
-<pre><code>SELECT ?p ?s ?m WHERE {
-</code><code>  dbr:Peter_John_Allan dbo:almaMater ?s.           # tp&#39;1
-</code><code>  ?s dbo:motto ?m.                                 # tp&#39;2
-</code><code>  dbr:Peter_John_Allan dbo:occupation ?occupation. # tp&#39;3
-</code><code>}
-</code></pre>
-<figcaption>
-            <p><span class="label">Listing 7:</span> The SPARQL query from <a href="#query-example-bgp">Listing 6</a> instantiated with <code>?p = dbr:Peter_John_Allan</code>.</p>
-          </figcaption>
-</figure>
-
-        <p>Of these 236 queries, only 18 will actually find a result,
-since most people do not have values for <code>dbo:almaMater</code> and <code>dbo:occupation</code>.
-And if people have a value for these two patterns, the number of results is typically not more than one.
-These two patterns resemble membership queries, but with non-fully-materialized triple patterns.
-As such, these are not considered by the algorithm from Vander Sande et al.</p>
-
-        <p>One of the goals of this work is to introduce an extension to this algorithm
-so that these cases are also considered by making use of AMFs.
-Concretely, before sending the 236 sub-queries,
-we propose to make use of the AMFs from <code>tp1</code> and <code>tp4</code>,
-and filter out each <code>?p</code> binding that results in a true negative.
-Since these 236 queries would normally result in even more recursive sub-queries and HTTP requests,
-the impact of filtering at this higher level in the query plan
-can become very significant.
-As such, we propose to make use of AMFs at a higher level in the query plan
-in the scope of the whole BGP,
-instead of just for low-level triples.</p>
-
-        <h4 id="algorithm-1">Algorithm</h4>
 
         <p>Following the idea of the <em>triple-based</em> algorithm,
 we introduce an extension that applies this concept for <em>BGPs</em>.
 This makes it possible to use AMFs not only for testing the membership of triples,
 but also for using AMFs to test partially bound triple patterns that may still have variables.
 In theory, this should filter (true negative) bindings earlier in the query evaluation process.</p>
-
-        <p><a href="#amf-bgp-pseudo">Listing 8</a> shows this algorithm in pseudo-code.
-Just like the triple-based algorithm, it acts as a pre-processing step when BGPs are being processed.
-It takes a list of triple patterns as input, and query context containing a list of corresponding AMFs
-that were detected during the last TPF responses for each respective pattern.
-The algorithm iterates over each pattern,
-and for each triple component that is not a variable, it will run it through its AMF.
-Once a true negative is found, it will immediately return an empty stream to indicate that this BGP definitely contains no results.
-If all checks on the other hand pass, the original BGP logic will be invoked,
-which will down the line invoke more expensive HTTP requests.</p>
-
-        <p>Performance-wise, the overhead of this algorithm is also negligible.
-The complexity of this algorithm is <code>O(n)</code>, with <code>n</code> the number of triple patterns.
-Like before, since the AMF tests are inexpensive,
-the computational impact of this algorithm is very low.</p>
 
         <figure id="amf-bgp-pseudo" class="listing">
 <pre><code>function getBindings(triplePatterns, context) {
@@ -643,9 +356,19 @@ the computational impact of this algorithm is very low.</p>
 </code><code>  return super.getBindings(triplePatterns, context);
 </code><code>}</code></pre>
 <figcaption>
-            <p><span class="label">Listing 8:</span> BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.</p>
+            <p><span class="label">Listing 2:</span> BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.</p>
           </figcaption>
 </figure>
+
+        <p><a href="#amf-bgp-pseudo">Listing 2</a> shows this algorithm in pseudo-code.
+Just like the triple-based algorithm, it acts as a pre-processing step when BGPs are being processed.
+It takes a list of triple patterns as input, and query context containing a list of corresponding AMFs
+that were detected during the last TPF responses for each respective pattern.
+The algorithm iterates over each pattern,
+and for each triple component that is not a variable, it will run it through its AMF.
+Once a true negative is found, it will immediately return an empty stream to indicate that this BGP definitely contains no results.
+If all checks on the other hand pass, the original BGP logic will be invoked,
+which will down the line invoke more expensive HTTP requests.</p>
 
         <h3 id="heuristic-for-enabling-the-bgp-algorithm">Heuristic for Enabling the BGP Algorithm</h3>
 
@@ -653,7 +376,7 @@ the computational impact of this algorithm is very low.</p>
 it may lead to larger AMFs being downloaded, possibly incurring a larger HTTP overhead.
 In some cases, this cost may become too high if the number of bindings that needs to be tested is low,
 e.g. downloading an AMF of 10MB would be too costly when only a single binding needs to be tested.
-To cope with these cases, we introduce a heuristic in <a href="#amf-bgp-heuristic-pseudo">Listing 9</a>,
+To cope with these cases, we introduce a heuristic in <a href="#amf-bgp-heuristic-pseudo">Listing 3</a>,
 that will estimate whether or not the BGP-based algorithm will be cheaper in terms of HTTP overhead
 compared to just executing the HTTP membership requests directly.
 Concretely, the heuristic checks if the size of an AMF is lower than the size of downloading TPF responses.
@@ -673,7 +396,7 @@ that take perform live profiling of HTTP requests and delays to avoid the need o
 </code><code>}
 </code></pre>
 <figcaption>
-            <p><span class="label">Listing 9:</span> Heuristic for checking if the BGP-based AMF algorithm should be executed,
+            <p><span class="label">Listing 3:</span> Heuristic for checking if the BGP-based AMF algorithm should be executed,
 where <code>bindingsCount</code> is the number of intermediary bindings for the current BGP,
 and <code>triplePatternsCardinality</code> is an array of cardinality estimates for each triple pattern in the BGP.
 <code>AMF_TRIPLE_SIZE</code> is a parameter indicating the number of bytes required to represent a triple inside an AMF,
@@ -689,114 +412,40 @@ and <code>TPF_BINDING_SIZE</code> is the size in bytes of a single TPF response.
         <h2 property="schema:name">Evaluation</h2>
 
         <p>The goal of this section is to answer the research questions from <a href="#problem-statement">Section 3</a>.
-We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
-Next, we briefly discuss the implementations of our algorithm.
-After that, we present our experimental setup and our statistical hypotheses.
-Finally, we present our results and testing of our hypotheses.</p>
-
-        <p>Anonymized code and results results can be found at <a href="https://www.dropbox.com/s/nuj7l72wglpzx4p/data.zip">https:/​/​www.dropbox.com/s/nuj7l72wglpzx4p/data.zip</a>.</p>
-
-        <h3 id="reusable-benchmarking-framework">Reusable Benchmarking Framework</h3>
-
-        <p>Different Linked Data Fragments approaches as discussed in <a href="#related-work-ldf">Subsection 2.1</a>
-usually require similar steps when running experiments.
-Such experiments require a significant amount of manual effort
-for setting up experiments, running them, and generating plots.
-In order to avoid re-inventing the wheel, and for future works in this domain,
-we developed a reusable benchmarking framework for Linked Data Fragments experiments, called <em>Comunica Bencher</em>.
-This tool is based on <a href="https://www.docker.com/">Docker</a>, and allows isolated execution of experiments over different containers.
-Experiment configurations are fully <em>declarative</em>, and they can exist in standalone repositories.
-In order to share the conditions under which the experiment was executed,
-a list of all <a property="schema:citation http://purl.org/spar/cito/cites" href="https://linkedsoftwaredependencies.org/articles/describing-experiments/">used <em>software versions and their dependencies</em> in a Turtle document</a> <span class="references">[<a href="#ref-27">27</a>]</span>
-will be generated after each run together with the evaluation results.
-Comunica Bencher is <em>open-source</em>, and will be available on GitHub.
-With this, our experiments are fully reproducible.</p>
-
-        <p>Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">workflow</a>:</p>
-
-        <ol id="evaluation-workflow" property="schema:hasPart" resource="#evaluation-workflow" typeof="opmw:WorkflowTemplate">
-<li id="workflow-data" about="#workflow-data" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>Generate a <a property="schema:citation http://purl.org/spar/cito/cites" href="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf">WatDiv</a> <span class="references">[<a href="#ref-26">26</a>]</span> dataset with a given scale factor.</p>
-          </li>
-<li id="workflow-queries" about="#workflow-queries" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>Generate the corresponding default WatDiv <a href="https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml">queries</a> with a given query count.</p>
-          </li>
-<li id="workflow-tpf-server" about="#workflow-tpf-server" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>Install <a href="https://github.com/LinkedDataFragments/Server.js" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js">the LDF server software</a> with a given configuration, implementing the <a href="https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/">TPF specification</a>.</p>
-          </li>
-<li id="workflow-cache" about="#workflow-cache" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>Setup an <a href="https://www.nginx.com/" class="mandatory" data-link-text="https:/​/​www.nginx.com/​">NGINX HTTP cache</a> with a given configuration in front of the LDF server.</p>
-          </li>
-<li id="workflow-comunica" about="#workflow-comunica" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>Install <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica</a> <span class="references">[<a href="#ref-13">13</a>]</span> under a given configuration, implementing <a href="https://www.w3.org/TR/sparql11-protocol">SPARQL 1.1</a>.</p>
-          </li>
-<li id="workflow-comunica-run" about="#workflow-comunica-run" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>Execute the generated WatDiv queries a given number times on the Comunica client, after doing a warmup run, and record the execution times.</p>
-          </li>
-<li id="workflow-collect" about="#workflow-collect" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label">
-            <p>For each experiment, plot the execution times for all combinations and queries next to each other.</p>
-          </li>
-</ol>
+First, we briefly discuss the implementations of our algorithm.
+After that, we present our experimental setup, and we present our results.
+All code and results results can be found on <a href="https://github.com/comunica/comunica-feature-amf" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​feature-​amf">GitHub</a>.</p>
 
         <h3 id="implementation">Implementation</h3>
 
         <p>For implementing the client-side AMF algorithms,
-we make use of JavaScript-based <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica SPARQL querying framework</a> <span class="references">[<a href="#ref-13">13</a>]</span>.
+we make use of JavaScript-based <a property="schema:citation http://purl.org/spar/cito/cites" href="https://comunica.github.io/Article-ISWC2018-Resource/">Comunica SPARQL querying framework</a> <span class="references">[<a href="#ref-18">18</a>]</span>.
 Since Comunica already fully supports the TPF algorithm,
 we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
 and will be available open-source on GitHub.
 Concretely, we implemented the original triple-based AMF algorithm,
 our new BGP-based AMF algorithm (<em>BGP Simple</em>),
-and a variant of this BGP-based algorithm (<em>BGP Combined</em>) that pre-fetches out-of-band AMFs in parallel.</p>
+and a variant of this BGP-based algorithm (<em>BGP Combined</em>) that pre-fetches AMFs in parallel.</p>
 
         <p>The original TPF server extension in <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf">the LDF server software</a>
-by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-9">9</a>]</span>
+by <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">Vander Sande et al.</a> <span class="references">[<a href="#ref-7">7</a>]</span>
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 To support our experiments, we extended this implementation with new features.
-This implementation will be available on GitHub.
+This implementation is available on <a href="https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2" class="mandatory" data-link-text="https:/​/​github.com/​LinkedDataFragments/​Server.js/​tree/​feature-​handlers-​amf-​2">GitHub</a>.
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given result count threshold.
 Next to that, we implemented an optional file-based cache to avoid recomputing AMFs
-to make pre-computation of AMFs possible.
-Finally, we added support for exposing AMFs in-band with HTTP responses,
-instead of including them behind a followable link into these responses.
-An example of this in-band metadata can be seen in <a href="#amf-metadata-inband">Listing 10</a>,
-which is equivalent to the out-of-band metadata from <a href="#amf-metadata-outband">Listing 1</a>.</p>
-
-        <figure id="amf-metadata-inband" class="listing">
-<pre><code>&lt;#metadata&gt; foaf:primaryTopic &lt;#fragment&gt;.
-</code><code>&lt;#metadata&gt; {
-</code><code>  &lt;#fragment&gt; void:triples 96300;
-</code><code>      ms:membershipFilter [
-</code><code>        a ms:BloomFilter;
-</code><code>        ms:variable rdf:predicate;
-</code><code>        ms:filter &quot;QmF...ZTY&quot;^^xsd:base64Binary;
-</code><code>        ms:hashes &quot;10&quot;^^xsd:integer;
-</code><code>        ms:bits &quot;3451&quot;^^xsd:integer.
-</code><code>      ], [
-</code><code>        a ms:BloomFilter;
-</code><code>        ms:variable rdf:object;
-</code><code>        ms:filter &quot;Axe...Utr&quot;^^xsd:base64Binary;
-</code><code>        ms:hashes &quot;10&quot;^^xsd:integer;
-</code><code>        ms:bits &quot;3386&quot;^^xsd:integer.
-</code><code>      ]
-</code><code>}</code></pre>
-<figcaption>
-            <p><span class="label">Listing 10:</span> Self-descriptive in-band AMF metadata in a TPF response for <code>ex:mysubject ?p ?o</code>,
-which allows intelligent clients to detect, interpret and make use it.</p>
-          </figcaption>
-</figure>
+to make pre-computation of AMFs possible.</p>
 
         <h3 id="experimental-setup">Experimental Setup</h3>
 
-        <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Subsection 5.2</a>,
+        <p>Based on our LDF server and Comunica implementations that were discussed in <a href="#implementation">Subsection 5.1</a>,
 we defined five experiments, corresponding to our five research questions from <a href="#problem-statement">Section 3</a>.
-For each experiment, we introduce hypotheses that will be statistically tested based on our results.
-The declararive configuration files for running these experiments with Comunica Bencher will be present on GitHub under an open license,
-and can be started from scratch by <em>executing a single command</em>.
-Furthermore, all raw results and scripts for analyzing them can be found in this same repository.</p>
+These experiments are defined and executed using <a href="https://github.com/comunica/comunica-bencher" class="mandatory" data-link-text="https:/​/​github.com/​comunica/​comunica-​bencher">Comunica Bencher</a>,
+which is a Docker-based benchmark execution framework for evaluating Linked Data Fragments.
+This enables reproducibility of these experiments, as they can be re-executed with a single command.</p>
 
         <p>The following experiments execute WatDiv with a dataset scale of 100
 and a query count of 5 for the default query templates, leading to a total of 100 queries.
@@ -814,102 +463,27 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
           <li><strong>Client-side AMF Algorithms</strong>:
  In this experiment, we compare different client-side algorithms
  (<em>None, Triple, BGP Simple, BGP Combined, Triple with BGP Combined</em>)
- for using AMF metadata.
- <br />
- We expect that client-side algorithms that make use of AMFs will be faster than not using AMFs at all,
- and that our new BGP-level AMF algorithm is faster than the existing triple-level AMF algorithm.
- <br />
- <strong>Hypotheses:</strong>
-            <ol>
-              <li id="hypo-combine-1">By combining AMFs client-side at BGP-level, query execution time is lower compared to plain TPF.</li>
-              <li id="hypo-combine-2">By combining AMFs client-side at BGP-level, query execution time is lower compared to using AMFs at triple-level.</li>
-              <li id="hypo-combine-3">Using AMFs at both BGP <em>and</em> triple-level does not reduce query execution time compared to only using AMFs at BGP-level.</li>
-            </ol>
-          </li>
+ for using AMF metadata.</li>
           <li><strong>Caching</strong>:
  In this experiment, we evaluate the effects of caching all HTTP requests combined with caching AMF filters server-side,
  both following the LRU cache replacement strategy.
  We also compare the effects of using AMF metadata client-side or not.
- Finally, we test the effects of warm and cold caches.
- <br />
- We expect that HTTP-level caching will be more effective than the server-side caching of AMF filters.
- Furthermore, we expect that AMF-aware query evaluation will only be effective when caching is active,
- due to the potentially long creation times of AMFs.
- Following the predictions of Vander Sande et al., we expect that Bloom-based AMFs will lead to
- faster query execution compared to GCS when the cache is warm.
- <br />
- <strong>Hypotheses:</strong>
-            <ol>
-              <li id="hypo-cache-1">Caching all HTTP responses reduce query evaluation times more than caching only AMFs responses.</li>
-              <li id="hypo-cache-2">Caching AMFs server-side when an HTTP cache is active has no effect on query evaluation times.</li>
-              <li id="hypo-cache-3">Without HTTP caching, AMF-aware query evaluation is slower than non-AMF query evaluation.</li>
-              <li id="hypo-cache-4">With HTTP caching, AMF-aware query evaluation is faster than non-AMF query evaluation.</li>
-              <li id="hypo-cache-5">With a warm cache, Bloom filters achieve lower query evaluation times compared to GCS.</li>
-            </ol>
-          </li>
+ Finally, we test the effects of warm and cold caches.</li>
           <li><strong>Dynamically Enabling AMF</strong>:
  In this experiment, we compare different result count thresholds (<em>0, 1.000, 10.000, 100.000, 1.000.000</em>) with each other,
  with either the server-side AMF filter cache enabled or not.
- We disable the HTTP cache and warmup phase to evaluate a cold-start.
- <br />
- Even if AMFs are cached, we expect that lower thresholds will slow down query execution,
- as this would mean that no AMFs are created for fragments with large result counts,
- requiring clients to download a large amount of data.
- Furthermore, we expect that lowering thresholds will only impact server load when caching is disabled,
- as repeatedly recalculating AMFs is expected to be more server-intensive than serving paged fragments in TPF.
- <br />
- <strong>Hypotheses:</strong>
-            <ol>
-              <li id="hypo-dynamic-restriction-1">With cached AMFs, lower thresholds slow down query execution.</li>
-              <li id="hypo-dynamic-restriction-2">Without cached AMFs, lower thresholds reduce server load.</li>
-              <li id="hypo-dynamic-restriction-3">With cached AMFs, lower thresholds do not impact server load.</li>
-            </ol>
-          </li>
+ We disable the HTTP cache and warmup phase to evaluate a cold-start.</li>
           <li><strong>Network Bandwidths</strong>:
  Different network bandwidths (<em>256kbps, 512kbps, 2048kbps, 4096kbps</em>) are tested for evaluating network speedups,
- and their effects or different AMF algorithms (<em>None, Triple, BGP Combined</em>) are tested.
- <br />
- Since the amount of downloaded data has been shown to be the main cause for high execution times for TPF,
- and the usage of AMFs reduces the number of HTTP requests,
- we expect that triple-level AMF usage will be less impacted by lower HTTP bandwidth.
- We expect that this impact will be even less for BGP-level AMF usage due to the further reduction of number of HTTP requests.
- <br />
- <strong>Hypotheses:</strong>
-            <ol>
-              <li id="hypo-bandwidth-1">HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.</li>
-              <li id="hypo-bandwidth-2">HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.</li>
-            </ol>
-          </li>
-          <li><strong>In-band vs. Out-of-band</strong>:
- For this experiment, we test the effects of different triple count thresholds (<em>0, 1.000, 10.000, 100.000, 1.000.000</em>) for exposing AMF metadata in-band or not.
- <br />
- Since AMF-aware TPF clients will follow links to AMFs in most cases,
- we expect that the in-band inclusion of AMFs into HTTP responses
- will be able to reduce the query execution times as the number of HTTP requests will be lower.
- <br />
- <strong>Hypotheses:</strong>
-            <ol>
-              <li id="hypo-inband-1">In-band AMF metadata speeds up client-side query evaluation.</li>
-              <li id="hypo-inband-2">In-band AMF metadata reduces the total amount of HTTP requests.</li>
-            </ol>
-          </li>
+ and their effects or different AMF algorithms (<em>None, Triple, BGP Combined</em>) are tested.</li>
           <li><strong>False-positive Probabilities</strong>:
- In this final experiment, we compare different AMF false-positive probabilities (<em>1/4096, 1/1024, 1/64, 1/4, 1/2</em>).
- <br />
- We expect that lower chances on false positives will lead to fewer unneeded HTTP requests,
- and thereby faster query exection.
- <br />
- <strong>Hypotheses:</strong>
-            <ol>
-              <li id="hypo-probabilities-1">Lower probabilities lead to faster client-side query execution.</li>
-            </ol>
-          </li>
+ In this final experiment, we compare different AMF false-positive probabilities (<em>1/4096, 1/1024, 1/64, 1/4, 1/2</em>).</li>
         </ol>
 
         <h3 id="results">Results</h3>
 
         <p>In this section, we present the results for each of our experiments separately.
-We tested our hypotheses statistically by comparing means using the Kruskal-Wallis test,
+We analyzed our results statistically by comparing means using the Kruskal-Wallis test,
 and report on their p-values (<em>low values indicate non-equal means</em>).</p>
 
         <h4 class="display-block" id="client-side-amf-algorithms">Client-side AMF Algorithms</h4>
@@ -1005,7 +579,7 @@ The heuristic shows a slight improvement in most cases.</p>
 
         <p><a href="#plot_client_algos">Fig. 1</a> shows the query evaluation times for our first experiment
 on the different client-side algorithms for using AMF metadata.
-In line with what was shown in the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">first TPF AMF experiments</a> <span class="references">[<a href="#ref-9">9</a>]</span>,
+In line with what was shown in the <a property="schema:citation http://purl.org/spar/cito/cites" href="http://linkeddatafragments.org/publications/iswc2015-amf.pdf">first TPF AMF experiments</a> <span class="references">[<a href="#ref-7">7</a>]</span>,
 the triple-based algorithm reduces query evaluation times in only 2 of the 20 queries.
 Our new BGP-based algorithms on the other hand reduce query evaluation times and outperforms the triple-based algorithm.
 Only for 5 of the 20 queries, evaluation times are higher or equal.
@@ -1024,16 +598,14 @@ which explains the significant reduction in query execution times.
 This allows the NGINX cache hit rate to slightly increase compared to the regular and triple-based TPF algorithms,
 since fewer requests are made, which lowers the number of required cache evictions.</p>
 
-        <p>Based on these results, we confirm that there is <em>no statistically significant difference</em>
+        <p>Based on these results, there is <em>no statistically significant difference</em>
 between the evaluation times of the triple-based AMF algorithm, and not using AMF metadata at all (<em>p-value: 0.9318</em>).
-The simple and combined BGP algorithms are significantly faster than not using AMF metadata (<em>p-values: 0.0062, 0.0026</em>),
-which confirms <a href="#hypo-combine-1">Hypothesis 1.1</a>.
+The simple and combined BGP algorithms are significantly faster than not using AMF metadata (<em>p-values: 0.0062, 0.0026</em>).
 Furthermore, the simple and combined BGP algorithm are on average
 more than twice as fast as the triple-based algorithm,
-which make them significantly faster (<em>p-values: 0.0090, 0.0041</em>)
-and confirms <a href="#hypo-combine-2">Hypothesis 1.2</a>.
+which make them significantly faster (<em>p-values: 0.0090, 0.0041</em>).
 Furthermore, combining our simple and combined BGP algorithm with the triple-based algorithms
-shows no further statistically significant improvement (<em>p-values: 0.9484, 0.6689</em>), which confirms <a href="#hypo-combine-3">Hypothesis 1.3</a>.</p>
+shows no further statistically significant improvement (<em>p-values: 0.9484, 0.6689</em>).</p>
 
         <p>In <a href="#plot_skip_bgp_heuristic">Fig. 4</a>, we show the results where we apply the heuristic
 for dynamically disabling the BGP heuristic based on different parameter values.
@@ -1056,22 +628,21 @@ Not caching anything is always slower than caching HTTP responses or AMFs.</p>
 </figure>
 
         <p><a href="#plot_caching">Fig. 5</a> shows that caching either HTTP requests or AMF filters server-side has a significant positive effect on query evaluation times (<em>p-value: &lt; 0.0001</em>).
-We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>),
-which confirms <a href="#hypo-cache-1">Hypothesis 2.1</a>.
+We observe that caching HTTP requests reduces query evaluation times <em>more</em> than just caching AMF filters (<em>p-value: 0.0225</em>).
 Furthermore, there is no significant difference between query evaluation times for caching of both HTTP requests and AMF filters
-compared to just caching HTTP requests (<em>p-value: 0.7694</em>), so we accept <a href="#hypo-cache-2">Hypothesis 2.2</a>.
+compared to just caching HTTP requests (<em>p-value: 0.7694</em>).
 This shows that an HTTP cache achieves the best results,
 and additionally caching AMF filters server-side is not worth the effort.</p>
 
         <p>If we compare these results with the results for non-AMF-aware querying,
-we see that if HTTP caching is <em>disabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly lower</em> than AMF-aware approaches (<em>p-value: &lt; 0.0001</em>), which confirms <a href="#hypo-cache-3">Hypothesis 2.3</a>.
-On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 0.0001</em>), which confirms <a href="#hypo-cache-4">Hypothesis 2.4</a>.
+we see that if HTTP caching is <em>disabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly lower</em> than AMF-aware approaches (<em>p-value: &lt; 0.0001</em>).
+On the other hand, if HTTP caching is <em>enabled</em>, query evaluation times for non-AMF-aware querying are <em>significantly worse</em> than with AMF-aware approaches (<em>p-value: &lt; 0.0001</em>).
 While caching is already very important for TPF-based querying,
 these results show that caching becomes <em>even more important</em> when AMFs are being used.</p>
 
         <p>Finally, our results show that when our cache is warm, exposing Bloom filters instead of GCS achieves faster query evaluation times.
 While there are a few outliers where GCS is two to three times slower,
-the difference is only small in most cases, so we accept <a href="#hypo-cache-5">Hypothesis 2.5</a> with a low significance (<em>p-value: 0.1786</em>).</p>
+the difference is only small in most cases (<em>p-value: 0.1786</em>).</p>
 
         <h4 class="display-block" id="dynamically-enabling-amf">Dynamically Enabling AMF</h4>
 
@@ -1108,17 +679,16 @@ when caching is disabled, but much slower if caching is enabled.</p>
 </figure>
 
         <p><a href="#plot_server_metadata_enabled_cached">Fig. 6</a> shows lower server-side AMF result count thresholds
-lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: &lt; 0.0001</em>),
-which confirms <a href="#hypo-dynamic-restriction-1">Hypothesis 3.1</a>.
+lead to higher query evaluation times when HTTP caching is enabled (<em>p-value: &lt; 0.0001</em>).
 <a href="#plot_server_metadata_enabled_notcached">Fig. 7</a> shows that AMF result count thresholds
 also have an impact on query evaluation times when HTTP caching is disabled (<em>p-value: 0.0005</em>),
 but it does not necessarily lower it.
 For this experiment, setting the threshold to 10K leads to the lowest overall query evaluation times.</p>
 
         <p><a href="#plot_threshold_serverload">Fig. 8</a> shows that lower AMF result count thresholds lead to lower server loads
-when HTTP caching is disabled (<em>p-value: 0.0326</em>), which confirms <a href="#hypo-dynamic-restriction-2">Hypothesis 3.2</a>.
+when HTTP caching is disabled (<em>p-value: 0.0326</em>).
 On the other hand, if HTTP caching is enabled,
-there is no correlation (<em>Pearson</em>) between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>), which confirms <a href="#hypo-dynamic-restriction-3">Hypothesis 3.3</a>).
+there is no correlation (<em>Pearson</em>) between AMF result count threshold and server CPU usage (<em>p-value: 0.4577</em>).
 This shows that if caching is enabled, dynamically enabling AMFs based on the number of triples
 is not significantly important,
 and may therefore be disabled to always expose AMFs.</p>
@@ -1150,6 +720,18 @@ As such, AMFs significantly reduce the number of HTTP requests at the cost of ~1
           </figcaption>
 </figure>
 
+        <p><a href="#plot_delay_none">Fig. 9</a>, <a href="#plot_delay_triple">Fig. 10</a> and <a href="#plot_delay_bgp">Fig. 11</a> show the effects of different bandwidths
+on query evaluation times over different algorithms.
+We observe that when not using AMF, or using the triple-level AMF algorithm,
+lower bandwidths lead to higher query evaluation times.
+However, when bandwidths become much higher,
+query evaluation times decrease at a lower rate.
+In contrast, the BGP-level AMF algorithm continuously becomes faster when bandwidth increases.
+We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (<em>p-values: 0.2905, 0.2306</em>).
+For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>).
+This shows that <em>if</em> BGP-level AMF is used,
+then higher bandwidths can be exploited <em>more</em> for faster query evaluation.</p>
+
         <figure id="plot_delay_bgp">
 <center>
 <img src="img/experiments/delay/plot_bgp_no_c.svg" alt="Effect of bandwidth on BGP AMF (non-C)" class="plot_non_c" />
@@ -1161,18 +743,6 @@ showing that this algorithm can make better use of higher bandwidths.</p>
           </figcaption>
 </figure>
 
-        <p><a href="#plot_delay_none">Fig. 9</a>, <a href="#plot_delay_triple">Fig. 10</a> and <a href="#plot_delay_bgp">Fig. 11</a> show the effects of different bandwidths
-on query evaluation times over different algorithms.
-We observe that when not using AMF, or using the triple-level AMF algorithm,
-lower bandwidths lead to higher query evaluation times.
-However, when bandwidths become much higher,
-query evaluation times decrease at a lower rate.
-In contrast, the BGP-level AMF algorithm continuously becomes faster when bandwidth increases.
-We do not measure any significant impact of bandwidth on both non-AMF usage and triple-level AMF usage (<em>p-values: 0.2905, 0.2306</em>), so we reject <a href="#hypo-bandwidth-1">Hypothesis 4.1</a>.
-For BGP-level AMF, we measure a significant impact (<em>p-value: 0.0028</em>), which accepts <a href="#hypo-bandwidth-2">Hypothesis 4.2</a>.
-This shows that <em>if</em> BGP-level AMF is used,
-then higher bandwidths can be exploited <em>more</em> for faster query evaluation.</p>
-
         <figure id="plot_in_vs_out_band">
 <center>
 <img src="img/experiments/in_vs_out_band/plot_no_c.svg" alt="In-band vs out-band (non-C)" class="plot_non_c" />
@@ -1183,16 +753,6 @@ then higher bandwidths can be exploited <em>more</em> for faster query evaluatio
 AMF triple count threshold show no major differences.</p>
           </figcaption>
 </figure>
-
-        <h4 class="display-block" id="in-band-vs-out-of-band">In-band vs. Out-of-band</h4>
-
-        <p><a href="#plot_in_vs_out_band">Fig. 12</a> shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
-Statistically, there is no significant different difference between these combinations (<em>p-value: 0.7323</em>),
-so we reject <a href="#hypo-inband-1">Hypothesis 5.1</a>.</p>
-
-        <p>Furthermore, when analyzing the HTTP logs, we observe only a very decrease (&lt;1%) in the number of requests for in-band AMF metadata.
-As this difference is insignificant (<em>p-value: 0.406</em>), we need to reject <a href="#hypo-inband-2">Hypothesis 5.2</a>
-in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.</p>
 
         <h4 class="display-block" id="false-positive-probabilities">False-positive Probabilities</h4>
 
@@ -1209,8 +769,6 @@ Extremely low and high probabilities show a negative impact.</p>
 
         <p><a href="#plot_probabilities">Fig. 13</a> shows that different false-positive probabilities have impact on query evaluation times.
 This impact has however only a weak significance (<em>p-value: 0.1840</em>).
-This means that we reject <a href="#hypo-probabilities-1">Hypothesis 6.1</a>
-in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.</p>
 
       </div>
@@ -1222,8 +780,6 @@ On average, a false-positive probability of 1/64 leads to the lowest overall que
 
         <p>In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
-Thanks to the newly introduced benchmarking framework <em>Comunica Bencher</em>, our experiments are fully and easily reproducible.
-Since this framework is fully reusable, it facilitates the creation of related experiments in the future.
 The experimental results show that our client-side algorithms make average query execution more than two times faster than with regular TPF
 while only requiring 10% of the number of HTTP requests,
 at the cost of less than 10% additional server CPU usage.</p>
@@ -1233,10 +789,9 @@ which means that they can be used by any of the existing data publishers
 that are exposing their data through a TPF interface,
 or any client that aims to query from them.</p>
 
-        <p>In this section, we conclude our findings with respect to our research questions,
-based on the <a href="#evaluation">evaluation</a>.
-Then, we introduce a set of recommendations for data publishers using AMF with TPF.
-Finally, we present our perspectives on future work.</p>
+        <p>Hereafter, we conclude our findings with respect to our research questions,
+based on the <a href="#evaluation">evaluation</a>,
+and we introduce a set of recommendations for data publishers using AMF with TPF.</p>
 
         <h3 id="research-findings">Research findings</h3>
 
@@ -1263,7 +818,7 @@ Our bandwidth experiment results confirm this bandwidth bottleneck when download
 and show that higher bandwidths lead to even more performance gains
 for the BGP-level algorithms (<em><a href="#question-bandwidth">Research Question 4</a></em>).
 This <em>continuous efficiency</em> can be investigated further in the future
-using metrics such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf"><em>diefficiency</em></a> <span class="references">[<a href="#ref-28">28</a>]</span>.</p>
+using metrics such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf"><em>diefficiency</em></a> <span class="references">[<a href="#ref-19">19</a>]</span>.</p>
 
         <h4 id="pre-computation-and-caching-of-amfs-is-essential">Pre-computation and Caching of AMFs is Essential</h4>
 
@@ -1286,7 +841,7 @@ When setting the WatDiv dataset to a size of 10M triples, there are only 90 trip
 Setting that size to 100M triples, this number increases to 255, so this is not a linear increase.
 Due to this low number of very large patterns,
 servers can easily pre-compute these offline before dataset publication time.
-Since the WatDiv dataset achieves a high diversity of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=1989340"><em>structuredness</em>, it is similar to real-world RDF datasets</a> <span class="references">[<a href="#ref-29">29</a>]</span>.
+Since the WatDiv dataset achieves a high diversity of <a property="schema:citation http://purl.org/spar/cito/cites" href="https://dl.acm.org/citation.cfm?id=1989340"><em>structuredness</em>, it is similar to real-world RDF datasets</a> <span class="references">[<a href="#ref-20">20</a>]</span>.
 As such, this behavior can be generalized to other datasets with a similar structuredness.</p>
 
         <figure id="plot_triple_pattern_counts">
@@ -1309,14 +864,6 @@ at the cost of more server effort.
 However, this higher server effort is negligible if AMFs can be pre-computed.
 As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs can not be cached.</p>
 
-        <h4 id="always-emit-amf-metadata-out-of-band">Always Emit AMF Metadata Out-of-band</h4>
-
-        <p>Our results show that either emitting AMF metadata in-band or out-of-band has no significant impact
-on query evaluation times and the total number of HTTP requests (<em><a href="#question-inband">Research Question 5</a></em>).
-However, as there may be clients that do no understand AMF metadata,
-there will be HTTP data transfer overhead when AMF metadata would be included in-band.
-For this reason, we recommend emitting AMF metadata out-of-band without a significant loss in performance for AMF-aware client.</p>
-
         <h4 id="a-good-trade-off-between-false-positive-probabilities-and-amf-size">A Good Trade-off Between False-positive Probabilities and AMF Size</h4>
 
         <p>Lowering the false-positive probability of an AMF increases its size.
@@ -1324,7 +871,7 @@ As we have seen that larger AMFs have an impact on query evaluation times,
 we do not want AMFs to become too large.
 On the other hand, we do not want the false-positive probabilities to become too low,
 as that leads to more unneeded HTTP requests.
-Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (<em><a href="#question-probabilities">Research Question 6</a></em>).
+Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (<em><a href="#question-probabilities">Research Question 5</a></em>).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.</p>
 
         <h3 id="recommendations">Recommendations for Publishers</h3>
@@ -1336,113 +883,57 @@ we derived the following guidelines for publishers who aim to use the AMF featur
           <li>Enable <strong>HTTP caching</strong> with a tool such as <a href="https://www.nginx.com/">NGINX</a>.</li>
           <li><strong>Pre-compute AMFs</strong> (or at least cache) AMFs of size 10.000 or higher.</li>
           <li>If AMFs can be cached, prefer <strong>Bloom filters</strong> over GCS.</li>
-          <li>Emit AMF metadata <strong>out-of-band</strong>.</li>
           <li>Use a false-positive <strong>probability of 1/64</strong>.</li>
         </ul>
-
-        <h3 id="future-work">Future Work</h3>
-
-        <p>Even though we answered many open questions regarding AMFs,
-there are a couple of new questions.</p>
-
-        <p>First, we need further investigation on heuristics for dynamically disabling the BGP-based AMF algorithm,
-as our current heuristic produced the optimal approach in only 19 of the 20 queries,
-where queries from other benchmarks could even result in different ratios.</p>
-
-        <p>Secondly, since our BGP-based algorithm increases time-until-first-result due to longer download times of AMFs
-compared to the triple-based algorithm,
-it is valuable to investigate techniques to dynamically switch between these algorithms.
-Concretely, a query engine could start by following the triple-level algorithm,
-but in the meantime the relevant AMFs could be downloaded asynchronously.
-As soon as these AMFs have been downloaded, the query engine could switch over to the more efficient BGP-based algorithm.
-For this, techniques will be required to predict if the overhead of algorithm switching
-will not be higher than the performance gain by the BGP-based algorithm.</p>
-
-        <p>Third, we call for more research in the area of <em>opportunistic</em> query results as discussed by Vander Sande et al.
-The positive tests in AMF still require an HTTP request before it can be confirmed whether it is a true or false positive.
-A query engine could <em>opportunistically</em> continue processing this intermediary result
-as if it was a true positive, and retract it later on if it was a false positive.
-Vander Sande et al merely discuss this feature of AMFs,
-but they do not provide any implementation or experiments on top of this.
-As such, further research in this area is required,
-especially considering the more beneficial impact of AMFs that was proven by our work.</p>
-
-        <p>Finally, as approaches such as <a property="schema:citation http://purl.org/spar/cito/cites" href="https://ashraf.aboulnaga.me/pubs/www16soliddemo.pdf">Solid</a> <span class="references">[<a href="#ref-30">30</a>]</span> are pushing towards a more <em>decentralized</em> Web where data is spread over a large number of sources,
-investigation of AMFs in the context of federated querying is needed,
-which is not trivial, as filters of multiple sources may need to be combined.</p>
 
       </div>
 </section>
 
-  <span class="placeholder printonly">
-  <span style="display: block; height: 15em;"></span>
-  <!-- This is a dummy placeholder for forcing the references in a separate column -->
-  </span>
 </main>
 
 <footer><section>
 <h2 id="references">References</h2>
 <dl class="references">
   <dt id="ref-1">[1]</dt>
-  <dd resource="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/" typeof="schema:CreativeWork">Feigenbaum, L., Todd Williams, G., Grant Clark, K., Torres, E.: SPARQL 1.1 Protocol. W3C, <a href="https://www.w3.org/TR/2013/REC-sparql11-protocol-20130321/">https:/​/​www.w3.org/TR/2013/REC-sparql11-protocol-20130321/</a> (2013).</dd>
+  <dd resource="http://link.springer.com/chapter/10.1007/978-3-642-41338-4_18" typeof="schema:Chapter">Buil-Aranda, C., Hogan, A., Umbrich, J., Vandenbussche, P.-Y.: SPARQL Web-Querying Infrastructure: Ready for Action? In: The Semantic Web–ISWC 2013. pp. 277–293 (2013).</dd>
   <dt id="ref-2">[2]</dt>
-  <dd resource="http://link.springer.com/chapter/10.1007/978-3-642-41338-4_18" typeof="schema:Chapter">Buil-Aranda, C., Hogan, A., Umbrich, J., Vandenbussche, P.-Y.: SPARQL Web-Querying Infrastructure: Ready for Action? In: The Semantic Web–ISWC 2013. pp. 277–293. Springer (2013).</dd>
-  <dt id="ref-3">[3]</dt>
-  <dd resource="https://www.w3.org/TR/2013/REC-sparql11-query-20130321/" typeof="schema:CreativeWork">Harris, S., Seaborne, A., Prud’hommeaux, E.: SPARQL 1.1 Query Language. W3C, <a href="https://www.w3.org/TR/2013/REC-sparql11-query-20130321/">https:/​/​www.w3.org/TR/2013/REC-sparql11-query-20130321/</a> (2013).</dd>
-  <dt id="ref-4">[4]</dt>
   <dd resource="https://dx.doi.org/10.1016/j.websem.2016.03.003" typeof="schema:Article">Verborgh, R., Vander Sande, M., Hartig, O., Van Herwegen, J., De Vocht, L., De Meester, B., Haesendonck, G., Colpaert, P.: Triple Pattern Fragments: a Low-cost Knowledge Graph Interface for the Web. Journal of Web Semantics. (2016).</dd>
-  <dt id="ref-5">[5]</dt>
+  <dt id="ref-3">[3]</dt>
   <dd resource="https://dx.doi.org/10.1007/978-3-319-48472-3_48" typeof="schema:Article">Hartig, O., Buil-Aranda, C.: Bindings-Restricted Triple Pattern Fragments. In: Proceedings of the 15th International Conference on Ontologies, DataBases, and Applications of Semantics. pp. 762–779 (2016).</dd>
-  <dt id="ref-6">[6]</dt>
+  <dt id="ref-4">[4]</dt>
   <dd resource="#sage" typeof="schema:Article">Minier, T., Skaf-Molli, H., Molli, P.: SaGe: Web preemption for public SPARQL query services. In: The World Wide Web Conference. pp. 1268–1278 (2019).</dd>
-  <dt id="ref-7">[7]</dt>
+  <dt id="ref-5">[5]</dt>
   <dd resource="#smartkg" typeof="schema:Article">Amr, A., Fernandez Garcia, J.D., Maribel, A., Polleres, A.: SMART-KG: Hybrid Shipping for SPARQL Querying on the Web. (2020).</dd>
-  <dt id="ref-8">[8]</dt>
+  <dt id="ref-6">[6]</dt>
   <dd resource="https://dx.doi.org/10.1109/MIC.2018.032501515" typeof="schema:Article">Verborgh, R., Dumontier, M.: A Web API ecosystem through feature-based reuse. Internet Computing. 22, 29–37 (2018).</dd>
-  <dt id="ref-9">[9]</dt>
+  <dt id="ref-7">[7]</dt>
   <dd resource="http://linkeddatafragments.org/publications/iswc2015-amf.pdf" typeof="schema:Article">Vander Sande, M., Verborgh, R., Van Herwegen, J., Mannens, E., Van de Walle, R.: Opportunistic Linked Data querying through approximate membership metadata. In: International Semantic Web Conference. pp. 92–110. Springer (2015).</dd>
-  <dt id="ref-10">[10]</dt>
+  <dt id="ref-8">[8]</dt>
   <dd resource="http://linkeddatafragments.org/publications/eswc2015.pdf" typeof="schema:Article">Van Herwegen, J., Verborgh, R., Mannens, E., Van de Walle, R.: Query Execution Optimization for Clients of Triple Pattern Fragments. In: The Semantic Web. Latest Advances and New Domains (2015).</dd>
-  <dt id="ref-11">[11]</dt>
+  <dt id="ref-9">[9]</dt>
   <dd resource="http://rubensworks.net/raw/publications/2017/vtpf.pdf" typeof="schema:Article">Taelman, R., Vander Sande, M., Verborgh, R., Mannens, E.: Versioned Triple Pattern Fragments: A Low-cost Linked Data Interface Feature for Web Archives. In: Proceedings of the 3rd Workshop on Managing the Evolution and Preservation of the Data Web (2017).</dd>
-  <dt id="ref-12">[12]</dt>
+  <dt id="ref-10">[10]</dt>
   <dd resource="#tpfusage" typeof="schema:Article">Verborgh, R.: DBpedia’s triple pattern fragments: usage patterns and insights. In: European Semantic Web Conference. pp. 431–442. Springer (2015).</dd>
-  <dt id="ref-13">[13]</dt>
-  <dd resource="https://comunica.github.io/Article-ISWC2018-Resource/" typeof="schema:Article">Taelman, R., Van Herwegen, J., Vander Sande, M., Verborgh, R.: Comunica: a Modular SPARQL Query Engine for the Web. In: Proceedings of the 17th International Semantic Web Conference (2018).</dd>
-  <dt id="ref-14">[14]</dt>
-  <dd resource="#hydra" typeof="schema:Article">Lanthaler, M., Gütl, C.: Hydra: A Vocabulary for Hypermedia-Driven Web APIs. LDOW. 996, (2013).</dd>
-  <dt id="ref-15">[15]</dt>
-  <dd resource="http://iswc2015.semanticweb.org/sites/iswc2015.semanticweb.org/files/93660097.pdf" typeof="schema:Article">Acosta, M., Vidal, M.-E.: Networks of Linked Data Eddies: An Adaptive Web Query Processing Engine for RDF Data. In: The Semantic Web – ISWC 2015</dd>
-  <dt id="ref-16">[16]</dt>
+  <dt id="ref-11">[11]</dt>
   <dd resource="http://crystal.uta.edu/~mcguigan/cse6350/papers/Bloom.pdf" typeof="schema:Article">Bloom, B.H.: Space/time trade-offs in hash coding with allowable errors. Communications of the ACM. 13, 422–426 (1970).</dd>
-  <dt id="ref-17">[17]</dt>
+  <dt id="ref-12">[12]</dt>
   <dd resource="https://www.cs.amherst.edu/~ccmcgeoch/cs34/papers/cacheefficientbloomfilters-jea.pdf" typeof="schema:Article">Putze, F., Sanders, P., Singler, J.: Cache-, hash-, and space-efficient bloom filters. Journal of Experimental Algorithmics (JEA). 14, 4 (2009).</dd>
-  <dt id="ref-18">[18]</dt>
+  <dt id="ref-13">[13]</dt>
   <dd resource="https://ieeexplore.ieee.org/abstract/document/1055357/" typeof="schema:Article">Gallager, R., Van Voorhis, D.: Optimal source codes for geometrically distributed integer alphabets (corresp.). IEEE Transactions on Information theory. (1975).</dd>
-  <dt id="ref-19">[19]</dt>
-  <dd resource="https://dl.acm.org/citation.cfm?doid=2063576.2063988" typeof="schema:Article">Pu, X., Wang, J., Luo, P., Wang, M.: AWETO: efficient incremental update and querying in RDF storage system. In: Proceedings of the 20th ACM international conference on Information and knowledge management (2011).</dd>
-  <dt id="ref-20">[20]</dt>
-  <dd resource="https://event.cwi.nl/grades2013/14-gubichev.pdf" typeof="schema:Article">Gubichev, A., Bedathur, S.J., Seufert, S.: Sparqling kleene: fast property paths in RDF-3X. In: First International Workshop on Graph Data Management Experiences and Systems (2013).</dd>
-  <dt id="ref-21">[21]</dt>
-  <dd resource="https://arxiv.org/pdf/1506.01333.pdf" typeof="schema:Article">Katib, A., Slavov, V., Rao, P.: RIQ: Fast processing of SPARQL queries on RDF quadruples. Journal of Web Semantics. (2016).</dd>
-  <dt id="ref-22">[22]</dt>
+  <dt id="ref-14">[14]</dt>
   <dd resource="https://dl.acm.org/citation.cfm?id=2063784" typeof="schema:Article">Huang, H., Liu, C.: Estimating selectivity for joined RDF triple patterns. In: Proceedings of the 20th ACM international conference on Information and knowledge management. pp. 1435–1444. ACM (2011).</dd>
-  <dt id="ref-23">[23]</dt>
+  <dt id="ref-15">[15]</dt>
   <dd resource="https://www.researchgate.net/profile/Thomas_Neumann2/publication/47863714_Scalable_Join_Processing_on_Very_Large_RDF_Graphs/links/00b7d51d1687cae740000000.pdf" typeof="schema:Article">Neumann, T., Weikum, G.: Scalable join processing on very large RDF graphs. In: Proceedings of the 2009 ACM SIGMOD International Conference on Management of data. pp. 627–640. ACM (2009).</dd>
-  <dt id="ref-24">[24]</dt>
+  <dt id="ref-16">[16]</dt>
   <dd resource="https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=8406674" typeof="schema:Article">Dia, A.F., Aoul, Z.K., Boly, A., Métais, E.: Fast SPARQL join processing between distributed streams and stored RDF graphs using bloom filters. In: 12th International Conference on Research Challenges in Information Science (2018).</dd>
-  <dt id="ref-25">[25]</dt>
+  <dt id="ref-17">[17]</dt>
   <dd resource="https://domino.mpi-inf.mpg.de/intranet/ag5/ag5publ.nsf/0/DAAD136B50B0C0ECC12579E6004D6582/$file/p2-hose.pdf" typeof="schema:Article">Hose, K., Schenkel, R.: Towards benefit-based RDF source selection for SPARQL queries. In: Proceedings of the 4th International Workshop on Semantic Web Information Management. p. 2. ACM (2012).</dd>
-  <dt id="ref-26">[26]</dt>
-  <dd resource="http://olafhartig.de/files/AlucEtAl_ISWC14_Preprint.pdf" typeof="schema:Article">Aluç, G., Hartig, O., Özsu, M.T., Daudjee, K.: Diversified stress testing of RDF data management systems. In: International Semantic Web Conference (2014).</dd>
-  <dt id="ref-27">[27]</dt>
-  <dd resource="https://linkedsoftwaredependencies.org/articles/describing-experiments/" typeof="schema:Article">Van Herwegen, J., Taelman, R., Capadisli, S., Verborgh, R.: Describing configurations of software experiments as Linked Data. In: Proceedings of the First Workshop on Enabling Open Semantic Science (SemSci) (2017).</dd>
-  <dt id="ref-28">[28]</dt>
+  <dt id="ref-18">[18]</dt>
+  <dd resource="https://comunica.github.io/Article-ISWC2018-Resource/" typeof="schema:Article">Taelman, R., Van Herwegen, J., Vander Sande, M., Verborgh, R.: Comunica: a Modular SPARQL Query Engine for the Web. In: Proceedings of the 17th International Semantic Web Conference (2018).</dd>
+  <dt id="ref-19">[19]</dt>
   <dd resource="https://iswc2017.semanticweb.org/wp-content/uploads/papers/MainProceedings/383.pdf" typeof="schema:Article">Acosta, M., Vidal, M.-E., Sure-Vetter, Y.: Diefficiency metrics: measuring the continuous efficiency of query processing approaches. In: International Semantic Web Conference. pp. 3–19. Springer (2017).</dd>
-  <dt id="ref-29">[29]</dt>
+  <dt id="ref-20">[20]</dt>
   <dd resource="https://dl.acm.org/citation.cfm?id=1989340" typeof="schema:Article">Duan, S., Kementsietsidis, A., Srinivas, K., Udrea, O.: Apples and oranges: a comparison of RDF benchmarks and real RDF datasets. In: Proceedings of the 2011 ACM SIGMOD International Conference on Management of data</dd>
-  <dt id="ref-30">[30]</dt>
-  <dd resource="https://ashraf.aboulnaga.me/pubs/www16soliddemo.pdf" typeof="schema:Article">Mansour, E., Sambra, A.V., Hawke, S., Zereba, M., Capadisli, S., Ghanem, A., Aboulnaga, A., Berners-Lee, T.: A demonstration of the solid platform for social web applications. In: Proceedings of the 25th International Conference Companion on World Wide Web</dd>
 </dl>
 </section>
 </footer>

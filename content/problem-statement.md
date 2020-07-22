@@ -37,15 +37,7 @@ our research questions are defined as follows:
     <br />
     In experiments by Vander Sande et al., the HTTP bandwidth was set to a realistic 1Mbps.
     However, there is still an open question as to what extent different rates have an impact on the importance of AMF.
-5. {:#question-inband}
-    **How is query throughput improved by adding AMF metadata in-band to TPF HTTP responses?**
-    <br />
-    In previous work, AMF metadata was always included out-of-band of TPF responses,
-    behind a link that clients should follow.
-    This opens the question as to whether moving AMF metadata _in-band_
-    and increasing the size of these responses
-    would improve query performance.
-6. {:#question-probabilities}
+5. {:#question-probabilities}
     **How low can AMF false-positive probabilities become to still achieve decent client-side query performance?**
     <br />
     Based on their results, Vander Sande et al. have suggested that additional experimentation is needed with regards

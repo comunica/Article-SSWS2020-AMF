@@ -73,18 +73,6 @@ we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given result count threshold.
 Next to that, we implemented an optional file-based cache to avoid recomputing AMFs
 to make pre-computation of AMFs possible.
-Finally, we added support for exposing AMFs in-band with HTTP responses,
-instead of including them behind a followable link into these responses.
-An example of this in-band metadata can be seen in [](#amf-metadata-inband),
-which is equivalent to the out-of-band metadata from [](#amf-metadata-outband).
-
-<figure id="amf-metadata-inband" class="listing">
-````/code/amf-metadata-inband.trig````
-<figcaption markdown="block">
-Self-descriptive in-band AMF metadata in a TPF response for `ex:mysubject ?p ?o`,
-which allows intelligent clients to detect, interpret and make use it.
-</figcaption>
-</figure>
 
 ### Experimental Setup
 
@@ -164,17 +152,7 @@ All experiments were executed on a 64-bit Ubuntu 14.04 machine with 128 GB of me
     **Hypotheses:**
     1. {:#hypo-bandwidth-1} HTTP bandwidth has a higher impact on non-AMF usage than triple-level AMF usage.
     2. {:#hypo-bandwidth-2} HTTP bandwidth has a higher impact on triple-level AMF usage than BGP-level AMF usage.
-5. **In-band vs. Out-of-band**:
-    For this experiment, we test the effects of different triple count thresholds (_0, 1.000, 10.000, 100.000, 1.000.000_) for exposing AMF metadata in-band or not.
-    <br />
-    Since AMF-aware TPF clients will follow links to AMFs in most cases,
-    we expect that the in-band inclusion of AMFs into HTTP responses
-    will be able to reduce the query execution times as the number of HTTP requests will be lower.
-    <br />
-    **Hypotheses:**
-    1. {:#hypo-inband-1} In-band AMF metadata speeds up client-side query evaluation.
-    2. {:#hypo-inband-2} In-band AMF metadata reduces the total amount of HTTP requests.
-6. **False-positive Probabilities**:
+5. **False-positive Probabilities**:
     In this final experiment, we compare different AMF false-positive probabilities (_1/4096, 1/1024, 1/64, 1/4, 1/2_).
     <br />
     We expect that lower chances on false positives will lead to fewer unneeded HTTP requests,
@@ -424,17 +402,6 @@ AMF triple count threshold show no major differences.
 </figcaption>
 </figure>
 
-#### In-band vs. Out-of-band
-{:.display-block}
-
-[](#plot_in_vs_out_band) shows query evaluation times for different possibilities for including AMF metadata in-band or out-of-band.
-Statistically, there is no significant different difference between these combinations (_p-value: 0.7323_),
-so we reject [Hypothesis 5.1](#hypo-inband-1).
-
-Furthermore, when analyzing the HTTP logs, we observe only a very decrease (<1%) in the number of requests for in-band AMF metadata.
-As this difference is insignificant (_p-value: 0.406_), we need to reject [Hypothesis 5.2](#hypo-inband-2)
-in which we expected the number of HTTP requests to significantly increase when we moved AMF metadata out-of-band.
-
 #### False-positive Probabilities
 {:.display-block}
 
@@ -451,6 +418,6 @@ Extremely low and high probabilities show a negative impact.
 
 [](#plot_probabilities) shows that different false-positive probabilities have impact on query evaluation times.
 This impact has however only a weak significance (_p-value: 0.1840_).
-This means that we reject [Hypothesis 6.1](#hypo-probabilities-1)
+This means that we reject [Hypothesis 5.1](#hypo-probabilities-1)
 in which we expected that lower false-positive probabilities lead to lower query evaluation times.
 On average, a false-positive probability of 1/64 leads to the lowest overall query evaluation times for this experiment.

@@ -56,24 +56,6 @@ The effects and feasibility of each of these dimensions are evaluated and analyz
 In summary, our work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces,
 so that Linked Data publishers can expose their Linked Datasets in a more efficient manner through TPF interfaces.
 
-Because of the large number of combinations that are compared in our experiments,
-we introduce a reusable benchmarking framework, called _Comunica Bencher_.
-It ensures complete reproducible experimental results by
-having declarative experiment descriptions built on top of [Comunica](cite:cites comunica),
-a modular Linked Data querying framework.
-This facilitates the reproduction of the experiments of this work,
-as well as the creation of related experiments in the future.
-
-The contributions of this work are the following:
-
-* a BGP-based AMF algorithm to optimize client-side query execution over TPF;
-* an analysis of HTTP caching and server-side AMF filter caching;
-* a threshold-based mechanism for exposing AMFs by size in TPF servers;
-* an analysis of network bandwidth in combination with different client-side AMF algorithms;
-* server-side and client-side support for in-band HTTP AMF responses;
-* an analysis of different AMF false-positive probabilities;
-* a reusable benchmarking framework _Comunica Bencher_, using which the contributions above are evaluated extensively.
-
 In the next section, we cover the related work pertaining to this article.
 After that, we introduce our research questions in [](#problem-statement).
 Next, we introduce our client-side algorithm in [](#solution).

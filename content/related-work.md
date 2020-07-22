@@ -26,28 +26,13 @@ Compared to SPARQL endpoints,
 TPF in general reduces the required server-side capacity and load
 for query evaluation
 at the expense of more bandwidth usage and slower query times.
+Results show that the number of HTTP requests forms the primary bottleneck during querying.
 
 TPF follows the REST architectural style,
 and aims to be a fully self-descriptive API.
-TPF achieves this by including _metadata_ and _controls_ in all of its RDF responses next to the main data.
+TPF achieves this by including _metadata_ and declarative _controls_ in all of its RDF responses next to the main data.
 The metadata can contain anything that may be useful for clients during query execution,
 such as cardinality estimates.
-The controls are described in a declarative manner using the [Hydra Core vocabulary](cite:cites hydra),
-and allow clients to detect how queries can be executed against the API.
-In the case of TPF, these controls describe a form with _subject_, _predicate_ and _object_ parameters.
-
-The client-side algorithm that is often used in implementations is _greedy_,
-and always chooses one pattern based on the lowest estimated number of matches,
-and recursively applies its bindings to the remaining patterns.
-While this achieves decent performance in some cases,
-it can sometimes lead to inefficient query plans.
-Combined with the fact that TPF returns results paginated,
-the number of HTTP requests forms the primary bottleneck during querying.
-Several enhancements have been proposed to this greedy algorithm
-in an attempt to reduce the number of those requests,
-such as different [query algorithms](cite:cites tpfoptimization, acosta_iswc_2015),
-and [restricting the request patterns to intermediary bindings](cite:cites brtpf),
-each of those with their own advantages and disadvantages.
 
 ### Approximate Membership Functions
 
@@ -77,17 +62,9 @@ Compared to Bloom filters, GCS achieve a higher compression rate, at the cost of
 ### Approximate Membership for Query Evaluation
 
 AMFs find their use in many areas related to RDF querying,
-such as storage, join optimization, source selection.
+such as join optimization and source selection.
 
-In the area of databases for _RDF storage_,
-Bloom filters can be used to [reduce the number of expensive I/O operations](cite:cites bloomIO)
-as a pre-filtering step during triple pattern query evaluation.
-There is also an approach that uses Bloom filters internally
-as a way to [efficiently encode reachability information between triple patterns](cite:cites bloomreachability).
-More recently, a combination of multiple Bloom filters were also being used
-as a way to [compactly store a vector-based filtering index](cite:cites bloomsfilterindex).
-
-Next to that, AMFs are also a useful tool for improving the performance of _graph pattern joins_.
+AMFs have been proven to be a useful tool for improving the performance of _graph pattern joins_.
 Bloom filters can therefore be used to
 [efficiently group connected triple patterns by frequency](cite:cites bloomjoinsfrequency),
 to improve the efficiency of merge joins [as a way of representing equivalent classes](cite:cites bloomjoinslarge),
@@ -107,11 +84,7 @@ Pure TPF query plans typically [produce a large number of _membership requests_]
 checking whether a specific triple (without variables) is present in a dataset.
 Due to the significant number of HTTP requests that these membership requests require,
 these can cause unacceptably high query execution times.
-This was illustrated with queries from the [WatDiv](cite:cites watdiv) benchmark,
-consisting of several types of queries, namely linear (L), star (S), snowflake-shaped (F) and complex (C).
-Of the 20 queries, two (L2, L4) required 50% membership requests,
-one (F3) required 73%, and 4 (S5, F5, C1, C2) required more than 95%.
-More than 1 in 3 queries are thus significantly impacted by the number of membership requests,
+The authors have shown 50% of all requests are membership requests for 1 in 3 queries,
 which indicates that optimizing membership queries can have a positive effect on query evaluation.
 
 In the spirit of LDF,
@@ -124,8 +97,6 @@ In order to reduce unneeded data transfer to clients that are unable to handle A
 the actual binary AMFs are included out-of-band behind a link in the metadata.
 Client-side query engines can detect this AMF metadata,
 and use it to test the membership of triples.
-In order to reduce unneeded data transfer to clients that are unable to handle AMF metadata,
-the actual binary AMFs are included out-of-band behind a metadata link.
 Clients can skip many membership requests by ruling out true negatives
 (because of the 100% recall of AMFs),
 leaving only HTTP requests to distinguish false from true positives

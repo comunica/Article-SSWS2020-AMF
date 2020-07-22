@@ -1,8 +1,8 @@
 ## Problem Statement
 {:#problem-statement}
 
-The goal of our work is to investigate how query execution over TPF interfaces can be optimized using AMFs.
-We thereby build upon the work from [Vander Sande et al.](cite:cites amf2015),
+The goal of our work is to optimize query execution over TPF interfaces using AMFs.
+We build upon the work from [Vander Sande et al.](cite:cites amf2015),
 where the authors allowed the number of HTTP requests to be reduced
 at the cost of slower query execution.
 Our goal is to mitigate this major drawback, while retaining its advantages.

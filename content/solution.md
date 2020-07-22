@@ -1,12 +1,20 @@
 ## Client-side AMF Algorithms
 {:#solution}
 
-In this section, we explain the existing triple-based AMF algorithm introduced by Vander Sande et al, and we show where it lacks.
+In this section, we explain the existing triple-based AMF algorithm, and we show where it lacks.
 Following that, we introduce a new client-side BGP-based AMF algorithm that solves these problems.
 For the reader's convenience, detailed examples of how these two algorithms work can be found on [https://github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-algorithm-examples](https://github.com/comunica/Article-SSWS2020-AMF/wiki/AMF-algorithm-examples).
 Finally, we introduce a heuristic that determines whether or not the BGP-based algorithm is beneficial to use.
 
 ### Triple-based AMF Algorithm
+
+<figure id="amf-triple-pseudo" class="listing">
+````/code/amf-triple-pseudo.js````
+<figcaption markdown="block">
+Triple-based AMF algorithm by [Vander Sande et al.](cite:cites amf2015)
+as a pre-filtering step for testing the membership of triples.
+</figcaption>
+</figure>
 
 [Vander Sande et al.](cite:cites amf2015) introduced an algorithm
 that acts as a cheap pre-processing step for _testing the membership of triples_.
@@ -20,14 +28,6 @@ that were detected during the last TPF response for that pattern.
 It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.
 Once all checks pass, the original HTTP-based membership logic will be invoked.
 
-<figure id="amf-triple-pseudo" class="listing">
-````/code/amf-triple-pseudo.js````
-<figcaption markdown="block">
-Triple-based AMF algorithm by [Vander Sande et al.](cite:cites amf2015)
-as a pre-filtering step for testing the membership of triples.
-</figcaption>
-</figure>
-
 ### BGP-based AMF Algorithm
 
 Following the idea of the _triple-based_ algorithm,
@@ -35,6 +35,13 @@ we introduce an extension that applies this concept for _BGPs_.
 This makes it possible to use AMFs not only for testing the membership of triples,
 but also for using AMFs to test partially bound triple patterns that may still have variables.
 In theory, this should filter (true negative) bindings earlier in the query evaluation process.
+
+<figure id="amf-bgp-pseudo" class="listing">
+````/code/amf-bgp-pseudo.js````
+<figcaption markdown="block">
+BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.
+</figcaption>
+</figure>
 
 [](#amf-bgp-pseudo) shows this algorithm in pseudo-code.
 Just like the triple-based algorithm, it acts as a pre-processing step when BGPs are being processed.
@@ -45,13 +52,6 @@ and for each triple component that is not a variable, it will run it through its
 Once a true negative is found, it will immediately return an empty stream to indicate that this BGP definitely contains no results.
 If all checks on the other hand pass, the original BGP logic will be invoked,
 which will down the line invoke more expensive HTTP requests.
-
-<figure id="amf-bgp-pseudo" class="listing">
-````/code/amf-bgp-pseudo.js````
-<figcaption markdown="block">
-BGP-based AMF algorithm as a pre-filtering step for BGP evaluation.
-</figcaption>
-</figure>
 
 ### Heuristic for Enabling the BGP Algorithm
 

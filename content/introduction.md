@@ -1,12 +1,12 @@
 ## Introduction
 {:#introduction}
 
-[SPARQL endpoints](cite:cites spec:sparqlprot),
-which expose Linked Data on the Web through a query-based interface,
+SPARQL endpoints,
+that expose Linked Data on the Web through a query-based interface,
 tend to [suffer from availability issues](cite:cites sparqlreadyforaction).
 In comparison to most other HTTP servers,
 SPARQL endpoints require high-end computational resources
-due the high complexity of [SPARQL queries](cite:cites spec:sparqllang)
+due the high complexity of SPARQL queries
 and can thus be difficult to sustain
 when a number of concurrent clients request query execution.
 In order to cope with this problem,
@@ -55,9 +55,3 @@ The other dimensions are related to the server-side handling of AMFs.
 The effects and feasibility of each of these dimensions are evaluated and analyzed in detail.
 In summary, our work brings a deeper understanding of the appliance and benefits of AMF metadata for Linked Data interfaces,
 so that Linked Data publishers can expose their Linked Datasets in a more efficient manner through TPF interfaces.
-
-In the next section, we cover the related work pertaining to this article.
-After that, we introduce our research questions in [](#problem-statement).
-Next, we introduce our client-side algorithm in [](#solution).
-In [](#evaluation), we introduce our experimental setup and present our results.
-Finally, we draw conclusions in [](#conclusions).

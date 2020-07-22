@@ -2,10 +2,8 @@
 {:#evaluation}
 
 The goal of this section is to answer the research questions from [](#problem-statement).
-We start by introducing a reusable benchmarking framework to achieve fully reproducible results.
-Next, we briefly discuss the implementations of our algorithm.
+First, we briefly discuss the implementations of our algorithm.
 After that, we present our experimental setup, and we present our results.
-
 All code and results results can be found on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
 
 ### Implementation
@@ -18,7 +16,7 @@ Our algorithms are implemented in separate Comunica modules,
 and will be available open-source on GitHub.
 Concretely, we implemented the original triple-based AMF algorithm,
 our new BGP-based AMF algorithm (_BGP Simple_),
-and a variant of this BGP-based algorithm (_BGP Combined_) that pre-fetches out-of-band AMFs in parallel.
+and a variant of this BGP-based algorithm (_BGP Combined_) that pre-fetches AMFs in parallel.
 
 The original TPF server extension in [the LDF server software](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf)
 by [Vander Sande et al.](cite:cites amf2015)
@@ -273,17 +271,6 @@ When the triple-based AMF algorithm is used, query evaluation times also decreas
 </figcaption>
 </figure>
 
-<figure id="plot_delay_bgp">
-<center>
-<img src="img/experiments/delay/plot_bgp_no_c.svg" alt="Effect of bandwidth on BGP AMF (non-C)" class="plot_non_c">
-<img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of bandwidth on BGP AMF (C)" class="plot_c">
-</center>
-<figcaption markdown="block">
-When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth, even for more than 2048kbps,
-showing that this algorithm can make better use of higher bandwidths.
-</figcaption>
-</figure>
-
 [](#plot_delay_none), [](#plot_delay_triple) and [](#plot_delay_bgp) show the effects of different bandwidths
 on query evaluation times over different algorithms.
 We observe that when not using AMF, or using the triple-level AMF algorithm,
@@ -295,6 +282,17 @@ We do not measure any significant impact of bandwidth on both non-AMF usage and 
 For BGP-level AMF, we measure a significant impact (_p-value: 0.0028_).
 This shows that _if_ BGP-level AMF is used,
 then higher bandwidths can be exploited _more_ for faster query evaluation.
+
+<figure id="plot_delay_bgp">
+<center>
+<img src="img/experiments/delay/plot_bgp_no_c.svg" alt="Effect of bandwidth on BGP AMF (non-C)" class="plot_non_c">
+<img src="img/experiments/delay/plot_bgp_c.svg" alt="Effect of bandwidth on BGP AMF (C)" class="plot_c">
+</center>
+<figcaption markdown="block">
+When the BGP-based AMF algorithm is used, query evaluation times decrease with increased bandwidth, even for more than 2048kbps,
+showing that this algorithm can make better use of higher bandwidths.
+</figcaption>
+</figure>
 
 <figure id="plot_in_vs_out_band">
 <center>

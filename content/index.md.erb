@@ -5,21 +5,17 @@ title: "Optimizing Approximate Membership Metadata<br />in Triple Pattern Fragme
 # <%= @item[:title] %>
 
 {:#authors}
-<!-- <%= person 'John Doe', 'http://www.example.org/', 'http://www.example.org/#me' %>
+- <%= person 'Ruben Taelman', 'http://www.rubensworks.net/', 'https://www.rubensworks.net/#me' %>
+- <%= person 'Joachim Van Herwegen', '#', 'https://data.verborgh.org/people/joachim_van_herwegen' %>
+- <%= person 'Miel Vander Sande', '#', 'https://data.verborgh.org/people/miel_vander_sande' %>
+- <%= person 'Ruben Verborgh', 'https://ruben.verborgh.org/', 'https://ruben.verborgh.org/profile/#me' %>
 
 {:#affiliations}
 - {:#idlab} IDLab,
             Department of Electronics and Information Systems,
             Ghent University – imec
- -->
-</header>
 
-<!-- Hack to make our custom fonts load in print-mode -->
-<!-- https://stackoverflow.com/questions/39364259/chrome-print-preview-doesnt-load-media-only-print-font-face -->
-<span class='printfont1'> </span>
-<span class='printfont2'> </span>
-<span class='printfont3'> </span>
-<span class='printfont4'> </span>
+</header>
 
 <div class="double-column">
     
@@ -33,10 +29,6 @@ title: "Optimizing Approximate Membership Metadata<br />in Triple Pattern Fragme
   <%= section 'solution'  %>
   <%= section 'evaluation'  %>
   <%= section 'conclusions'  %>
-  <span class="placeholder printonly">
-  <span style="display: block; height: 15em;"></span>
-  <!-- This is a dummy placeholder for forcing the references in a separate column -->
-  </span>
 </main>
 
 <footer></footer>

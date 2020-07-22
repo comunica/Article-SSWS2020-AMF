@@ -1,4 +1,4 @@
-@import "acm.scss";
+@import "lncs.scss";
 @import "shared.scss";
 @import "shared_override.scss";
 
@@ -21,4 +21,8 @@ img.plot_non_c {
 img.plot_c {
   width: 5em !important;
   height: auto !important;
+}
+
+dl.references {
+  font-size: 0.9em;
 }

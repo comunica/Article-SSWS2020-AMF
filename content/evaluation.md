@@ -8,48 +8,6 @@ After that, we present our experimental setup, and we present our results.
 
 All code and results results can be found on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
 
-### Reusable Benchmarking Framework
-
-Different Linked Data Fragments approaches as discussed in [](#related-work-ldf)
-usually require similar steps when running experiments.
-Such experiments require a significant amount of manual effort
-for setting up experiments, running them, and generating plots.
-In order to avoid re-inventing the wheel, and for future works in this domain,
-we developed a reusable benchmarking framework for Linked Data Fragments experiments, called _Comunica Bencher_.
-This tool is based on [Docker](https://www.docker.com/), and allows isolated execution of experiments over different containers.
-Experiment configurations are fully _declarative_, and they can exist in standalone repositories.
-In order to share the conditions under which the experiment was executed,
-a list of all [used _software versions and their dependencies_ in a Turtle document](cite:cites lsd)
-will be generated after each run together with the evaluation results.
-Comunica Bencher is _open-source_, and will be available on GitHub.
-With this, our experiments are fully reproducible.
-
-Concretely, Comunica Bencher offers abstraction of the following <a about="#evaluation-workflow" content="Comunica Bencher evaluation workflow" href="#evaluation-workflow" property="rdfs:label" rel="cc:license" resource="https://creativecommons.org/licenses/by/4.0/">workflow</a>:
-
-<ol id="evaluation-workflow" property="schema:hasPart" resource="#evaluation-workflow" typeof="opmw:WorkflowTemplate" markdown="1">
-<li id="workflow-data" about="#workflow-data" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Generate a [WatDiv](cite:cites watdiv) dataset with a given scale factor.
-</li>
-<li id="workflow-queries" about="#workflow-queries" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Generate the corresponding default WatDiv [queries](https://dsg.uwaterloo.ca/watdiv/basic-testing.shtml) with a given query count.
-</li>
-<li id="workflow-tpf-server" about="#workflow-tpf-server" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Install [the LDF server software](https://github.com/LinkedDataFragments/Server.js){:.mandatory} with a given configuration, implementing the [TPF specification](https://www.hydra-cg.com/spec/latest/triple-pattern-fragments/).
-</li>
-<li id="workflow-cache" about="#workflow-cache" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Setup an [NGINX HTTP cache](https://www.nginx.com/){:.mandatory} with a given configuration in front of the LDF server.
-</li>
-<li id="workflow-comunica" about="#workflow-comunica" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Install [Comunica](cite:cites comunica) under a given configuration, implementing [SPARQL 1.1](https://www.w3.org/TR/sparql11-protocol).
-</li>
-<li id="workflow-comunica-run" about="#workflow-comunica-run" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  Execute the generated WatDiv queries a given number times on the Comunica client, after doing a warmup run, and record the execution times.
-</li>
-<li id="workflow-collect" about="#workflow-collect" typeof="opmw:WorkflowTemplateProcess" rel="opmw:isStepOfTemplate" resource="#evaluation-workflow" property="rdfs:label" markdown="1">
-  For each experiment, plot the execution times for all combinations and queries next to each other.
-</li>
-</ol>
-
 ### Implementation
 
 For implementing the client-side AMF algorithms,
@@ -66,7 +24,7 @@ The original TPF server extension in [the LDF server software](https://github.co
 by [Vander Sande et al.](cite:cites amf2015)
 allowed both Bloom filters and GCS to be created on the fly for any triple pattern.
 To support our experiments, we extended this implementation with new features.
-This implementation will be available on GitHub.
+This implementation is available on [GitHub](https://github.com/LinkedDataFragments/Server.js/tree/feature-handlers-amf-2){:.mandatory}.
 In order to measure the server overhead of large AMFs,
 we added a config option to dynamically enable AMFs for triple patterns
 with number of matching triples below a given result count threshold.
@@ -77,9 +35,9 @@ to make pre-computation of AMFs possible.
 
 Based on our LDF server and Comunica implementations that were discussed in [](#implementation),
 we defined five experiments, corresponding to our five research questions from [](#problem-statement).
-The declararive configuration files for running these experiments with Comunica Bencher will be present on GitHub under an open license,
-and can be started from scratch by _executing a single command_.
-Furthermore, all raw results and scripts for analyzing them can be found in this same repository.
+These experiments are defined and executed using [Comunica Bencher](https://github.com/comunica/comunica-bencher){:.mandatory},
+which is a Docker-based benchmark execution framework for evaluating Linked Data Fragments.
+This enables reproducibility of these experiments, as they can be re-executed with a single command.
 
 The following experiments execute WatDiv with a dataset scale of 100
 and a query count of 5 for the default query templates, leading to a total of 100 queries.

@@ -3,8 +3,6 @@
 
 In this article, we introduced client-side and server-side improvements
 to the AMF feature for TPF.
-Thanks to the newly introduced benchmarking framework _Comunica Bencher_, our experiments are fully and easily reproducible.
-Since this framework is fully reusable, it facilitates the creation of related experiments in the future.
 The experimental results show that our client-side algorithms make average query execution more than two times faster than with regular TPF
 while only requiring 10% of the number of HTTP requests,
 at the cost of less than 10% additional server CPU usage.

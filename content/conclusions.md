@@ -92,7 +92,7 @@ As such, we recommend Bloom filters to always be preferred over GCS, unless AMFs
 Lowering the false-positive probability of an AMF increases its size.
 As we have seen that larger AMFs have an impact on query evaluation times,
 we do not want AMFs to become too large.
-On the other hand, we do not want the false-positive probabilities to become too low,
+On the other hand, we do not want the false-positive probabilities to become too high,
 as that leads to more unneeded HTTP requests.
 Our results have shown that a probability of 1/64 leads to an optimal balance for our experiments (_[Research Question 5](#question-probabilities)_).
 However, further research is needed to investigate this trade-off for other types of datasets and queries.

@@ -22,7 +22,7 @@ This algorithm was used in combination with the streaming [greedy client-side TP
 [](#amf-triple-pseudo) depicts this algorithm in pseudo-code.
 
 Concretely, every triple pattern that has all of its variables resolved to constants
-is run through this function right before more a expensive HTTP request would be performed.
+is run through this function right before a more expensive HTTP request would be performed.
 This function takes a triple and a query context containing the AMFs
 that were detected during the last TPF response for that pattern.
 It will test the AMFs for all triple components, and from the moment that a true negative is found, false will be returned.

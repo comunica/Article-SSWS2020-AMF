@@ -13,7 +13,7 @@ bundle exec guard
 View on http://localhost:3000/
 
 ## Live version
-https://comunica.github.io/Article-CIKM2020-AMF/
+https://comunica.github.io/Article-SSWS2020-AMF/
 
 ## License
 This article is copyrighted by [Ghent University – imec](http://idlab.ugent.be/)

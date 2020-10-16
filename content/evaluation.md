@@ -4,7 +4,7 @@
 The goal of this section is to answer the research questions from [](#problem-statement).
 First, we briefly discuss the implementations of our algorithm.
 After that, we present our experimental setup, and we present our results.
-All code and results results can be found on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
+All code and results results can be found on [GitHub](https://github.com/comunica/Experiments-AMF){:.mandatory}.
 
 ### Implementation
 
@@ -13,7 +13,7 @@ we make use of the JavaScript-based [Comunica SPARQL querying framework](cite:ci
 Since Comunica already fully supports the TPF algorithm,
 we could implement our algorithms as fully standalone plugins.
 Our algorithms are implemented in separate Comunica modules,
-and will be available open-source on GitHub.
+and are available open-source on [GitHub](https://github.com/comunica/comunica-feature-amf){:.mandatory}.
 Concretely, we implemented the original triple-based AMF algorithm,
 our new BGP-based AMF algorithm (_BGP Simple_),
 and a variant of this BGP-based algorithm (_BGP Combined_) that pre-fetches AMFs in parallel.
